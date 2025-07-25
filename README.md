@@ -23,7 +23,7 @@
 
 - 🌍 [الرابط المباشر للموقع](https://alzarraei-gpts.github.io/Arabic-GPT-Hub/)
 - 📦 [المستودع الأصلي في GitHub](https://github.com/alzarraei-gpts/Arabic-GPT-Hub)
-- 📢 [قناة تيليغرام](https://t.me/zraieegpts)
+- 📢 [قناة تيليغرام](https://t.me/alzarraei_gpts_research)
 
 ---
 
