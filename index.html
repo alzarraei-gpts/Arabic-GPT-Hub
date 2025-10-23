@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<title>باقة الباحث | مفعل بالروابط</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000;
+    --fg:#fff;
+    --brand:#76B900;
+    --card:#1a1a1a;
+    --border:#444;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:'Cairo',sans-serif;
+    background:var(--bg); color:var(--fg); margin:0; padding:20px;
+  }
+  h1{ text-align:center; color:var(--brand); margin:12px 0 24px }
+  h2{
+    color:#fff; background:var(--card); padding:14px; border-radius:8px; margin-top:40px;
+    position:sticky; top:0; z-index:5; border-bottom:1px solid var(--border); text-align:right; font-size:24px;
+    cursor:pointer; transition: color .3s ease, text-shadow .3s ease;
+  }
+  h2:hover{ text-shadow:0 0 8px rgba(118,185,0,.25) }
+  h2.active{ color:#cfcfcf } /* رمادي فاتح عند الفتح */
+  h2 .caret{ float:left; transition: transform .3s ease }
+  h3{ color:var(--brand); margin:24px 0 8px; font-size:20px }
+  .tool{ background:var(--card); border-radius:12px; padding:14px; margin-bottom:16px; border:1px solid #222; }
+  .row{ display:flex; flex-wrap:wrap; gap:8px; align-items:center }
+  .gpt-button{
+    background:black; color:white; padding:16px 14px; border:none; border-radius:8px;
+    font-size:20px; cursor:pointer; transition:transform .08s ease, background .2s ease;
+  }
+  .gpt-button:hover{ background:var(--brand); color:black; transform:translateY(-1px) }
+  .desc-toggle{
+    background:#3b2a20; color:white; border:none; border-radius:6px; padding:10px 12px; cursor:pointer;
+    font-size:18px;
+  }
+  .desc-toggle:hover{ background:var(--brand); color:black }
+  .tool + .tool{ margin-top:12px }
+
+  /* Collapsible bodies */
+  .sec-body{
+    overflow:hidden;
+    max-height:0;
+    transition:max-height .6s ease;
+  }
+  .section-hr{
+    width:70%;
+    border:none;
+    border-top:1px solid rgba(255,255,255,.15);
+    margin:10px auto 0;
+  }
+
+  /* Modal */
+  .overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center;
+    z-index:999;
+  }
+  .overlay.show{ display:flex; animation:fadeIn .2s ease-out }
+  @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+
+  .modal{
+    background:#121212; width:min(820px, 92vw); max-height:86vh; overflow:auto;
+    border-radius:14px; padding:22px 22px 18px; border:1px solid var(--border);
+    box-shadow:0 10px 40px rgba(0,0,0,.6);
+  }
+  .modal h4{ margin:0 0 10px; color:var(--brand); font-size:22px }
+  .modal .content{ font-size:18px; line-height:1.9; white-space:pre-wrap }
+  .modal .close{
+    position:sticky; top:0; float:left; background:transparent; color:#bbb; border:none; font-size:22px; cursor:pointer;
+  }
+  .modal .close:hover{ color:#fff }
+  .modal small{ color:#bbb }
+
+  /* Back to top */
+  .to-top{
+    position:fixed; bottom:20px; right:20px; background:#111; color:#fff; border:1px solid var(--border);
+    border-radius:999px; padding:10px 14px; font-size:16px; cursor:pointer; z-index:900;
+  }
+  .to-top:hover{ background:var(--brand); color:#000 }
+
+  /* Footer */
+  footer{
+    margin-top:40px; padding:16px 0; text-align:center; color:#ddd; background:rgba(255,255,255,.03);
+    border-top:1px solid var(--border);
+  }
+
+  /* Responsive */
+  @media(max-width:768px){
+    .gpt-button{ font-size:18px; padding:14px 12px }
+    .desc-toggle{ font-size:16px; padding:8px 10px }
+    h2{ font-size:20px }
+    .modal .content{ font-size:17px }
+  }
+</style>
+<script>
+  // Open in new tab
+  function openGPT(url){ window.open(url, '_blank'); }
+
+  // Modal controls
+  function showModal(title, txt){
+    const overlay = document.getElementById('overlay');
+    const header = document.getElementById('modal-title');
+    const content = document.getElementById('modal-content');
+    header.textContent = title || "معلومة";
+    content.textContent = txt || "";
+    overlay.classList.add('show');
+  }
+  function closeModal(){ document.getElementById('overlay').classList.remove('show'); }
+
+  // Smooth scroll top
+  function toTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+
+  // Collapsible logic
+  document.addEventListener('DOMContentLoaded', () => {
+    // close modal on overlay click / esc
+    const overlay = document.getElementById('overlay');
+    if (overlay) {
+      overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+    }
+
+    // Prepare click sound (Base64 WAV)
+    const clickAudio = new Audio('data:audio/wav;base64,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');
+    clickAudio.volume = 0.4;
+
+    // Enhance each <section>: wrap tools into .sec-body, inject caret & hr, and bind toggle
+    const sections = Array.from(document.querySelectorAll('section'));
+    sections.forEach((sec, idx) => {
+      const h2 = sec.querySelector('h2');
+      if (!h2) return;
+
+      // inject caret (arrow) at the end (يسار في RTL)
+      if (!h2.querySelector('.caret')) {
+        const caret = document.createElement('span');
+        caret.className = 'caret';
+        caret.textContent = '▾';
+        h2.appendChild(caret);
+      }
+
+      // build body wrapper and move .tool blocks into it
+      let body = sec.querySelector('.sec-body');
+      if (!body) {
+        body = document.createElement('div');
+        body.className = 'sec-body';
+        const toMove = Array.from(sec.children).filter(el => el !== h2);
+        toMove.forEach(el => body.appendChild(el));
+        sec.appendChild(body);
+      }
+
+      // insert hr after h2
+      if (!sec.querySelector('.section-hr')) {
+        const hr = document.createElement('hr');
+        hr.className = 'section-hr';
+        sec.insertBefore(hr, body);
+      }
+
+      // toggle handler
+      h2.addEventListener('click', () => {
+        const isActive = h2.classList.contains('active');
+
+        // close all sections
+        sections.forEach(s => {
+          const _h2 = s.querySelector('h2');
+          const _body = s.querySelector('.sec-body');
+          const _caret = _h2 && _h2.querySelector('.caret');
+          if (_h2 && _body && _caret) {
+            _h2.classList.remove('active');
+            _caret.style.transform = 'rotate(0deg)';
+            _body.style.maxHeight = 0;
+          }
+        });
+
+        if (!isActive) {
+          // open current
+          h2.classList.add('active');
+          h2.querySelector('.caret').style.transform = 'rotate(180deg)';
+          body.style.maxHeight = body.scrollHeight + 'px';
+          try { clickAudio.currentTime = 0; clickAudio.play(); } catch(e){}
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+:root { --brand:#76B900; --border:#444; --fg:#fff; }
+.topbar{ position:sticky; top:0; z-index:1000; background:#111; border-bottom:1px solid var(--border); display:flex; gap:18px; align-items:center; justify-content:center; padding:10px 12px; }
+.topbtn{ background:transparent; color:#eee; border:1px solid transparent; border-radius:10px; padding:8px 14px; font-size:16px; cursor:pointer; transition:all .2s ease; }
+.topbtn:hover{ color:#000; background:var(--brand); }
+.search-wrap{ background:#0e0e0e; border-bottom:1px solid var(--border); padding:16px; display:flex; justify-content:center }
+.search-inner{ width:min(960px,92vw); display:flex; gap:10px; align-items:center; position:relative }
+.search-input{ flex:1; background:#151515; color:#fff; border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-size:16px; }
+.autocomplete{ position:absolute; right:0; left:0; top:100%; background:#1a1a1a; border:1px solid var(--border); border-radius:10px; margin-top:6px; display:none; max-height:260px; overflow:auto; z-index:900; }
+.autocomplete div{ padding:10px 12px; color:#ddd; cursor:pointer }
+.autocomplete div:hover{ background:var(--brand); color:#000 }
+.hero{ text-align:center; padding:22px 16px 8px }
+.hero img{ width:min(560px,80vw); height:auto; opacity:0; transform:translateY(6px); animation:fadeIn 1.2s ease forwards; }
+.hero h1{ color:var(--brand); margin:10px 0 0; font-size:26px; font-weight:700; opacity:0; transform:translateY(6px); animation:fadeIn 1.2s ease .1s forwards; }
+.hero img:hover{ box-shadow:0 10px 28px rgba(118,185,0,.18); border-radius:14px }
+@keyframes fadeIn{ to{ opacity:1; transform:none } }
+.to-toggle{ position:fixed; bottom:20px; right:20px; background:#111; color:#fff; border:1px solid var(--border); border-radius:999px; padding:10px 14px; font-size:15px; cursor:pointer; z-index:1100; }
+.to-toggle:hover{ background:var(--brand); color:#000 }
+.overlay{ position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:1200 }
+.overlay.show{ display:flex; animation:fadeIn .25s ease-out }
+.modal{ background:#121212; width:min(820px,92vw); max-height:86vh; overflow:auto; border-radius:14px; padding:22px 22px 18px; border:1px solid var(--border); box-shadow:0 10px 40px rgba(0,0,0,.6); transform:translateY(8px); animation:modalIn .25s ease-out }
+@keyframes modalIn{ from{opacity:0; transform:translateY(20px)} to{opacity:1; transform:none} }
+.modal h4{ margin:0 0 10px; color:var(--brand); font-size:22px }
+.modal .content{ font-size:18px; line-height:1.9; white-space:pre-wrap; color:#eee }
+.modal .close{ position:sticky; top:0; float:left; background:transparent; color:#bbb; border:none; font-size:22px; cursor:pointer }
+.modal .close:hover{ color:#fff }
+</style>
+
+</head>
+<body>
+
+<nav class="topbar">
+  <button class="topbtn" data-modal="desc">وصف</button>
+  <button class="topbtn" data-modal="about">من نحن</button>
+  <button class="topbtn" data-modal="courses">دوراتنا</button>
+  <button class="topbtn" data-modal="news">جديدنا</button>
+  <button class="topbtn" data-modal="links">روابط</button>
+</nav>
+<div class="search-wrap">
+  <div class="search-inner">
+    <input id="toolSearch" class="search-input" placeholder="ابحث عن اسم الأداة" />
+    <div id="acBox" class="autocomplete"></div>
+  </div>
+</div>
+<div class="hero">
+  <img src="https://github.com/alzarraei-gpts/Arabic-GPT-Hub/raw/main/banner.png" alt="شعار النماذج العربية الذكية" id="heroBanner">
+  <h1>بوتات الذكاء الاصطناعي | النماذج الذكية</h1>
+</div>
+
+<h1>📚 باقة الباحث | النماذج المفهرسة (روابط مفعّلة)</h1>
+
+<!-- ===== نماذج الابتكار ===== -->
+<section>
+  <h2>نماذج الابتكار</h2>
+
+  <div class="tool">
+    <div class="row">
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-686b8ac963248191b35f6c4d8629e688-qtrh-nwn-wfkr-bhth-research-titles-mod-4o')">🧠 اقتراح عنوان وفكرة بحث (4o)</button>
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68c0f53b875881918f4b9ba01c57668a-qtrh-nwn-wfkr-bhth-research-titles-mod-5')">🧠 اقتراح عنوان وفكرة بحث (5)</button>
+      <button class="desc-toggle" onclick="showModal('نبذة','يُعد هذا البوت أداة ذكية متخصصة في دعم الباحثين وطلاب الدراسات العليا في اختيار عناوين أصيلة ومتميزة...')">ℹ️ نبذة</button>
+      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بالأصالة البحثية، الحياد، الدقة، اللغة العربية الفصيحة، والتوثيق السليم...')">📏 حدود</button>
+      <button class="desc-toggle" onclick='showModal("مثال","أدخل تخصصك (مثل: التربية الخاصة) وسيقترح البوت 3 عناوين أصيلة لرسائل ماجستير ضمن هذا المجال.")'>📌 مثال</button>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="row">
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-683d09bea51c8191b7688edadeef821d-sn-lkht-lbhthy-research-plan-mod-4o')">🧠 صناعة الخطة البحثية (4o)</button>
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68c0fcbcc7f48191b5236ff7bc232204-sn-lkht-lbhthy-research-plan-mod-5')">🧠 صناعة الخطة البحثية (5)</button>
+      <button class="desc-toggle" onclick="showModal('نبذة','يوفّر هذا البوت أداة متخصصة في إعداد خطط بحثية لرسائل الماجستير والدكتوراه...')">ℹ️ نبذة</button>
+      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بالمنهجية العلمية الدقيقة واللغة الفصيحة...')">📏 حدود</button>
+      <button class="desc-toggle" onclick='showModal("مثال","أدخل موضوعك البحثي وسيُنشئ البوت خطة بحثية متكاملة وفق المعايير الأكاديمية.")'>📌 مثال</button>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="row">
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6882ebaa86088191bca7962b5b02b41a-dlyl-ktb-lrsyl-l-lmy-university-guide')">🧠 دليل كتابة الرسائل العلمية</button>
+      <button class="desc-toggle" onclick="showModal('نبذة','يُوفّر هذا البوت أداة إرشادية متكاملة لطلاب الدراسات العليا في إعداد وكتابة الرسائل العلمية...')">ℹ️ نبذة</button>
+      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق الإرشاد الأكاديمي، مع الالتزام بالحياد والدقة...')">📏 حدود</button>
+      <button class="desc-toggle" onclick='showModal("مثال","أدخل سؤالًا مثل (كيف أكتب الإطار النظري؟) وسيشرح البوت الخطوات وفق معايير البحث الأكاديمي.")'>📌 مثال</button>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="row">
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-EvIbEhTiz-bwt-dlyl-lnzm-lbhthy-researcher-s-guide')">🧠 دليل الأنظمة البحثية</button>
+      <button class="desc-toggle" onclick="showModal('نبذة','يقدّم هذا البوت دعمًا أكاديميًّا متقدمًا في اختيار وتطبيق المناهج العلمية الثلاثة...')">ℹ️ نبذة</button>
+      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+      <button class="desc-toggle" onclick='showModal("مثال","ابحث مقارن في القانون التجاري، وسينصحك البوت بالمنهج الأنسب ويوجهك في خطوات التنفيذ.")'>📌 مثال</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== نماذج التحرير ===== -->
+<section>
+  <h2>نماذج التحرير</h2>
+
+  <div class="tool">
+    <div class="row">
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-67b44b7c337c81919a26dbe8a22c7329-bwt-d-lsyg-human-reformulation')">🧠 إعادة الصياغة</button>
+      <button class="desc-toggle" onclick="showModal('نبذة','يُعد \"بوت إعادة الصياغة\" أداة بحثية متقدمة تُسهم في تعزيز جودة الكتابة الأكاديمية عبر إعادة صياغة النصوص...')">ℹ️ نبذة</button>
+      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+      <button class="desc-toggle" onclick='showModal("مثال","أدخل نصًا مثل: \"إن الذكاء الاصطناعي مجال متسارع\" وسيعيد البوت صياغته بلغة أكاديمية فصيحة.")'>📌 مثال</button>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="row">
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-lf64lTcUn-bwt-ltdqyq-llgwy-proofreading')">🧠 التدقيق اللغوي (4o)</button>
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68c13b315aa48191befd9fe8441bcf3e-bwt-ltdqyq-llgwy-proofreading-mod-5')">🧠 التدقيق اللغوي (5)</button>
+      <button class="desc-toggle" onclick="showModal('نبذة','يُعدّ هذا البوت أداة فعّالة في دعم الباحثين لغويًّا وأسلوبيًّا...')">ℹ️ نبذة</button>
+      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+      <button class="desc-toggle" onclick='showModal("مثال","أدخل فقرة بها أخطاء لغوية، مثل: \"هاذا الكتاب مفيد جداً\" وسيصححها البوت فورًا.")'>📌 مثال</button>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="row">
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-GhBmeBZb7-bwt-tshkyl-lnsws-text-formation-mod-4')">🧠 تشكيل النصوص</button>
+      <button class="desc-toggle" onclick="showModal('نبذة','يُقدِّم هذا البوت قيمة علميّة عالية من خلال تمكين الباحثين من تشكيل النصوص بدقّة صوتيّة ونحويّة...')">ℹ️ نبذة</button>
+      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+      <button class="desc-toggle" onclick='showModal("مثال","أدخل جملة مثل: \"ذهب الطالب إلى المدرسة\" وسيظهرها البوت مشكّلة بالكامل.")'>📌 مثال</button>
+    </div>
+  </div>
+
+  <div class="tool">
+    <div class="row">
+      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-tXrotFsS3-lnthl-wlslwb-lbshry-human-style')">🧠 الانتحال والأسلوب البشري</button>
+      <button class="desc-toggle" onclick="showModal('نبذة','يسهم هذا البوت في تعزيز النزاهة الأكاديمية عبر فحص النصوص للكشف عن الانتحال الأسلوبي والمفاهيمي...')">ℹ️ نبذة</button>
+      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+      <button class="desc-toggle" onclick='showModal("مثال","أدخل فقرة مشكوكًا بها، وسيفحص البوت مدى طبيعتها البشرية أو الاصطناعية.")'>📌 مثال</button>
+    </div>
+  </div>
+
+</section>
+
+<!-- ===== نماذج التوثيق ===== -->
+<section>
+  <h2>نماذج التوثيق</h2>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-762SWrxgA-bwt-tnsyq-lmrj-reference-formatting')">🧠 تنسيق مراجع البحث</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','خدمة متخصصة لتنسيق المراجع وفقًا لمعايير APA وChicago وMLA...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أدخل المرجع: \"القرطبي، تفسير، دار الكتب\", وسينسّقه البوت تلقائيًا بصيغة APA أو Chicago.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-X51QAhBwR-bwt-twthyq-lbhwth-research-documentation')">🧠 توثيق البحوث</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','إنشاء بيانات توثيق دقيقة للمراجع العلمية بمختلف أنواعها...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أدخل مرجعًا مثل: تفسير الطبري، وسيعرض البوت بيانات التوثيق كاملة بصيغة APA.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-687b1b6691308191a307b9e9654eee1e-lbhwth-lkml-mn-lmktb-lshml')">🧠 البحوث الكاملة من المكتبة الشاملة (4o)</button>
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68c122b16b0481918aa00c125a839ab6-lbhwth-lkml-mn-lmktb-lshml-mod-5')">🧠 البحوث الكاملة من المكتبة الشاملة (5)</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','أداة للوصول إلى النصوص الكاملة في مكتبة الشاملة الرقمية...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أريد مصدرًا من الشاملة لقول الحافظ ابن حجر عن تقسيمات البدعة.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-680a3eefb2bc8191967abacfd909ede3-bwt-lmsdr-wlmrj-l-lmy-research-resources')">🧠 الجامع في تحصيل المراجع</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','مرجع ذكي لجمع وتصنيف المراجع المرتبطة بموضوع البحث...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أدخل عبارة: الاستدلال عند الغزالي، وسيقوم البوت بجمع أبرز المصادر وتوثيقها.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-67d515daced481918a47851b5cc7c5f6-bwt-qwql-lsry-fast-search-engine')">🧠 الوصول السريع إلى روابط PDF</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','تمكين الوصول المباشر إلى روابط الكتب والمراجع بصيغة PDF من مصادر موثوقة...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أدخل كلمات مثل: \"المعجم المفهرس لألفاظ الحديث النبوي PDF\" وسيُظهر روابط مباشرة موثوقة.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-684aee5a12908191adae472dd09683da-bwt-dlyl-lmkhtwtt-guide-to-arabic-manuscripts')">🧠 دليل فهارس المخطوطات</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','الوصول السريع إلى فهارس المخطوطات العربية والإسلامية في المكتبات العالمية...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أدخل عنوانًا مثل \"المستصفى للغزالي\" وسيعرض البوت أماكن المخطوطات المتاحة.")'>📌 مثال</button>
+  </div></div>
+
+</section>
+
+<!-- ===== نماذج التنفيذ ===== -->
+<section>
+  <h2>نماذج التنفيذ</h2>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-FG9ivmtVu-bwt-thlyl-lmlft-pdf-file-analysis')">🧠 تحليل ملفات البحث</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','تحليل ملفات الأبحاث الأكاديمية (Word, PDF, Excel) مع تلخيص ومحاور وملاحظات نقدية...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","حمّل الملف وسيقوم البوت بتلخيصه وتحليل عناصره الأساسية.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-67f0bf48eb1c8191b85a522cc7bf8065-bwt-mhll-lbynt-lbhthy-research-data-analyst')">🧠 محلل البيانات البحثية</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','تحليل البيانات الكمية والنصية، واستخراج العلاقات وعرض النتائج بجداول ورسوم...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أدخل جدول بيانات نصي وسيحلله البوت إحصائيًا ويقدّم رسومات توضيحية.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68809e7f7abc8191a513012f75ed8f5a-excel-thlyl-trbwy')">🧠 تحليل تربوي إكسل</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','تحليل البيانات التربوية في Excel بمقاييس نزعة مركزية وتشتت وارتباط مع تفسير تربوي...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أدخل ملف استبيان تقييم أو بيانات تعليمية بصيغة إكسل لاستعراض الجداول والرسوم.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-nq1rwzxlt-wjh-wyb-lbhthy-web-search-interface')">🧠 واجهة ويب لخدمة العمل البحثي</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','واجهة ويب تفاعلية لإحضار أحدث الأبحاث والنتائج بروابط موثوقة...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أدخل استفسارًا مثل \"أحدث أبحاث الذكاء الاصطناعي 2024\" وسيقدّم روابط فورية.")'>📌 مثال</button>
+  </div></div>
+
+</section>
+
+<!-- ===== نماذج المعاجم والمصطلحات ===== -->
+<section>
+  <h2>نماذج المعاجم والمصطلحات</h2>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-ngWYTPQ2p-bwt-m-jm-lklmt-dictionary')">🧠 معجم الكلمات</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','تحليل الكلمات العربية من حيث الجذر والوزن والمعنى المعجمي...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أدخل الكلمة \"استبشروا\" لعرض الجذر والوزن والمعنى.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6874ffd6fd3481918f962945bfcaed21-trjm-lktb-wlmwlft-translation-of-books')">🧠 ترجمة الكتب والمؤلفات</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','ترجمة الكتب والنصوص الأكاديمية بدقة اصطلاحية بالعربية والإنجليزية...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","\"الذكاء الاصطناعي يعزز التعليم\" ← ترجمة إنجليزية دقيقة.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6867c4ceb758819180fd00287855fdbe-bwt-ltrjm-l-lmy-scientific-translation')">🧠 ترجمة المصطلحات العلمية</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','ترجمة المصطلحات العلمية المتخصصة مع شرح سياقي مبسط...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","ألصق فقرة علمية، وسيقدم البوت ترجمة فصيحة للمصطلحات مع الشرح.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-XYZknTHPW-bwt-trjm-l-lm-translation-of-flags')">🧠 ترجمة الأعلام</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','ترجمة الأعلام (العلماء والمفكرون...) مع نبذة موجزة عن السيرة والمؤلفات...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","أدخل اسم: \"ابن رشد\" وسيقدم ترجمة علمية مختصرة.")'>📌 مثال</button>
+  </div></div>
+
+</section>
+
+<!-- ===== نماذج علوم الحديث ===== -->
+<section>
+  <h2>نماذج علوم الحديث</h2>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-UEL0GgbkF-tkhryj-lhdyth-lnbwy-graduation-of-hadith-mod-4')">🧠 تخريج الأحاديث النبوية (4o)</button>
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68c10fec7f8c8191816ce413d394baeb-tkhryj-lhdyth-lnbwy-graduation-of-hadith-mod-5')">🧠 تخريج الأحاديث النبوية (5)</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','تخريج الأحاديث من مصادرها مع بيان الدرجة وسلاسل الإسناد...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","\"إنما الأعمال بالنيات\" ← عرض المصادر ودرجة الحديث.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68b30581e8a881918204976d605b1271-shrh-gryb-lhdyth')">🧠 شرح غريب الحديث</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','شرح الألفاظ الغريبة في الأحاديث النبوية بلغة مبسطة مدعومة بالمعاني المعجمية...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","حديث: \"العقيقة عن الغلام شاتان\" ← شرح الألفاظ الغريبة.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68ba4892a7b481918fd372a5093aad21-fhrs-wshrh-gryb-lhdyth')">🧠 فهرسة وشرح غريب الحديث</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','الجمع بين تحديد مواضع الحديث في المصادر مع شرح موجز للألفاظ...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","\"المسلم أخو المسلم\" ← فهرسة وشرح موجز.")'>📌 مثال</button>
+  </div></div>
+
+</section>
+
+<!-- ===== نماذج التحليل ===== -->
+<section>
+  <h2>نماذج التحليل</h2>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6870ad25b828819189c59c4bf012c04c-d-m-lbhth-lnw-y')">🧠 داعم البحث الكيفي</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','تحليل البيانات النصية للدراسات الكيفية، استخراج الأكواد والموضوعات وبناء شبكة مفاهيمية...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","ألصق مقطع مقابلة وسيتم توليد أكواد موضوعية وتفسيرها.")'>📌 مثال</button>
+  </div></div>
+
+  <div class="tool"><div class="row">
+    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-txUGYAgZo-bwt-lbhth-lkmy-quantitative-research')">🧠 داعم البحث الكمي</button>
+    <button class="desc-toggle" onclick="showModal('نبذة','معالجة البيانات الرقمية للاختبارات والاستبانات وإجراء تحليلات أساسية ومتقدمة...')">ℹ️ نبذة</button>
+    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم...')">📏 حدود</button>
+    <button class="desc-toggle" onclick='showModal("مثال","حمّل نتائج استبانة (Excel) وسيخرج البوت جداول وتقارير.")'>📌 مثال</button>
+  </div></div>
+
+</section>
+
+<!-- Modal -->
+<div id="overlay" class="overlay" aria-hidden="true" role="dialog">
+  <div class="modal" role="document" aria-modal="true">
+    <button class="close" onclick="closeModal()" title="إغلاق">✖</button>
+    <h4 id="modal-title">تفاصيل</h4>
+    <div id="modal-content" class="content"></div>
+  </div>
+</div>
+
+<!-- Back to top -->
+<button class="to-top" onclick="toTop()">رجوع للأعلى</button>
+
+<footer>
+  © مركز علوم الدولي للذكاء الاصطناعي 2025 — جميع الحقوق محفوظة.
+</footer>
+
+
+<div id="overlay" class="overlay" aria-hidden="true" role="dialog">
+  <div class="modal" role="document" aria-modal="true">
+    <button class="close" onclick="closeModal()" title="إغلاق">✖</button>
+    <h4 id="modal-title">تفاصيل</h4>
+    <div id="modal-content" class="content"></div>
+  </div>
+</div>
+<button class="to-toggle" id="toggleScroll">⬇ النزول للأسفل</button>
+
+<script>
+const sndOpen = new Audio('data:audio/wav;base64,UklGRtAUAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YawUAAAAAH0KfhJOFnMVxxAbCpID5/7f/CH9af4a/+j9afpK9SLw6exC7d7xKvppBDQOMRXIF6IVsw/iB2QABfub+Nj4gPr3++f7y/ks9nXyb/CW8YX2oP41CPoQsxbzF4IUbw22BJr87PaJ9Cb1hvcD+jX7fPo8+Lf1jvQh9vr6gAIZC5kS8BbWFjgSPQruAJT4/vIG8VjyrvVT+cr7Vvw6+5X56PiA+uH+gAXgDPoS6xWVFAMPbgbp/LT0l+9d7qPwEvXj+YP9Hf/W/rH9HP1Z/u8BawdvDSESyBNtETILYAIF+VPxAu3D7CDwrfWS+yUAgAKyAqwB0QBgAfADJwjMDC4QwRCqDSEHcf6Z9bzucetR7MzwYfcn/mYDKQZ1BjEFvwNkA8sEtgcSC1kNHg2jCSgD8/rw8iHtAesH7Yry+PlYAe4GvgnJCfkHsgVKBH8ENAZ4COgJNgmxBZ7/MPg78Z/ssevJ7if1Kv3TBGcK6wxoDM4JjwYQBCcD0wNDBS8GXgUmAsb8W/aX8DbtZ+1n8V/4pwBDCH8Naw8eDpYKUwbOAvMA1wDDAYIC5gFJ/9X6j/UH8c/u9u+d9OP7HARYC/APCxHODkwKFgW0ACT+jv1J/i//Ff9K/eb50fV08j3xHfMh+GL/OwfNDYoRrRF2DgcJAwMA/gT7Rfoj+3n8Gv1G/AD6Dfe09ET0k/ak+44CwQlyDy0STREnDfAGVwD4+uH3SfeS+JL6E/xE/A77GPmL95r3CvrZ/ikFfQsnENUR/A8KC0IEWP3r9wb13fTJ9pn5CPwz/er8u/u0+vb6Ov2BAQAHUAznD5EQ4Q1XCD8BUPog9bPyMPPk9ZP55/zs/l3/sv7n/Q/+4/9sA/QHNAzADocOMgtQBTL+hvfX8hjxYPLu9XT6j/47ASUCtgHcAKcA1AF7BP4HNAvVDOkLLgg7Al77N/U/8VTwePLX9hn8ywDiA/8EgwRYA48C8AKlBCkHcwlXCvUIGQVd/wH5lPN48HDwavOC+FH+YAOdBqYH3AYqBakDLAP0A5UFIAeDB+8FNwLw/En3u/KL8GLxGfW++uEACwYqCeAJkgg0BugDkwKHAm8DdgSZBBYDwv8j+1b2t/Jv8Q7zWPdS/YoDjQhPC30LhwlqBlcDPwGJAPEAswHYAaUA6P0V+jP2gPMJ80f17/kAAA0GqwreDGAMrgnVBQ8CXv8y/lj+Ff97/8v+xvzS+dn2/fQw9dn3ovyLAjIIOQy4DXsMDwmMBDkAIf28+9/71Pyt/aP9a/xV+jD4Bfev94j6Nf+8BMsJGQ3RDdULwAe4Agr+w/pj+b75HPuM/Dz90fyF+xH6ZvlO+hr9cQFnBrsKOw0tDYMK6AWJALj7f/hc9x/4DPom/JL94/0//Uz86fvU/Fv/LANtB/IKpQzgC6kItgM4/nz5ifbT9SP3svl5/JH+ff9U/6v+Vf4M/x0BRwTAB3UKagsNCnYGXwH5+4n3C/Xn9Nf2DPpy/RUAcQGOAfcAeADLAEYCtARiB1YJqgniBx0EGv8A+gr2JPSl9Dv3B/vv/vYBjgO5A/8CKQL1AcQCcwRjBrMHkQePBdIBFv13+B314/MO9Tz4hfzGAP8DnwWlBZkESQN5ApgClAPjBLcFUAVIA8j/fvt799L0SPQS9r75Xf7IAgAGdAcoB6gFyANYAtEBNQIJA5EDGAM9AST+cPoc9yn1RvWU95n7YADEBMkH5QglCBsGpgOeAYwAfAAEAXIBGAGX/wX9+vld9xX2v/Zv+aH9XwKLBjIJ1QmLCPEF7wJoAO7+l/4D/4j/eP9w/nv8IPov+Hz3kfh2+6X/LAT2Bx4KMgpXCDUFvQHZ/iD9svwy/ff9VP7a/Yr81vp7+Tv5kPp8/XkBoQXpCHwK+wmWBwEEMgAZ/VH7+fq3+9/8vP3Z/Sb9BPwf+yj7kPxW//oCoQZSCUoKOQleBnQCeP5W+6v5k/mv+k78tv1i/jj+iv3y/Bj9Z/7eAAoEGwctCY8JAgjQBLgAuPy6+VT4nPgr+kv8N/5h/6L/QP/L/uL+8P/5AZcECgeCCGEIdQYQA/b+HPto+Gf3JPgx+s38K/+2AD0B/AB/AGAADgGWApwEdwZnB98GuARJAVT9x/l99/b2Mfi4+sD9dQA9AuICmgLuAXoBsQGuAiEEdAX3BSsF8QKi//f71vgK9wb3vfiu+wj/8gHRA2oE9QP7AhwC1AFIAjgDHARVBGwDRwE8/vn6WPgV95H3tvn4/IIAfQNJBbIF8QSUA0ECfAF1AfsBkwKnAsgB3f8y/W36VviZ94j4Avt0/gsC7wSGBqEGfwWzA+0BuABPAIsA+gAQAV8Ay/6W/Fn6yviF+ND5gPwAAH0DKAZsByQHlQVdAzABo//2/gz/ef+0/07/JP5w/Lj6pvnD+Uz7D/53AboEDQfqBzMHOgWfAiEAWP6K/Z79LP6p/qP+7/27/H770vo0+9j8i/+7AqYFjgf5B9MGeASRAd/++/wv/GT8Lv0C/mj+Kv5r/ZT8Mfy3/FT+1QCxAzAGogeaBxAGaANPAIj9rPsE+3X7kfzI/Zn+yP5q/t39pP0s/qH/1AFJBFEGSwfaBv8EJAL5/j78ivoh+uP6Xfz3/Sz/tf+d/zv/Cv9z/6QAeAJ5BAgGlQbNBboDygCt/R77rvmZ+bf6kfyH/gwA1QDlAI4ARQB1AE8BtgJCBGIFkwWMBF8Ce/+K/EH6KPlz+fH6Iv1j/yEBDQImAroBPwEhAZgBkQKvA3EEXgQ1Aw0BUv6n+7j5A/mw+YX7/v1yAE4CPgNCA6cC5QFtAX8BEALRAkwDEAPlAeD/Z/0W+435PvlF+mT8D/+bAXYDTQQhBEMDLgJaAQwBRgHAAQ8CyQG3AO3+yvzf+r/50Pkk+3b9NwDAAn4EIgWzBIYDGwLvAFAARwCWANUAoQDD/0j+h/wE+0f6qvo2/KL+XgHGA04FrAXtBG0DsQE8AGL/MP9u/7v/sv8Z//n9nfx++xf7tvti/cz/aAKYBNYF4gXQBAEDAAFW/1j+GP5i/tT+Cf/D/gH+Bv0+/Bj83fyN/toAPwMkBQ0GwgVgBE8CHQBU/kz9Gv2H/TL+sv7C/lv+tP0w/TX9BP6e/7cB0wNgBe8FUgWsA2oBHv9Q/Vn8S/zv/N/9rv4S//n+lf49/lP+FP+AAFQCGQRLBYQFngTGAmoAHP5i/JP7vPuj/N39+f6k/8r/kf9O/1v/9/8jAaUCDwTpBNYEugPEAWf/Lv2f+wr7d/um/Cj+hv9pALYAkQBJADcAmwB9AakCugNFBPYDuQK+AHb+afwX+8n6f/v0/LT+QwBLAakBgAEdAdoA+gCLAWICJQNxA/sCsgHK/6z93vvV+tL60PuC/XH/HwEzAosCSAK4ATcBDgFRAdsBXwKAAvkBvAD7/hr9lvvb+iP7X/xA/ksAAwINA0kD2gIQAk0B2wDXACQBfAGHAQcB7P9i/sn8lPsn+7H7H/0c/y0B2ALDA9MDKwMiAhwBagAtAFAAkACdADcATv8I/r381/uw+2/8+/0AAAMCjQNIBB4EOQPxAa8Ayv9n/3P/sv/U/5n/7v7y/fT8Vvxn/En94f7YALoCEQSRBCcEAwODARMADP+V/qH+8v46/zf/z/4d/mf9A/08/S7+vf+TAUIDXASZBPADlALnAFn/Qv7N/ev9YP7a/hX/8f6D/gf+zv0b/gn/egAhApIDZwRiBH8D9wEtAJP+gf0g/WH9Bf64/jH/TP8W/8X+pP7y/sn/DgF5AqUDNQT0A+ICPAFp/9X92vyd/A395/3U/ob/1f/H/4//cv+v/18AbAGUAnsDzANYAyYCdACp/i/9W/xP/PT8Bf4n/wcAegCEAFIAKABDAMEAkAF1AhsDNwOfAl4BtP8B/q/8Dvw5/BX9Wf6m/6cALgE9Af8AuACmAOsAewEgApAChQLZAZsACP9+/WH8+Ptc/Gv92P5CAFQB3wHhAYcBGAHSAN0AMQGgAecBxAEXAe7/gP4q/Uj8Gvyy/Ov9df/tAP8BewJiAuIBQgHHAJsAvAACATABBwFpAGL/Jv4L/WX8bvwz/Yn+IACWAZcC9gK2AggCNwGKAC4AKQBWAHsAXQDd/wL///0g/bP87PzR/Tb/ygAtAg8DRQPYAvoB+gAiAKX/iP+s/9j/0/97/9T+DP5m/Sv9h/19/uL/YwGmAl4DZQPHArsBlACe/wv/5/4R/1P/cv9J/9n+SP7V/b/9Mf4q/30A3wH3An0DUgOGAlUBEAAJ/3H+VP6T/vb+P/9J/w3/rf5h/mP+2/7I//0ANAIaA2wDEgMeAtEAfv9z/uX93f07/sb+Pf93/2n/L//8/gn/eP9KAFgBXQINAy4DqgKaAT0A6f7q/XP9iv0P/sX+aP/L/+H/wP+Z/6H/+/+oAIcBWALVAsoCJgIFAaj/YP55/ST9Y/0R/vD+uv88AGkAVAAqACAAWQDcAIgBJgJ2AkkCkgFtAB3/7v0r/f78Z/0+/kH/JwC/APUA3QCkAH0AkADkAGAB0AH8AbgB+gDh/6j+nv0F/QP9lv2Q/q7/pgBFAXgBUQH9ALMAnADCABIBXgFxASMBbABq/1T+dP0I/TL96P3+/isAKQHCAeUBpQExAcAAfgB8AKgA2wDiAJcA9f8R/yX+c/00/YT9V/59/64ApAEsAjQC1AE7AaQAPQAaAC4AUwBaAB8Amf/d/h/+mv2D/fH91v4AACkBDAJ4AmAC2wEeAWUA4f+o/6//0//n/8X/Yv/R/j7+4/3t/XD+W/99AJIBWQKiAmUCvQHfAAsAc/8v/zX/ZP+O/4z/UP/q/oD+R/5o/vP+2f/oAOEBgwKnAkUCfQGFAKD///67/s3+EP9X/3j/ZP8k/93+vP7o/nL/RgA6AQ8CigKHAgQCIgEaAC7/kP5Y/n3+3P5D/4n/mf95/0r/N/9k/+H/nABtARoCbQJHAqkBtgCp/8D+L/4M/k3+yv5T/7r/5//f/7//rv/S/zYA0gB9AQICMQLuAT0BQwA6/2D+5v3f/T7+3P6D/wQARgBMAC8AFwAnAG8A5wBqAcsB2wGDAcoA1P/Z/hf+uf3S/VH+DP/M/2AArgC3AJMAagBgAIgA2gA6AXoBdAERAVkAcf+O/un9rf3m/YP+Vf8mAMQAFAEVAeIAoQB5AH8AsADwABkBBQGhAPb/I/9d/tv9wP0Y/s3+sP+IACcBbgFfARYBugBzAFkAbACVAK8AmAA9AKX/7/5L/uv98f1i/ij/EgDqAH4BtQGQASwBswBPABoAFwAxAEcANQDs/27/2P5Y/hn+Of69/oz/dABBAcQB4wGkASQBkAATAMz/u//Q/+n/5v+z/1P/4P6A/l7+k/4h/+//zQCHAfEB9QGaAQABVQDI/3P/Xv92/5z/rv+X/1b/A//A/rT+9f6F/0gAFAG2AQMC6gF1AcQACQBy/xr/Cf8u/2b/kf+X/3T/Pf8R/xL/V//g/5IARQHKAfkBxQE5AXgAtf8b/8n+xf77/kv/kP+x/6n/h/9q/3H/sv8qAMYAXQHDAdYBiQHsACMAX//M/of+lf7i/kr/qf/i/+7/2//F/8n//f9hAOEAWgGiAZwBPQGWAM3/EP+L/lr+fv7j/mP/2P8iADwAMAAYABIAMwB/AOIAPQFsAVEB6AA/AH3/z/5e/kT+gf79/pL/FgBuAI0AfwBeAEgAUwCDAMsADAElAf4AkADu/zr/oP5I/kf+m/4s/9H/XwC7ANkAwgCSAGcAWgBwAJ4AygDVAKgAPgCq/wn/iP5K/mL+y/5r/xgAqwAEARgB8wCvAG4ASQBHAGEAfgCCAFcA+v92/+7+iP5j/pH+C/+0/2QA8gBAAUUBDgG2AF4AIwAPABoAMAA0ABIAxf9Z/+r+nv6R/tD+VP8AAKsALgFtAV8BEgGlADoA7v/N/9H/5v/y/97/pf9R//3+yP7O/hn/of9IAOgAWgGFAWIBAAGBAAYAr/+H/4v/pv++/73/m/9g/yP/Av8V/2X/6v+GABUBcwGHAU8B2wBNAMn/bP9F/0//dv+e/7L/pv+B/1j/Rf9f/67/KAC1ADABdwF1ASoBpwAPAIf/LP8L/yH/WP+T/7z/xf+y/5f/jP+m/+7/WgDSADYBZgFQAfUAaQDO/0j/9P7g/gX/Tv+c/9j/8v/t/9v/0f/l/x8AeQDbACgBQwEdAbcAJgCO/xD/yv7G/v3+WP+4/wIAKAAsABsADQAWAEAAhQDRAAgBEgHfAHQA5/9W/+b+sP6+/gj/c//i/zcAZABpAFUAPQA3AE4AfgC1ANoA1gCdADMArv8r/8z+qf7K/iT/nv8VAHEAnwCgAIIAXQBGAEkAZQCKAKIAlgBdAPr/gf8P/8P+tP7n/k//0v9OAKoA0wDLAKAAawBCADMAPgBWAGUAVwAjAMz/Y/8E/83+0P4S/4T/CgCHANwA/ADnAK0AZwAtAA8ADQAcACkAHwD1/6z/Vv8L/+f++v5G/73/QwC5AAQBFgHyAKgAUwALAOL/2P/k//P/8f/U/53/Wv8j/w//Lv+A//b/dgDhAB8BIQHsAJMAMQDg/6//o/+x/8f/0f/D/57/bv9I/0D/Zv+5/ykAnwD8ACkBGwHXAHEABQCu/3z/cv+H/6j/wP/D/7D/j/92/3f/n//u/1QAvAAIASMBBQG0AEUA1f98/03/Sv9q/5j/v//T/87/u/+q/67/0/8YAHIAyQAEAQ8B4wCIABQAo/9P/yf/L/9b/5f/zv/v//b/6//e/+H///84AIIAxwDxAO0AtwBWAOP/dv8p/w3/Iv9c/6b/6f8UACMAHAAOAAoAHQBJAIIAtwDSAMIAhQAkALX/UP8P/wD/I/9r/8H/DQA/AFEASQA2ACkAMABMAHUAmgCpAJIAUwD2/47/Nf8C/wL/Mv+G/+X/NwBsAH0AcABUADsAMwBAAFsAdAB6AGEAJADO/3L/J/8D/xH/Tv+q/w4AYgCWAKEAjABlAD8AKgApADgASQBLADIA/f+x/2L/J/8S/y3/c//V/zkAiwC5ALwAmwBpADYAFAAIAA8AGwAeAAoA3v+g/2D/NP8s/1H/nf8=');
+const sndClose = new Audio('data:audio/wav;base64,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');
+sndOpen.volume=.25; sndClose.volume=.2;
+
+const MODALS = {
+  desc: `تضم بوابة "النماذج العربية الذكية" حزمة متكاملة من الباقات والبوتات المصممة خصيصًا لدعم المستخدم العربي في مجالات عدة، تشمل: البحث العلمي، والتعليم، والتصميم، والإدارة، والتسويق، والقانون، والبرمجة، وغيرها. تحتوي كل باقة على مجموعة من البوتات التي تؤدي مهامًا ذكية محددة بدقة وسرعة، مثل: إعداد العنوان والفكرة، وصناعة الخطة، وإعداد البحث العلمي، وتوثيق النصوص، وتنسيق المراجع، وإعادة الصياغة، والترجمة الاصطلاحية، وتحليل النصوص، وغيرها.`,
+  about: `أسّس هذه المنصة د. عبدالرحمن الزراعي، مشرف أكاديمي وباحث متخصص في مجالات البحوث العلمية، مهتم بالفنون البصرية ونماذج الذكاء الاصطناعي، عمل من وقت طويل على تطوير تعليمات دقيقة ومخصصة للنماذج العربية الذكية GPT، وهذه التعليمات تهدف إلى إنشاء نماذج ذكية تعمل على تحقيق أداء متسق وعالي الجودة في مختلف التخصصات، فضلاً عن استضافة فريق من الباحثين والأكاديميين والمهتمين في العمل لبناء رؤية تحليلية عميقة ومنهجية وصارمة في تصميم كل نموذج، وهذا يضمن توافق تلك النماذج مع المعايير العلمية واللغوية، وتقييم أدائها على نحو منهجي بهدف تحسينها وتطويرها، كما يسعى الفريق إلى تمكين المجتمع العربي من الإفادة الكاملة من قدرات الذكاء الاصطناعي بلغته وثقافته.`,
+  courses: `نقدم مجموعة من الدورات التدريبية المصممة بعناية لتعريف المستخدمين بواجهة ChatGPT وطرق التعامل معها باحتراف، وتشمل الدورات محاور أساسية مثل: كيفية طرح الأسئلة، وإدارة الحوار، وهندسة التعليمات وتوجيهها بطريقة صحيحة، كما نقدم دورات في البحث العلمي تتناول كيفية إنشاء نماذج مخصصة للعمل البحثي، وتتناول أيضاً مفاهيم مثل النماذج التوليدية، وتعليمات التكوين، وتدريب النماذج، وفهم آليات التفكير الآلي، وتُعقد الدورات بأسلوب تطبيقي مع ما يرفق ذلك من ملفات معينة ومواد تعليمية تساعد المتدرب على التطبيق الفوري، ويمكن طلب الدورات بشكل فردي أو جماعي حسب الحاجة.`,
+  news: `نعمل باستمرار على تطوير نماذج ذكية جديدة تواكب الاحتياجات المتغيرة للمستخدمين، ولعل من أحدث النماذج التي أُضيفت مؤخراً: نموذج 4o ونموذج 5  لبعض الأدوات، وجميع هذه النماذج الذكية يأتي ضمن باقات جاهزة للاستخدام، مصحوبة بفيديوهات شرح وتوجيهات مخصصة، تابعنا باستمرار للاطلاع على كل جديد.`,
+  links: `نوفر مجموعة من الروابط التعليمية لمساعدة المستخدم على فهم آلية عمل الذكاء الاصطناعي، وطريقة التعامل مع النماذج المخصصة. من أبرز المحتويات: كتاب "الآلة التي تفكر" التي توضح كيفية تحليل النموذج للمحتوى قبل توليده. وكتاب "الآلة التي ترد" التي تشرح بطريقة عملية وتطبيقية كيف يتفاعل النموذج مع التعليمات، كما نُتيح مؤلفات مختصرة وملفات إرشادية قابلة للتحميل، تحتوي على أمثلة عملية وتعليمات جاهزة للاستخدام، يمكن الاستفادة من هذه التعليمات في تكوين نماذجك الخاصة، وضبط أدائها بما يتناسب مع هدفك، كل المواد التعليمية يتم تحديثها باستمرار، وهي مصممة لتناسب جميع المستويات. #روابط الكتب: https://alzarraei-gpts.github.io/Arabic-GPT-Hub-books/`
+};
+function showModal(title, text){
+  const ov = document.getElementById('overlay');
+  if(!ov) return;
+  document.getElementById('modal-title').textContent = title || 'تفاصيل';
+  document.getElementById('modal-content').textContent = text || '';
+  ov.classList.add('show');
+}
+function closeModal(){
+  const ov = document.getElementById('overlay');
+  if(ov) ov.classList.remove('show');
+  try{ sndClose.currentTime=0; sndClose.play(); }catch(e){}
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.querySelectorAll('.topbtn').forEach(b=>b.addEventListener('click',()=>{
+    const key=b.getAttribute('data-modal');
+    showModal(b.textContent.trim(), MODALS[key]||'');
+    try{ sndOpen.currentTime=0; sndOpen.play(); }catch(e){}
+  }));
+  // Search + autocomplete
+  const inp = document.getElementById('toolSearch');
+  const ac = document.getElementById('acBox');
+  function toolsList(){
+    const names = new Set();
+    document.querySelectorAll('.gpt-button, .tool').forEach(el=>{
+      const t = el.innerText.trim();
+      if(t) names.add(t);
+    });
+    return Array.from(names);
+  }
+  function filter(q){
+    document.querySelectorAll('.tool').forEach(t=>{
+      const txt = t.innerText;
+      t.style.display = (!q || txt.includes(q)) ? '' : 'none';
+    });
+  }
+  if(inp && ac){
+    inp.addEventListener('input', ()=>{
+      const q = inp.value.trim();
+      const all = toolsList();
+      const m = all.filter(x=>x.includes(q)).slice(0,12);
+      ac.innerHTML = m.map(x=>`<div>${x}</div>`).join('');
+      ac.style.display = (q && m.length) ? 'block' : 'none';
+      filter(q);
+    });
+    ac.addEventListener('click', e=>{
+      if(e.target.tagName==='DIV'){
+        inp.value = e.target.textContent;
+        ac.style.display='none';
+        filter(inp.value.trim());
+      }
+    });
+    document.addEventListener('click', e=>{ if(!ac.contains(e.target) && e.target!==inp) ac.style.display='none'; })
+  }
+  // Toggle scroll
+  const tgl = document.getElementById('toggleScroll');
+  function upd(){
+    if(!tgl) return;
+    tgl.textContent = (window.scrollY<=10) ? '⬇ النزول للأسفل' : '⬆ رجوع للأعلى';
+  }
+  if(tgl){
+    upd();
+    window.addEventListener('scroll', upd);
+    tgl.addEventListener('click', ()=>{
+      const atTop = (window.scrollY<=10);
+      window.scrollTo({ top: atTop ? document.body.scrollHeight : 0, behavior:'smooth' });
+      try{ sndOpen.currentTime=0; sndOpen.play(); }catch(e){}
+    });
+  }
+});
+</script>
+
+</body>
+</html>
