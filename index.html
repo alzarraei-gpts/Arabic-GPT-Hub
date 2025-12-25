@@ -6,723 +6,1166 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#000;
-    --fg:#fff;
-    --brand:#76B900;
-    --card:#1a1a1a;
-    --border:#444;
-  }
-  *{box-sizing:border-box}
-  body{
-    font-family:'Cairo',sans-serif;
-    background:var(--bg); color:var(--fg); margin:0; padding:20px;
-  }
-  h1{ text-align:center; color:var(--brand); margin:12px 0 24px }
-  h2{
-    color:#fff; background:var(--card); padding:14px; border-radius:8px; margin-top:40px;
-    position:sticky; top:0; z-index:5; border-bottom:1px solid var(--border); text-align:right; font-size:24px;
-    cursor:pointer; transition: color .3s ease, text-shadow .3s ease;
-  }
-  h2:hover{ text-shadow:0 0 8px rgba(118,185,0,.25) }
-  h2.active{ color:#cfcfcf }
-  h2 .caret{ float:left; transition: transform .3s ease }
-  h3{ color:var(--brand); margin:24px 0 8px; font-size:20px }
-  .tool{ background:var(--card); border-radius:12px; padding:14px; margin-bottom:16px; border:1px solid #222; }
-  .row{ display:flex; flex-wrap:wrap; gap:8px; align-items:center }
-  .gpt-button{
-    background:black; color:white; padding:16px 14px; border:none; border-radius:8px;
-    font-size:20px; cursor:pointer; transition:transform .08s ease, background .2s ease;
-  }
-  .gpt-button:hover{ background:var(--brand); color:black; transform:translateY(-1px) }
-  .desc-toggle{
-    background:#3b2a20; color:white; border:none; border-radius:6px; padding:10px 12px; cursor:pointer;
-    font-size:18px;
-  }
-  .desc-toggle:hover{ background:var(--brand); color:black }
-  .tool + .tool{ margin-top:12px }
-
-  .sec-body{
-    overflow:hidden;
-    max-height:0;
-    transition:max-height .6s ease;
-  }
-  .section-hr{
-    width:70%;
-    border:none;
-    border-top:1px solid rgba(255,255,255,.15);
-    margin:10px auto 0;
+  :root {
+    --bg: #000000;
+    --card-bg: #121212;
+    --card-border: #333333;
+    --fg: #ffffff;
+    --fg-muted: #aaaaaa;
+    --brand: #76B900; /* اللون الأخضر المطلوب */
+    --brand-hover: #8cd600;
+    --accent: #222222;
+    --modal-overlay: rgba(0, 0, 0, 0.85);
   }
 
-  .overlay{
-    position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center;
-    z-index:999;
-  }
-  .overlay.show{ display:flex; animation:fadeIn .2s ease-out }
-  @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+  * { box-sizing: border-box; outline: none; }
 
-  .modal{
-    background:#121212; width:min(820px, 92vw); max-height:86vh; overflow:auto;
-    border-radius:14px; padding:22px 22px 18px; border:1px solid var(--border);
-    box-shadow:0 10px 40px rgba(0,0,0,.6);
-  }
-  .modal h4{ margin:0 0 10px; color:var(--brand); font-size:22px }
-  .modal .content{ font-size:18px; line-height:1.9; white-space:pre-wrap }
-  .modal .close{
-    position:sticky; top:0; float:left; background:transparent; color:#bbb; border:none; font-size:22px; cursor:pointer;
-  }
-  .modal .close:hover{ color:#fff }
-  .modal small{ color:#bbb }
-
-  .to-top{
-    position:fixed; bottom:20px; right:20px; background:#111; color:#fff; border:1px solid var(--border);
-    border-radius:999px; padding:10px 14px; font-size:16px; cursor:pointer; z-index:900;
-  }
-  .to-top:hover{ background:var(--brand); color:#000 }
-
-  footer{
-    margin-top:40px; padding:16px 0; text-align:center; color:#ddd; background:rgba(255,255,255,.03);
-    border-top:1px solid var(--border);
+  body {
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    overflow-x: hidden;
   }
 
-  @media(max-width:768px){
-    .gpt-button{ font-size:18px; padding:14px 12px }
-    .desc-toggle{ font-size:16px; padding:8px 10px }
-    h2{ font-size:20px }
-    .modal .content{ font-size:17px }
+  /* --- Top Navigation --- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--card-border);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+
+  .topbtn {
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  /* تغيير اللون للأخضر عند التمرير */
+  .topbtn:hover {
+    color: #000;
+    background-color: var(--brand);
+    border-color: var(--brand);
+  }
+
+  /* --- Search Bar --- */
+  .search-wrap {
+    background-color: var(--bg);
+    padding: 20px 10px;
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .search-inner {
+    width: 100%;
+    max-width: 900px;
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--fg);
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: 'Cairo', sans-serif;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .search-input:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(118, 185, 0, 0.2);
+  }
+
+  .autocomplete {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 100%;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    margin-top: 4px;
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 900;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  }
+
+  .autocomplete div {
+    padding: 12px 16px;
+    color: var(--fg);
+    cursor: pointer;
+    border-bottom: 1px solid #1f1f1f;
+    transition: background 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .autocomplete div:last-child { border-bottom: none; }
+  
+  .autocomplete div:hover {
+    background-color: var(--brand);
+    color: #000;
+  }
+  
+  .autocomplete div span {
+    font-size: 12px;
+    color: var(--fg-muted);
+    opacity: 0.7;
+  }
+
+  /* --- Hero Section --- */
+  .hero {
+    text-align: center;
+    padding: 40px 20px 20px;
+    background: radial-gradient(circle at center, #111 0%, #000 100%);
+  }
+
+  .hero img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInHero 1s ease forwards;
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(118, 185, 0, 0.1);
+  }
+
+  .hero h1 {
+    color: var(--brand);
+    margin: 20px 0 10px;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 700;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInHero 1s ease 0.3s forwards;
+  }
+
+  @keyframes fadeInHero {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- Main Content --- */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-bottom: 100px;
+  }
+
+  /* --- Sections (Accordion) --- */
+  section {
+    margin-bottom: 24px;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    background-color: var(--card-bg);
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+  }
+
+  section:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    border-color: #444;
+  }
+
+  h2.section-title {
+    margin: 0;
+    padding: 18px 24px;
+    font-size: 20px;
+    color: var(--fg);
+    background-color: #1a1a1a;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background 0.3s;
+  }
+
+  h2.section-title:hover {
+    background-color: #222;
+    color: var(--brand);
+  }
+
+  h2.section-title .caret {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+  }
+
+  h2.section-title.active .caret {
+    transform: rotate(180deg);
+  }
+
+  .sec-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+    padding: 0 24px;
+  }
+
+  .sec-body.open {
+    padding: 24px;
+    /* max-height set via JS */
+  }
+
+  /* --- Tool Cards --- */
+  .tool {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  .tool:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  /* Fix for displaying tool name prominently */
+  .tool-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--brand);
+    margin: 0 0 12px 0;
+    padding: 0 5px;
+    border-right: 3px solid var(--brand);
+  }
+
+  .tool-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-gpt {
+    background-color: #000;
+    border: 1px solid var(--card-border);
+    color: var(--brand);
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    transition: all 0.2s;
+    min-width: 140px;
+    justify-content: center;
+  }
+
+  .btn-gpt:hover {
+    background-color: var(--brand);
+    color: #000;
+    border-color: var(--brand);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(118, 185, 0, 0.2);
+  }
+
+  .btn-info {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    color: var(--fg-muted);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-info:hover {
+    background-color: #2a2a2a;
+    color: var(--fg);
+    border-color: var(--brand);
+  }
+
+  /* --- Scroll Toggle Button --- */
+  .to-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: var(--card-bg);
+    color: var(--brand);
+    border: 2px solid var(--brand);
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 900;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .to-toggle:hover {
+    background-color: var(--brand);
+    color: #000;
+    transform: scale(1.05);
+  }
+
+  /* --- Modal --- */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background-color: var(--modal-overlay);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(4px);
+  }
+
+  .overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal {
+    background-color: var(--card-bg);
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    padding: 30px;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+  }
+
+  .overlay.show .modal {
+    transform: translateY(0);
+  }
+
+  .modal-close {
+    position: sticky;
+    top: 0;
+    left: 0;
+    background: none;
+    border: none;
+    color: var(--fg-muted);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    margin-bottom: 10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+
+  .modal-close:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: var(--fg);
+  }
+
+  .modal h4 {
+    color: var(--brand);
+    margin: 0 0 15px 0;
+    font-size: 22px;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 10px;
+  }
+
+  .modal-content {
+    font-size: 17px;
+    color: #ddd;
+    white-space: pre-wrap;
+    line-height: 1.8;
+  }
+
+  /* --- Footer --- */
+  footer {
+    text-align: center;
+    padding: 30px;
+    color: var(--fg-muted);
+    font-size: 14px;
+    border-top: 1px solid var(--card-border);
+    background-color: #050505;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 768px) {
+    .topbar { flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .topbtn { font-size: 13px; padding: 6px 12px; }
+    .tool-header { flex-direction: column; align-items: stretch; }
+    .btn-gpt { width: 100%; justify-content: space-between; }
+    .hero img { max-width: 90%; }
+    .to-toggle { right: 20px; bottom: 20px; padding: 10px 20px; font-size: 14px; }
   }
 </style>
-<script>
-  function openGPT(url){ window.open(url, '_blank'); }
-
-  function showModal(title, txt){
-    const overlay = document.getElementById('overlay');
-    const header = document.getElementById('modal-title');
-    const content = document.getElementById('modal-content');
-    header.textContent = title || "معلومة";
-    content.textContent = txt || "";
-    overlay.classList.add('show');
-  }
-  function closeModal(){ document.getElementById('overlay').classList.remove('show'); }
-
-  function toTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const overlay = document.getElementById('overlay');
-    if (overlay) {
-      overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
-      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
-    }
-
-    const clickAudio = new Audio('data:audio/wav;base64,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');
-    clickAudio.volume = 0.4;
-
-    const sections = Array.from(document.querySelectorAll('section'));
-    sections.forEach((sec) => {
-      const h2 = sec.querySelector('h2');
-      if (!h2) return;
-
-      if (!h2.querySelector('.caret')) {
-        const caret = document.createElement('span');
-        caret.className = 'caret';
-        caret.textContent = '▾';
-        h2.appendChild(caret);
-      }
-
-      let body = sec.querySelector('.sec-body');
-      if (!body) {
-        body = document.createElement('div');
-        body.className = 'sec-body';
-        const toMove = Array.from(sec.children).filter(el => el !== h2);
-        toMove.forEach(el => body.appendChild(el));
-        sec.appendChild(body);
-      }
-
-      if (!sec.querySelector('.section-hr')) {
-        const hr = document.createElement('hr');
-        hr.className = 'section-hr';
-        sec.insertBefore(hr, body);
-      }
-
-      h2.addEventListener('click', () => {
-        const isActive = h2.classList.contains('active');
-
-        sections.forEach(s => {
-          const _h2 = s.querySelector('h2');
-          const _body = s.querySelector('.sec-body');
-          const _caret = _h2 && _h2.querySelector('.caret');
-          if (_h2 && _body && _caret) {
-            _h2.classList.remove('active');
-            _caret.style.transform = 'rotate(0deg)';
-            _body.style.maxHeight = 0;
-          }
-        });
-
-        if (!isActive) {
-          h2.classList.add('active');
-          h2.querySelector('.caret').style.transform = 'rotate(180deg)';
-          body.style.maxHeight = body.scrollHeight + 'px';
-          try { clickAudio.currentTime = 0; clickAudio.play(); } catch(e){}
-        }
-      });
-    });
-  });
-</script>
-
-<style>
-:root { --brand:#76B900; --border:#444; --fg:#fff; }
-.topbar{ position:sticky; top:0; z-index:1000; background:#111; border-bottom:1px solid var(--border); display:flex; gap:18px; align-items:center; justify-content:center; padding:10px 12px; }
-.topbtn{ background:transparent; color:#eee; border:1px solid transparent; border-radius:10px; padding:8px 14px; font-size:16px; cursor:pointer; transition:all .2s ease; }
-.topbtn:hover{ color:#000; background:var(--brand); }
-.search-wrap{ background:#0e0e0e; border-bottom:1px solid var(--border); padding:16px; display:flex; justify-content:center }
-.search-inner{ width:min(960px,92vw); display:flex; gap:10px; align-items:center; position:relative }
-.search-input{ flex:1; background:#151515; color:#fff; border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-size:16px; }
-.autocomplete{ position:absolute; right:0; left:0; top:100%; background:#1a1a1a; border:1px solid var(--border); border-radius:10px; margin-top:6px; display:none; max-height:260px; overflow:auto; z-index:900; }
-.autocomplete div{ padding:10px 12px; color:#ddd; cursor:pointer }
-.autocomplete div:hover{ background:var(--brand); color:#000 }
-.hero{ text-align:center; padding:22px 16px 8px }
-.hero img{ width:min(560px,80vw); height:auto; opacity:0; transform:translateY(6px); animation:fadeIn 1.2s ease forwards; }
-.hero h1{ color:var(--brand); margin:10px 0 0; font-size:26px; font-weight:700; opacity:0; transform:translateY(6px); animation:fadeIn 1.2s ease .1s forwards; }
-.hero img:hover{ box-shadow:0 10px 28px rgba(118,185,0,.18); border-radius:14px }
-@keyframes fadeIn{ to{ opacity:1; transform:none } }
-.to-toggle{ position:fixed; bottom:20px; right:20px; background:#111; color:#fff; border:1px solid var(--border); border-radius:999px; padding:10px 14px; font-size:15px; cursor:pointer; z-index:1100; }
-.to-toggle:hover{ background:var(--brand); color:#000 }
-.overlay{ position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:center; justify-content:center; z-index:1200 }
-.overlay.show{ display:flex; animation:fadeIn .25s ease-out }
-.modal{ background:#121212; width:min(820px,92vw); max-height:86vh; overflow:auto; border-radius:14px; padding:22px 22px 18px; border:1px solid var(--border); box-shadow:0 10px 40px rgba(0,0,0,.6); transform:translateY(8px); animation:modalIn .25s ease-out }
-@keyframes modalIn{ from{opacity:0; transform:translateY(20px)} to{opacity:1; transform:none} }
-.modal h4{ margin:0 0 10px; color:var(--brand); font-size:22px }
-.modal .content{ font-size:18px; line-height:1.9; white-space:pre-wrap; color:#eee }
-.modal .close{ position:sticky; top:0; float:left; background:transparent; color:#bbb; border:none; font-size:22px; cursor:pointer }
-.modal .close:hover{ color:#fff }
-</style>
-
 </head>
 <body>
 
-<nav class="topbar">
-  <button class="topbtn" data-modal="desc">وصف</button>
-  <button class="topbtn" data-modal="about">من نحن</button>
-  <button class="topbtn" data-modal="courses">دوراتنا</button>
-  <button class="topbtn" data-modal="news">جديدنا</button>
-  <button class="topbtn" data-modal="links">روابط</button>
-</nav>
-<div class="search-wrap">
-  <div class="search-inner">
-    <input id="toolSearch" class="search-input" placeholder="ابحث عن اسم الأداة" />
-    <div id="acBox" class="autocomplete"></div>
-  </div>
-</div>
-<div class="hero">
-  <img src="https://github.com/alzarraei-gpts/Arabic-GPT-Hub/raw/main/banner.png" alt="شعار النماذج العربية الذكية" id="heroBanner">
-  <h1>بوتات الذكاء الاصطناعي | النماذج الذكية</h1>
-</div>
+  <!-- Top Navigation -->
+  <nav class="topbar">
+    <button class="topbtn" data-modal="desc">وصف</button>
+    <button class="topbtn" data-modal="about">من نحن</button>
+    <button class="topbtn" data-modal="courses">دوراتنا</button>
+    <button class="topbtn" data-modal="news">جديدنا</button>
+    <button class="topbtn" data-modal="links">روابط</button>
+  </nav>
 
-<h1>باقة الباحث</h1>
-
-<!-- ===== نماذج الابتكار ===== -->
-<section>
-  <h2>نماذج الابتكار</h2>
-
-  <!-- اقتراح عنوان وفكرة بحث -->
-  <div class="tool">
-    <div class="row">
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-686b8ac963248191b35f6c4d8629e688-qtrh-nwn-wfkr-bhth-research-titles-mod-4o')">🧠 اقتراح عنوان وفكرة بحث (4o)</button>
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68c0f53b875881918f4b9ba01c57668a-qtrh-nwn-wfkr-bhth-research-titles-mod-5')">🧠 اقتراح عنوان وفكرة بحث (5)</button>
-      <button class="desc-toggle" onclick="showModal('نبذة','يُعد هذا البوت أداة ذكية متخصصة في دعم الباحثين وطلاب الدراسات العليا في اختيار عناوين أصيلة ومتميزة لرسائل الماجستير والدكتوراه. يقوم بتحليل التخصصات الأكاديمية واستنباط الفرص البحثية غير المستكشفة، ويولّد اقتراحات مبنية على فجوات معرفية حقيقية واتجاهات علمية حديثة. يقدّم العناوين بلغة فصيحة دقيقة، مع مراعاة القابلية للتنفيذ والارتباط بالواقع العلمي. يُساعد الباحث على تجنّب المواضيع المستهلكة والتكرار، ويضمن توجيهه نحو مسارات جديدة تتوافق مع معايير الأصالة والأهمية.')">ℹ️ نبذة</button>
-      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بالأصالة البحثية، الحياد، الدقة، اللغة العربية الفصيحة، والتوثيق السليم. لا يجوز تقديم عناوين عامة أو متداولة، ولا استخدام مصطلحات دارجة أو دمج المعاني بطريقة غير أكاديمية.')">📏 حدود</button>
-      <button class="desc-toggle" onclick="showModal('مثال','أدخل تخصصك (مثل: التربية الخاصة) وسيقترح البوت 3 عناوين أصيلة لرسائل ماجستير ضمن هذا المجال.')">📌 مثال</button>
+  <!-- Search Section -->
+  <div class="search-wrap">
+    <div class="search-inner">
+      <input id="toolSearch" class="search-input" placeholder="ابحث عن اسم الأداة" autocomplete="off" />
+      <div id="acBox" class="autocomplete"></div>
     </div>
   </div>
 
-  <!-- صناعة الخطة البحثية -->
-  <div class="tool">
-    <div class="row">
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-683d09bea51c8191b7688edadeef821d-sn-lkht-lbhthy-research-plan-mod-4o')">🧠 صناعة الخطة البحثية (4o)</button>
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68c0fcbcc7f48191b5236ff7bc232204-sn-lkht-lbhthy-research-plan-mod-5')">🧠 صناعة الخطة البحثية (5)</button>
-      <button class="desc-toggle" onclick="showModal('نبذة','يوفّر هذا البوت أداة متخصصة في إعداد خطط بحثية لرسائل الماجستير والدكتوراه. عند إدخال موضوع البحث، يقوم البوت بإنشاء خطة متكاملة تشمل: المقدمة، مشكلة البحث، الأهداف، الأسئلة أو الفرضيات، المنهجية، والإطار النظري. يُفيد الطلاب في بناء خطة بحثية متوازنة تلبي متطلبات الجامعات، كما يساعد المشرفين في مراجعة جودة الخطة البحثية، ويُعتبر أداة عملية لتسريع عملية إعداد الخطط الأكاديمية.')">ℹ️ نبذة</button>
-      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بالمنهجية العلمية الدقيقة واللغة الفصيحة. لا يجوز إنتاج خطط سطحية أو بعيدة عن المعايير الأكاديمية.')">📏 حدود</button>
-      <button class="desc-toggle" onclick="showModal('مثال','أدخل موضوعك البحثي وسيُنشئ البوت خطة بحثية متكاملة وفق المعايير الأكاديمية.')">📌 مثال</button>
+  <!-- Hero Section -->
+  <div class="hero">
+    <img src="https://github.com/alzarraei-gpts/Arabic-GPT-Hub/raw/main/banner.png" alt="شعار النماذج العربية الذكية" id="heroBanner">
+    <h1>بوتات الذكاء الاصطناعي | النماذج الذكية</h1>
+  </div>
+
+  <!-- Main Content Area -->
+  <div id="mainContainer" class="container">
+    <!-- Content will be injected here by JavaScript -->
+  </div>
+
+  <!-- Floating Scroll Button -->
+  <button class="to-toggle" id="toggleScroll">⬇ النزول للأسفل</button>
+
+  <!-- Modal Template -->
+  <div id="overlay" class="overlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">✖</button>
+      <h4 id="modal-title">تفاصيل</h4>
+      <div id="modal-content" class="modal-content"></div>
     </div>
   </div>
 
-  <!-- دليل كتابة الرسائل العلمية -->
-  <div class="tool">
-    <div class="row">
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6882ebaa86088191bca7962b5b02b41a-dlyl-ktb-lrsyl-l-lmy-university-guide')">🧠 دليل كتابة الرسائل العلمية</button>
-      <button class="desc-toggle" onclick="showModal('نبذة','يُوفّر هذا البوت أداة إرشادية متكاملة لطلاب الدراسات العليا في إعداد وكتابة الرسائل العلمية. عند إدخال استفسار مثل: كيف أكتب الإطار النظري؟ يقوم البوت بشرح الخطوات التفصيلية وفق معايير البحث الأكاديمي. يُفيد الباحثين في تنظيم رسائلهم وضبط منهجيتها، ويساعد على تجنب الأخطاء الشائعة في الكتابة العلمية، ويُعد أداة عملية لتطوير مهارات الكتابة الأكاديمية وضمان جودة الرسائل العلمية.')">ℹ️ نبذة</button>
-      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق الإرشاد الأكاديمي، مع الالتزام بالحياد والدقة. لا يجوز تقديم شروح مخالفة للمعايير الجامعية أو التوثيقية.')">📏 حدود</button>
-      <button class="desc-toggle" onclick="showModal('مثال','أدخل سؤالًا مثل: كيف أكتب الإطار النظري؟ وسيشرح البوت الخطوات وفق معايير البحث الأكاديمي.')">📌 مثال</button>
-    </div>
-  </div>
-
-  <!-- دليل الأنظمة البحثية -->
-  <div class="tool">
-    <div class="row">
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-EvIbEhTiz-bwt-dlyl-lnzm-lbhthy-researcher-s-guide')">🧠 دليل الأنظمة البحثية</button>
-      <button class="desc-toggle" onclick="showModal('نبذة','يقدّم هذا البوت دعمًا أكاديميًّا متقدمًا للباحثين في اختيار وتطبيق المناهج العلمية الثلاثة: الاستقرائي، والاستنباطي، والمقارن، بدقة منهجية مرجعية. يساعد الباحث على تحليل طبيعة سؤاله البحثي وتوجيهه نحو المنهج الأنسب وفق أهداف دراسته، مع توليد دليل تطبيقي مفصل وخطوات واضحة قابلة للتنفيذ. يتميز باستخدام لغة عربية فصيحة وتوثيق أكاديمي موثوق، ويتيح اختيار نمط الدليل المطلوب (موجز، قياسي، تفصيلي) مع تعليقات تحليلية عند الطلب، ويحرص على تجنّب الدمج غير المبرّر بين المناهج واعتماد مصادر موثوقة.')">ℹ️ نبذة</button>
-      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتًا متخصصًا في تقديم إرشاد منهجي للباحثين، مع الالتزام بالأصالة البحثية، الحياد، الدقة، اللغة العربية الفصيحة، والتوثيق العلمي السليم. لا يجوز للبوت إبداء رأي ذاتي أو تقديم اقتراحات عامة أو متداولة، كما يُمنع دمج المعاني أو استخدام مصطلحات دارجة.')">📏 حدود</button>
-      <button class="desc-toggle" onclick="showModal('مثال','ابحث في مسألة مقارنة في القانون التجاري، وسينصحك البوت بالمنهج الأنسب ويوجهك في خطوات التنفيذ.')">📌 مثال</button>
-    </div>
-  </div>
-</section>
-
-<!-- ===== نماذج التحرير ===== -->
-<section>
-  <h2>نماذج التحرير</h2>
-
-  <!-- إعادة الصياغة -->
-  <div class="tool">
-    <div class="row">
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-67b44b7c337c81919a26dbe8a22c7329-bwt-d-lsyg-human-reformulation')">🧠 إعادة الصياغة</button>
-      <button class="desc-toggle" onclick="showModal('نبذة','يُعد بوت إعادة الصياغة | Human Reformulation أداة بحثية متقدمة تُسهِم في تعزيز جودة الكتابة الأكاديمية عبر إعادة صياغة النصوص بلغة منهجية دقيقة تراعي الأسلوب العلمي وتقلل من التكرار والانزياح المعنوي. يفيد الباحثين في تحسين الاتساق الداخلي للنصوص وضبط التراكيب اللغوية بما يتوافق مع المعايير التحريرية المعتمدة في النشر العلمي، ويسهّل تجاوز مشكلات الصياغة الأولية وتحويل المسودات إلى نصوص بحثية محكمة، كما يُستخدم في تحليل المفاهيم وتبسيطها دون الإخلال بالمضمون.')">ℹ️ نبذة</button>
-      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتًا متخصصًا في دعم الكتابة البحثية، مع الالتزام بالأصالة البحثية، الحياد، الدقة، اللغة العربية الفصيحة، والتوثيق العلمي السليم. لا يجوز له إبداء رأي ذاتي أو تقديم اقتراحات عامة أو متداولة، كما يُمنع دمج المعاني أو استخدام مصطلحات دارجة.')">📏 حدود</button>
-      <button class="desc-toggle" onclick="showModal('مثال','أدخل نصًا مثل: إن الذكاء الاصطناعي مجال متسارع، وسيعيد البوت صياغته بلغة أكاديمية فصيحة.')">📌 مثال</button>
-    </div>
-  </div>
-
-  <!-- التدقيق اللغوي -->
-  <div class="tool">
-    <div class="row">
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-lf64lTcUn-bwt-ltdqyq-llgwy-proofreading')">🧠 التدقيق اللغوي (4o)</button>
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68c13b315aa48191befd9fe8441bcf3e-bwt-ltdqyq-llgwy-proofreading-mod-5')">🧠 التدقيق اللغوي (5)</button>
-      <button class="desc-toggle" onclick="showModal('نبذة','يُعدّ هذا البوت أداة فعّالة في دعم الباحثين لغويًّا وأسلوبيًّا، حيث يُسهِم في رفع جودة النصوص الأكاديمية عبر تدقيقها نحويًّا وصرفيًّا وإملائيًّا وفق المعايير المعتمدة. يساعد الباحث على تجنّب الأخطاء الشائعة التي قد تُضعف المصداقية العلمية للبحث، وينسّق علامات الترقيم ومسافات السطور بما يتوافق مع ضوابط النشر، كما يعزّز وضوح الجمل وسلامة الأسلوب دون الإخلال بالمعنى أو التوجه العلمي للنص.')">ℹ️ نبذة</button>
-      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الالتزام باللغة العربية الفصيحة والدقة العلمية. لا يجوز له تغيير مضمون النص أو استنتاج أحكام بحثية، بل يقتصر دوره على التصحيح اللغوي والتحرير الشكلي.')">📏 حدود</button>
-      <button class="desc-toggle" onclick="showModal('مثال','أدخل فقرة بها أخطاء لغوية مثل: هاذا الكتاب مفيد جداً وسيصححها البوت فورًا.')">📌 مثال</button>
-    </div>
-  </div>
-
-  <!-- تشكيل النصوص -->
-  <div class="tool">
-    <div class="row">
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-GhBmeBZb7-bwt-tshkyl-lnsws-text-formation-mod-4')">🧠 تشكيل النصوص</button>
-      <button class="desc-toggle" onclick="showModal('نبذة','يُقدِّم هذا البوت قيمة علميّة عالية في المجال البحثي من خلال تمكين الباحثين من تشكيل النصوص بدقّة صوتيّة ونحويّة، مما يعزّز وضوح المعاني ويُسهم في تحسين الفهم القرائي. يُفيد في تحرير المراجع والهوامش والنصوص التوثيقيّة التي تتطلب ضبطًا لغويًّا عالي المستوى، كما يساعد في إعداد المواد التعليمية والاختبارات اللغويّة، ويُستخدم في تحليل النصوص القديمة وتحقيقها لغويًّا.')">ℹ️ نبذة</button>
-      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بضبط الحركات وفق القواعد النحوية والصرفية المعتمدة. لا يجوز استخدامه لتغيير نصوص شرعية أو قانونية دون مراجعة مختص، كما يُمنع توظيفه في تحريف المعاني.')">📏 حدود</button>
-      <button class="desc-toggle" onclick="showModal('مثال','أدخل جملة مثل: ذهب الطالب إلى المدرسة وسيعرضها البوت مشكّلة بالكامل.')">📌 مثال</button>
-    </div>
-  </div>
-
-  <!-- الانتحال والأسلوب البشري -->
-  <div class="tool">
-    <div class="row">
-      <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-tXrotFsS3-lnthl-wlslwb-lbshry-human-style')">🧠 الانتحال والأسلوب البشري</button>
-      <button class="desc-toggle" onclick="showModal('نبذة','يسهم هذا البوت في تعزيز النزاهة الأكاديمية في المجال البحثي من خلال فحص النصوص بدقة للكشف عن الانتحال الأسلوبي والمفاهيمي. يُحلل بنية الجمل وتدفق الأفكار لرصد الأساليب الآلية أو المنقولة، مما يساعد الباحثين على تحسين جودة كتاباتهم، كما يتيح مقارنة النصوص الأصلية والمعاد صياغتها، ويقدّم تقارير تدعم القرارات التحريرية.')">ℹ️ نبذة</button>
-      <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بالحياد في تقييم الأسلوب، ولا يجوز استخدام نتائجه بوصفها حكمًا قاطعًا في قضايا الانتحال، بل بوصفها مؤشرات مساعدة فقط، كما يُمنع توظيفه لإنتاج نصوص منسوبة لغير أصحابها.')">📏 حدود</button>
-      <button class="desc-toggle" onclick="showModal('مثال','أدخل فقرة مشكوكًا بها، وسيفحص البوت مدى طبيعتها البشرية أو الاصطناعية ويعرض مؤشرات أسلوبية.')">📌 مثال</button>
-    </div>
-  </div>
-</section>
-
-<!-- ===== نماذج التوثيق ===== -->
-<section>
-  <h2>نماذج التوثيق</h2>
-
-  <!-- تنسيق مراجع البحث -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-762SWrxgA-bwt-tnsyq-lmrj-reference-formatting')">🧠 تنسيق مراجع البحث</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت خدمة متخصصة للباحثين في تنسيق المراجع وفقًا لمعايير التوثيق الأكاديمية المعتمدة عالميًا مثل APA وChicago وMLA. يُسهل تحويل المراجع الأولية غير المنسقة إلى صيغ دقيقة ومتوافقة مع متطلبات النشر الجامعي، ويدعم تنسيق المراجع العربية والأجنبية مع مراعاة علامات الترقيم وتفاصيل النشر.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بأنماط التوثيق المعتمدة دون اجتهادات شخصية. لا يجوز له اختلاق بيانات مراجع غير صحيحة أو غير موجودة، ويجب أن يستند إلى المعطيات التي يقدمها الباحث.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل مرجعًا مثل: القرطبي، تفسير، دار الكتب، وسيقوم البوت بتنسيقه تلقائيًا بصيغة APA أو Chicago.')">📌 مثال</button>
-  </div></div>
-
-  <!-- توثيق البحوث -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-X51QAhBwR-bwt-twthyq-lbhwth-research-documentation')">🧠 توثيق البحوث</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت خدمة أساسية للباحثين عبر إنشاء بيانات توثيق دقيقة للمراجع العلمية بمختلف أنواعها: الكتب، المقالات، الرسائل الجامعية، والمصادر الإلكترونية. يتيح إدخال المرجع بصيغة أولية ليولّد بيانات التوثيق الكاملة مثل اسم المؤلف، عنوان العمل، دار النشر، سنة الإصدار، الصفحات، ورابط الوصول إن وُجد.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ويلتزم بالمعايير الدولية في التوثيق مثل APA وChicago وMLA. لا يجوز له إنشاء مراجع من مصادر غير موثوقة أو غير محددة، كما يُمنع إسقاط عناصر توثيقية جوهرية مثل سنة الإصدار أو اسم الناشر إن كانت معلومة.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل مرجعًا مثل: تفسير الطبري، وسيعرض البوت بيانات التوثيق كاملة بصيغة APA أو نمط آخر تختاره.')">📌 مثال</button>
-  </div></div>
-
-  <!-- البحوث الكاملة من المكتبة الشاملة -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-687b1b6691308191a307b9e9654eee1e-lbhwth-lkml-mn-lmktb-lshml')">🧠 البحوث الكاملة من المكتبة الشاملة (4o)</button>
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68c122b16b0481918aa00c125a839ab6-lbhwth-lkml-mn-lmktb-lshml-mod-5')">🧠 البحوث الكاملة من المكتبة الشاملة (5)</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يوفر هذا البوت أداة متخصصة للباحثين في العلوم الشرعية والإنسانية، إذ يمكّنهم من الوصول إلى النصوص الكاملة للمصادر المتاحة في مكتبة الشاملة الرقمية. يُسهّل البحث عن أقوال العلماء والنصوص التراثية وعرض النتائج في صيغة قابلة للتوثيق الأكاديمي، ويفيد في التحقق من النقول وتوثيقها داخل الرسائل العلمية.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الاعتماد على مكتبة الشاملة بوصفها مصدرًا للنصوص التراثية، ولا يجوز له نسبة الأقوال إلى غير أصحابها أو تغيير نصوصها الأصلية، كما يُمنع اعتماد نتائج البحث دون مراجعة الباحث نفسه للنصوص.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل عبارة مثل: الاستدلال عند الغزالي، وسيساعدك البوت في الوصول إلى المواضع ذات الصلة في كتب الشاملة.')">📌 مثال</button>
-  </div></div>
-
-  <!-- الجامع في تحصيل المراجع -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-680a3eefb2bc8191967abacfd909ede3-bwt-lmsdr-wlmrj-l-lmy-research-resources')">🧠 الجامع في تحصيل المراجع</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُعد هذا البوت مرجعًا ذكيًا لجمع وتصنيف المراجع العلمية المرتبطة بموضوع البحث. يُسهل على الباحث إدخال عبارة أو مفهوم محدد ليقوم بجمع أبرز المصادر العلمية ذات الصلة، مع توثيقها وترتيبها حسب الحداثة والموثوقية ونوع المصدر (كتب، مقالات، رسائل جامعية، مصادر إلكترونية).')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ويقتصر دوره على جمع المقترحات المرجعية من مصادر علمية معروفة، ولا يجوز اعتباره بديلًا عن البحث اليدوي في قواعد البيانات المتخصصة.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل عبارة: الاستدلال عند الغزالي، وسيقوم البوت بجمع أبرز المصادر العلمية المرتبطة بالموضوع مع توثيقها وترتيبها.')">📌 مثال</button>
-  </div></div>
-
-  <!-- الوصول السريع إلى روابط PDF -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-67d515daced481918a47851b5cc7c5f6-bwt-qwql-lsry-fast-search-engine')">🧠 الوصول السريع إلى روابط PDF</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت خدمة بحثية متقدمة عبر تمكين الباحثين من الوصول المباشر إلى روابط الكتب والمراجع بصيغة PDF من مصادر موثوقة. يُسهّل الحصول على النسخ الكاملة للمصادر الأكاديمية دون عناء البحث اليدوي الطويل، ويساعد على تسريع عملية جمع المادة العلمية اللازمة للدراسات العليا.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ولا يجوز الاعتماد عليه في تحميل نسخ غير قانونية أو من مواقع غير موثوقة، كما يجب على الباحث التأكد من حقوق النشر والاستخدام العادل للمواد.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل كلمات مثل: المعجم المفهرس لألفاظ الحديث النبوي PDF، وسيعرض البوت روابط مباشرة موثوقة قدر الإمكان.')">📌 مثال</button>
-  </div></div>
-
-  <!-- دليل فهارس المخطوطات -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-684aee5a12908191adae472dd09683da-bwt-dlyl-lmkhtwtt-guide-to-arabic-manuscripts')">🧠 دليل فهارس المخطوطات</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت أداة متخصصة للباحثين في التراث والمخطوطات، حيث يتيح الوصول السريع إلى فهارس المخطوطات العربية والإسلامية في المكتبات العالمية. يمكّن الباحث من إدخال عنوان كتاب أو اسم مؤلف ليعرض قائمة بالمكتبات التي تحتفظ بنسخ مخطوطة من هذا العمل مع بيانات الفهرسة مثل رقم الحفظ ومكان التواجد وحالة النسخة.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ولا يغني عن الرجوع المباشر إلى فهارس المكتبات الرسمية. لا يجوز الاعتماد على نتائجه بوصفها حكمًا نهائيًا في توثيق مواقع المخطوطات، بل كدليل إرشادي أولي.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل عنوانًا مثل: المستصفى للغزالي، وسيعرض البوت فهارس وأماكن المخطوطات المتاحة قدر الإمكان.')">📌 مثال</button>
-  </div></div>
-</section>
-
-<!-- ===== نماذج التحليل ===== -->
-<section>
-  <h2>نماذج التحليل</h2>
-
-  <!-- تحليل ملفات البحث -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-FG9ivmtVu-bwt-thlyl-lmlft-pdf-file-analysis')">🧠 تحليل ملفات البحث</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُعد هذا البوت أداة فعّالة لتحليل ملفات الأبحاث الأكاديمية بجميع الصيغ (وورد، PDF، إكسل وغيرها). يتيح تحميل ملف البحث ليقوم بتلخيصه واستخراج أبرز محاوره وتحليل عناصره الأساسية مثل: المقدمة، الأهداف، المنهجية، النتائج، والخاتمة، مع تقديم ملاحظات نقدية تساعد الباحث على تقييم جودة البحث وتحديد الثغرات أو مواطن القوة.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ولا يغني عن القراءة النقدية الكاملة للباحث. لا يجوز الاعتماد عليه وحده في إصدار أحكام نهائية على جودة البحوث أو اعتماد النتائج دون مراجعة.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','حمّل ملف بحث علمي كامل، وسيقوم البوت بتلخيصه وتحليل عناصره الأساسية مع اقتراحات لتحسينه.')">📌 مثال</button>
-  </div></div>
-
-  <!-- محلل البيانات البحثية -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-67f0bf48eb1c8191b85a522cc7bf8065-bwt-mhll-lbynt-lbhthy-research-data-analyst')">🧠 محلل البيانات البحثية</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُعد هذا البوت أداة ذكية لتحليل البيانات البحثية الكمية والنصية بصورة منهجية دقيقة. يمكن إدخال جدول بيانات بصيغة نصية أو رفع ملف منسق ليقوم البوت بتحليل المتغيرات إحصائيًا، واستخراج العلاقات بين البيانات، وعرض النتائج في صورة جداول ورسومات بيانية، مع تقديم تفسيرات علمية تساعد على صياغة مناقشات واضحة.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ولا يُستخدم كبديل عن البرامج الإحصائية المتخصصة في التحليلات المعقدة. يجب على الباحث التحقق من صحة المدخلات ومناسبتها لنوع التحليل المطلوب.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل جدول بيانات لاستبانة بحثية، وسيحلله البوت إحصائيًا ويقدّم ملخصًا بالنتائج والجداول التوضيحية.')">📌 مثال</button>
-  </div></div>
-
-  <!-- تحليل تربوي إكسل -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68809e7f7abc8191a513012f75ed8f5a-excel-thlyl-trbwy')">🧠 تحليل تربوي إكسل</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت أداة متخصصة في تحليل البيانات التربوية والإحصائية الواردة في ملفات إكسل. يمكّن الباحث من رفع استبيانات التقييم أو البيانات التعليمية ليقوم بتحليلها إحصائيًا باستخدام مقاييس النزعة المركزية والتشتت والارتباط، وتوليد جداول ورسوم بيانية مع تفسير تربوي يوضح نقاط القوة والضعف والاتجاهات العامة.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ولا يجوز الاعتماد على نتائجه دون التأكد من سلامة تصميم الأداة البحثية وتحقق شروط التطبيق الإحصائي، كما يجب ألا يُستخدم لاستنتاج أحكام تربوية دون سياق علمي واضح.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل ملف استبيان تقييم أو بيانات تعليمية بصيغة إكسل، وسيحللها البوت إحصائيًا مع عرض جداول ورسوم بيانية وتفسير تربوي.')">📌 مثال</button>
-  </div></div>
-
-  <!-- واجهة ويب لخدمة العمل البحثي -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-nq1rwzxlt-wjh-wyb-lbhthy-web-search-interface')">🧠 واجهة ويب لخدمة العمل البحثي</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت أداة عملية تسهّل على الباحثين الوصول السريع إلى أحدث النتائج والأبحاث عبر واجهة ويب تفاعلية. يمكّن المستخدم من إدخال استفسارات بحثية مباشرة مثل: أحدث أبحاث الذكاء الاصطناعي 2024، ليعرض له روابط موثوقة من قواعد بيانات ومجلات علمية معتمدة، مما يساهم في تتبع الاتجاهات البحثية الجديدة ومراجعة الأدبيات بسرعة.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ولا يمثل قاعدة بيانات بديلة عن المنصات العلمية الرسمية، بل بوابة مساعدة. يجب على الباحث التأكد من موثوقية كل مصدر قبل توثيقه في بحثه.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل استفسارًا مثل: أحدث أبحاث الذكاء الاصطناعي 2024، وسيقدّم البوت روابط فورية لأهم الدراسات المنشورة حديثًا.')">📌 مثال</button>
-  </div></div>
-</section>
-
-<!-- ===== نماذج المعاجم والمصطلحات ===== -->
-<section>
-  <h2>نماذج المعاجم والمصطلحات</h2>
-
-  <!-- معجم الكلمات -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-ngWYTPQ2p-bwt-m-jm-lklmt-dictionary')">🧠 معجم الكلمات</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت خدمة متخصصة في تحليل الكلمات العربية من حيث الجذر والوزن والمعنى المعجمي. يُفيد الباحثين في الدراسات اللغوية والشرعية والأدبية عبر إيضاح البنية الصرفية والدلالية للكلمات، وكشف الفروق بين المعاني القاموسية والاستخدامات السياقية، مما يُثري التحليل النصي والتوثيق اللغوي داخل الرسائل العلمية.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ويعتمد على المعاجم العربية المعتبرة بوصفها مرجعًا رئيسًا. لا يجوز استخدامه لإنتاج أحكام شرعية أو لغوية خارج ما تدل عليه المراجع المعتمدة.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل الكلمة استبشروا، وسيوضح البوت جذرها ووزنها ومعناها في القواميس المعتبرة.')">📌 مثال</button>
-  </div></div>
-
-  <!-- ترجمة الكتب والمؤلفات -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6874ffd6fd3481918f962945bfcaed21-trjm-lktb-wlmwlft-translation-of-books')">🧠 ترجمة الكتب والمؤلفات</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُعد هذا البوت أداة متخصصة لترجمة الكتب والنصوص الأكاديمية من العربية إلى الإنجليزية والعكس، مع المحافظة على الدقة العلمية والاصطلاحية. يُفيد في ترجمة عناوين الكتب، محتوياتها، وأجزائها بما يتوافق مع الاستخدام الأكاديمي، ويساعد الباحثين في إعداد ملخصات مترجمة لرسائلهم أو أبحاثهم للنشر الدولي.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بالترجمة الاصطلاحية الدقيقة. لا يجوز الاعتماد عليه وحده في ترجمة النصوص القانونية أو الشرعية الحساسة دون مراجعة مختص.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل جملة مثل: الذكاء الاصطناعي يعزز التعليم، وسيقدّم البوت ترجمة إنجليزية أكاديمية دقيقة لها.')">📌 مثال</button>
-  </div></div>
-
-  <!-- ترجمة المصطلحات العلمية -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6867c4ceb758819180fd00287855fdbe-bwt-ltrjm-l-lmy-scientific-translation')">🧠 ترجمة المصطلحات العلمية</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُوفّر هذا البوت أداة ذكية لترجمة المصطلحات العلمية المتخصصة في مجالات مثل الطب والهندسة والتربية والعلوم الإنسانية. يُسهم في توحيد المصطلحات داخل الأبحاث، ويتيح إدخال فقرة علمية كاملة ليُترجمها بلغة فصيحة مع شرح سياقي مبسط يوضح معنى المصطلحات ضمن سياقها.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ولا يجوز استخدامه لإحداث مصطلحات مخترعة أو غير معتمدة في المجتمع العلمي، كما يجب على الباحث التأكد من موافقة الترجمة للمصطلحات القياسية في مجاله.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','ألصق فقرة علمية متخصصة، وسيقدّم البوت ترجمة دقيقة للمصطلحات مع شرح مبسط لمعانيها في السياق.')">📌 مثال</button>
-  </div></div>
-
-  <!-- ترجمة الأعلام -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-XYZknTHPW-bwt-trjm-l-lm-translation-of-flags')">🧠 ترجمة الأعلام</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يوفّر هذا البوت أداة متميزة لترجمة الأعلام من العلماء والمفكرين والأدباء، مع تقديم نبذة علمية مختصرة عنهم. يُفيد في البحوث المقارنة ودراسات الترجمة والمقالات العلمية التي تتطلب تعريفًا موجزًا بالشخصية محل الدراسة، مع دعم الهوامش وفهارس الأعلام داخل الرسائل الجامعية.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ويعتمد على المعلومات المتاحة في المصادر المعتبرة قدر الإمكان. لا يجوز نسب أقوال أو مؤلفات لشخصية علمية دون توثيق.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل اسم: ابن رشد، وسيقدّم البوت ترجمة علمية لاسمه بالإنجليزية مع نبذة مختصرة عن حياته ومؤلفاته.')">📌 مثال</button>
-  </div></div>
-</section>
-
-<!-- ===== نماذج علوم الحديث ===== -->
-<section>
-  <h2>نماذج علوم الحديث</h2>
-
-  <!-- تخريج الأحاديث النبوية -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-UEL0GgbkF-tkhryj-lhdyth-lnbwy-graduation-of-hadith-mod-4')">🧠 تخريج الأحاديث النبوية (4o)</button>
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68c10fec7f8c8191816ce413d394baeb-tkhryj-lhdyth-lnbwy-graduation-of-hadith-mod-5')">🧠 تخريج الأحاديث النبوية (5)</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت خدمة علمية متقدمة في مجال علوم الحديث، حيث يُتيح تخريج الأحاديث النبوية من مصادرها الأصلية بدقة عالية. يمكّن الباحث من إدخال نص حديث ليعرض مصادره في كتب السنة ودرجة صحته وفق أقوال العلماء، مع ذكر الرواة وسلاسل الإسناد الأساسية بقدر الإمكان.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ويعتمد على قواعد بيانات حديثية متاحة، ولا يُعد بديلًا عن المتخصص في علم الحديث. لا يجوز الاعتماد على حكمه منفردًا في الإفتاء أو الترجيح دون مراجعة أهل العلم.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل الحديث: إنما الأعمال بالنيات، وسيعرض البوت مصادره ودرجة الحديث في دواوين السنة.')">📌 مثال</button>
-  </div></div>
-
-  <!-- شرح غريب الحديث -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68b30581e8a881918204976d605b1271-shrh-gryb-lhdyth')">🧠 شرح غريب الحديث</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت أداة فريدة لشرح الألفاظ الغريبة في الأحاديث النبوية، بما يُسهّل على الباحثين وطلاب العلم فهم النصوص الشرعية بدقة. عند إدخال نص حديث يحتوي على مفردات غامضة، يقوم البوت بشرح تلك المفردات بلغة عربية فصيحة مبسطة، مدعومة بالمعاني المعجمية والاصطلاحية.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الاعتماد على كتب غريب الحديث والمعاجم المعتبرة. لا يجوز توظيفه في استنباط أحكام فقهية مستقلة دون الرجوع إلى مصادر التفسير والفقه.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل حديثًا مثل: العقيقة عن الغلام شاتان، وسيشرح البوت الألفاظ الغريبة فيه بلغة فصيحة مبسطة.')">📌 مثال</button>
-  </div></div>
-
-  <!-- فهرسة وشرح غريب الحديث -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68ba4892a7b481918fd372a5093aad21-fhrs-wshrh-gryb-lhdyth')">🧠 فهرسة وشرح غريب الحديث</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يوفّر هذا البوت خدمة متقدمة تجمع بين فهرسة الأحاديث وشرح ألفاظها الغريبة. عند إدخال نص حديث، يحدد موضعه في المصادر الأصلية قدر الإمكان، مع تقديم شرح موجز للألفاظ الغامضة والمعاني الاصطلاحية، مما يفيد في الدراسات العلمية التي تتطلب تتبّع المواضع المختلفة للحديث.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ولا يستغني عن الرجوع إلى كتب الحديث الأصلية. يجب على الباحث التثبت من الإحالات الحديثية قبل اعتمادها في البحث العلمي.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل حديثًا مثل: المسلم أخو المسلم، وسيعرض البوت الفهرس الحديثي له مع شرح موجز للألفاظ والمعاني.')">📌 مثال</button>
-  </div></div>
-</section>
-
-<!-- ===== نماذج التنفيذ ===== -->
-<section>
-  <h2>نماذج التنفيذ</h2>
-
-  <!-- تعليمات البحث الوصفي (داعم البحث الكيفي سابقًا) -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6870ad25b828819189c59c4bf012c04c-d-m-lbhth-lnw-y')">🧠 تعليمات البحث الوصفي (كيفي)</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُعد هذا البوت أداة بحثية متقدمة لدعم الدراسات الكيفية (Qualitative Research) من خلال تحليل البيانات النصية الناتجة عن المقابلات والملاحظات الميدانية أو الوثائق. يمكّن الباحث من إدخال مقطع نصي ليقوم البوت بتجزئته واستخراج الأكواد والموضوعات المرتبطة به وبناء شبكة مفاهيمية متكاملة تُظهر العلاقات بين الأفكار مع تقديم تفسيرات أولية لصياغة النتائج.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ولا يُستغنى به عن حكم الباحث في تفسير البيانات الكيفية. يُمنع استخدامه لاستنتاج نتائج بحثية نهائية دون الرجوع إلى الإطار النظري والدراسات السابقة.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','ألصق مقطعًا من مقابلة ميدانية، وسيقوم البوت بتحليله وتوليد أكواد موضوعية مع تفسيرها ضمن سياق البحث الوصفي.')">📌 مثال</button>
-  </div></div>
-
-  <!-- تعليمات البحث التجريبي (داعم البحث الكمي سابقًا) -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-txUGYAgZo-bwt-lbhth-lkmy-quantitative-research')">🧠 تعليمات البحث التجريبي (كمي)</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُوفّر هذا البوت أداة تحليلية متخصصة في الدراسات الكمية (Quantitative Research)، حيث يُعالج البيانات الرقمية المستخلصة من الاستبانات والاختبارات والجداول الإحصائية. يمكّن الباحث من رفع ملف نتائج مثل Excel ليقوم بإجراء التحليلات الإحصائية الأساسية والمتقدمة (المتوسط، الانحراف المعياري، معاملات الارتباط، واختبارات الفرضيات) مع عرض الجداول والرسوم البيانية وتفسير المخرجات بلغة أكاديمية واضحة.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ولا يغني عن الإلمام بأساسيات الإحصاء. يجب على الباحث التأكد من صحة تصميم الأداة وحجم العينة وملاءمة الاختبار الإحصائي قبل اعتماد النتائج.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','حمّل نتائج استبانة بحثية في ملف Excel، وسيتولى البوت تحليلها إحصائيًا وإخراج النتائج بتقارير وجداول ورسوم بيانية قابلة للاستخدام في الفصل الرابع.')">📌 مثال</button>
-  </div></div>
-</section>
-
-<!-- ===== نماذج الشريعة ===== -->
-<section>
-  <h2>نماذج الشريعة</h2>
-
-  <!-- تقسيم التركة في الفرائض -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6803f1a7a4a88191b3c7627fbc3a6fac-bwt-ms-d-wwrd-word-assistant')">🧠 تقسيم التركة في الفرائض</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُعد هذا البوت أداة فقهية متخصصة في حساب مسائل المواريث وفق أحكام الشريعة الإسلامية. عند إدخال حالة الورثة (مثل: زوجة، ابن، أم) يقوم بحساب نصيب كل وارث بدقة استنادًا إلى القواعد الشرعية المقررة في علم الفرائض، مما يفيد الطلاب والباحثين في الفقه والقضاة والمهتمين بمعرفة الحقوق الشرعية.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي تعليمي، ولا يُعد بديلاً عن المفتي أو القاضي الشرعي. لا يجوز الاعتماد على نتائجه في القسمة الفعلية للتركات دون مراجعة متخصص في الفرائض.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل حالة مثل: زوجة، ابن، أم، وسيُحسب نصيب كل وارث وفق القواعد المعروفة في علم الفرائض.')">📌 مثال</button>
-  </div></div>
-
-  <!-- نظام الزكاة -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6867e1da44588191be51a05f100da88a-bwt-nzm-lzk-zakat-system')">🧠 نظام الزكاة</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يوفر هذا البوت أداة متخصصة في حساب الزكاة وفق الضوابط الشرعية. عند إدخال قيمة المال وتاريخ امتلاكه، يحدد هل تجب فيه الزكاة أم لا، مع بيان مقدار الزكاة الواجبة، مما يفيد الأفراد والمؤسسات الخيرية والباحثين في الفقه الإسلامي.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي وإرشادي، ولا يُعتبر فتوى ملزمة. يجب الرجوع إلى أهل العلم في الحالات الخاصة أو المسائل الخلافية، ولا يجوز الاعتماد على الحساب الآلي وحده دون تحقق.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل قيمة المال وتاريخ امتلاكه، وسيحدّد البوت هل تجب فيه الزكاة ومقدارها وفق النصاب والحول.')">📌 مثال</button>
-  </div></div>
-
-  <!-- الرد الفوري على الفتوى الشرعية -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6854d69971c08191a9b4fb1cc8520ca5-bwt-lhl-lfwry-llrd-lshr-y')">🧠 الرد الفوري على الفتوى الشرعية</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت خدمة فقهية متخصصة للإجابة عن الأسئلة الشرعية بشكل فوري بالاستناد إلى القرآن الكريم والسنة وأقوال أهل العلم. يفيد الباحثين وطلاب العلم في الحصول على أجوبة أولية سريعة تساعدهم في توجيه البحث أو الدراسة.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','هذا البوت للتعليم والإرشاد ولا يُعد جهة إفتاء، ولا يجوز الاعتماد عليه وحده في الفتاوى العملية، بل يجب الرجوع إلى العلماء والجهات الرسمية المختصة في الفتوى.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل سؤالًا مثل: ما حكم إخراج الزكاة قبل وقتها؟ وسيجيب البوت بإجابة مبنية على أقوال الفقهاء مع الإحالة للأدلة.')">📌 مثال</button>
-  </div></div>
-
-  <!-- التحليل الدلالي لمفردات التفسير القرآني -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68cac0cf200c81919c187d97bea6155a-lthlyl-ldlly-lmfrdt-ltfsyr-lqrny')">🧠 التحليل الدلالي لمفردات التفسير القرآني</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','هذا البوت صُمّم كأداة بحثية متخصصة في التحليل الدلالي لمفردات التفسير القرآني، ليمكّن الباحث من فهم أسرار اختيار الكلمة القرآنية كما عرضها كبار المفسرين. يجمع أقوال المفسرين في الكلمة المدروسة ويربط المعنى اللغوي بالبعد البلاغي والبياني مع عرض وجوه الترجيح بين الألفاظ.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بالمصادر التفسيرية المعتبرة مثل الطبري والقرطبي والرازي وابن كثير وابن عاشور. لا يجوز للبوت إبداء رأي شخصي خارج ما ورد في كتب التفسير، ولا استخدام لغة عامية أو إسقاطات معاصرة غير موثقة.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل سؤالًا مثل: ما سر اختيار لفظ الكتاب في قوله تعالى: ذلك الكتاب لا ريب فيه؟ وسيقدّم البوت خلاصة مقارنة لأقوال المفسرين في ذلك.')">📌 مثال</button>
-  </div></div>
-
-  <!-- تعليمات بحث الفقه والنظام -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-69252333ae288191842f6507288ec9fc-t-lymt-bhth-lfqh-wlnzm-fiqh-law')">🧠 تعليمات بحث الفقه والنظام</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يفيد هذا النموذج في تمكين الباحث من تحليل فقهي–نظامي دقيق يجمع أقوال المذاهب الأربعة بتوثيق محكم، ويحرر محل النزاع، ويحلل الأدلة سندًا ودلالة وفق منهج صارم، ويربط النتائج بالأحكام النظامية المعتمدة، مما يجعله أداة مساعدة في الأبحاث التي تجمع بين الفقه والقانون.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق بحثي فقهي–نظامي صارم، بوصفه مساعدًا متخصصًا، ولا يُعد بديلًا عن أهل الاختصاص. يُمنع الاستدلال بالمصادر الضعيفة أو غير المحققة، ويجب ألا يُستخدم لإصدار أحكام قضائية أو نظامية مباشرة.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل سؤالًا مثل: ما حكم فسخ عقد الإجارة قبل المدة؟ وسيحلّل النموذج أقوال المذاهب الأربعة مع توثيقها وبيان الأساس الفقهي وربط النتيجة بالحكم النظامي ذي الصلة.')">📌 مثال</button>
-  </div></div>
-</section>
-
-<!-- ===== نماذج التأليف والتصنيف ===== -->
-<section>
-  <h2>نماذج التأليف والتصنيف</h2>
-
-  <!-- المساعد في تأليف الكتب -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-681eb9a149508191acdb41536ca221ef-bwt-lms-d-fy-tlyf-lktb-writing-assistant')">🧠 المساعد في تأليف الكتب</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُعد هذا البوت أداة متخصصة لدعم الباحثين والمؤلفين في إعداد الكتب الأكاديمية أو العامة. عند إدخال فكرة عامة عن الكتاب، يقوم بتوليد عناوين وفصول أولية بصيغة متكاملة مع اقتراح الهيكل التنظيمي المناسب ومقترحات للمحتوى، مما يساعد على تنظيم الأفكار وتحويلها إلى مشروع كتاب قابل للتنفيذ.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ويقدّم مقترحات تنظيمية ومحتوى أوليًا لا يغني عن جهد المؤلف في البحث والكتابة والتوثيق، كما لا يجوز استخدامه لتأليف كتب باسم مؤلفين آخرين دون تصريح.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','اكتب فكرة عامة عن كتابك، مثل: مهارات البحث العلمي لطلاب الدراسات العليا، وسيقترح البوت عناوين وفصولًا أولية وهيكلًا عامًا للكتاب.')">📌 مثال</button>
-  </div></div>
-
-  <!-- مؤلف كتب حوارية تفاعلية -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-69046ca941508191b3cdca5e19693b8c-mwlf-ktb-hwry-tf-ly-interactive-books')">🧠 مؤلف كتب حوارية تفاعلية</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يوفر هذا البوت خدمة متخصصة لتأليف كتب تعليمية أو ثقافية بأسلوب الحوار التفاعلي. عند إدخال موضوع محدد، يقوم ببناء مشاهد حوارية متسلسلة بين شخصيات (مثل الطالب والمعلّم) بأسلوب تعليمي مبسط يسهّل فهم المفاهيم المعقدة عبر الحوار والأسئلة والأمثلة.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي وثقافي، ولا يجوز استخدامه لتأليف محتوى حواري ينسب لشخصيات حقيقية دون إذنها، كما يجب على المؤلف مراجعة المحتوى لغويًا وعلميًا قبل النشر.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل موضوعًا مثل: الذكاء الاصطناعي والتعليم، وسيبني البوت مشاهد حوارية تعليمية متدرجة يمكن تطويرها إلى كتاب حواري متكامل.')">📌 مثال</button>
-  </div></div>
-
-  <!-- محول الكتب الإلكترونية -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-6868ad216e84819187f2c0fe02091a5b-musniwf-lktb-llktrwny-ebook-classifier')">🧠 محول الكتب الإلكترونية</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُعد هذا البوت أداة ذكية لتصنيف وتحويل الكتب الإلكترونية ضمن مجالاتها العلمية أو الأدبية. عند إدخال عنوان كتاب إلكتروني أو وصف محتواه، يقوم بتصنيفه ضمن مجاله الرئيس ويقترح تصنيفات فرعية دقيقة، مما يفيد في تنظيم المكتبات الرقمية وتحسين عرض الكتب في المنصات الإلكترونية.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي وتقني، ولا ينبغي اعتباره تصنيفًا نهائيًا ملزمًا؛ بل مقترحًا أوليًا يساعد الناشر أو المؤلف على اختيار الفئة الأنسب.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل عنوان كتاب إلكتروني أو فئة محتوى مثل: رواية خيال علمي، وسيقترح البوت تصنيفه الرئيس وتصنيفات فرعية مناسبة.')">📌 مثال</button>
-  </div></div>
-
-  <!-- إعداد ورقة عمل -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-68901dbc074081918c7f668e6dd3d350-dd-lwrq-l-lmy')">🧠 إعداد ورقة عمل</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يوفر هذا البوت أداة متخصصة لإعداد الأوراق العلمية أو أوراق العمل وفق معايير النشر الأكاديمي. عند إدخال بيانات البحث مثل: عنوان البحث، مجال التخصص، عدد الصفحات، يقوم بتصميم هيكل ورقة علمية متكاملة تشمل المقدمة ومراجعة الأدبيات والإطار المنهجي والتحليل والاستنتاجات.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق أكاديمي صارم، ويقدّم مسودة تنظيمية ومحتوى أوليًا لا يغني عن الجهد البحثي الأصلي، ولا يجوز نسبه إلى المؤلف دون مراجعة وتعديل وتوثيق كامل من الباحث.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل بيانات بحثك مثل: عنوان البحث، مجال التخصص، عدد الصفحات المتوقعة، وسيقوم البوت ببناء خطة ورقة علمية قابلة للتطوير والتقديم في مؤتمر أو مجلة.')">📌 مثال</button>
-  </div></div>
-</section>
-
-<!-- ===== نماذج أدوات الباحث ===== -->
-<section>
-  <h2>نماذج أدوات الباحث</h2>
-
-  <!-- برمجيات العقيل -->
-  <div class="tool"><div class="row">
-    <button class="gpt-button" onclick="openGPT('https://chatgpt.com/g/g-67c877434d24819182fb3212b3e0b931-bwt-brmjyt-l-qyl-al-aqeel-software')">🧠 برمجيات العقيل</button>
-    <button class="desc-toggle" onclick="showModal('نبذة','يُقدّم هذا البوت خدمة متخصصة في شرح كيفية استخدام برمجيات العقيل الموجهة للمجال التعليمي والإداري. عند إدخال استفسار محدد مثل: كيفية استخدام برنامج العقيل للمحاسبة المدرسية، يعرض البوت الخطوات التفصيلية مدعومة بتوجيهات عملية تساعد المعلمين والإداريين على استخدام البرمجيات بكفاءة.')">ℹ️ نبذة</button>
-    <button class="desc-toggle" onclick="showModal('حدود','يعمل ضمن نطاق إرشادي تقني، ولا يغني عن الأدلة الرسمية للبرمجيات أو الدعم الفني المباشر من الجهة المطورة. يجب التأكد من النسخة المستخدمة للبرنامج وإعداداته قبل تطبيق التعليمات.')">📏 حدود</button>
-    <button class="desc-toggle" onclick="showModal('مثال','أدخل استفسارًا مثل: كيفية استخدام برنامج العقيل للمحاسبة المدرسية، وسيشرح البوت خطوات الاستخدام مع توجيهات عملية مختصرة.')">📌 مثال</button>
-  </div></div>
-</section>
-
-<!-- Modal موحّد للأزرار العلوية ووصف النماذج -->
-<!-- (إبقاء إعدادات الأزرار العلوية والبحث كما هي) -->
-<div id="overlay" class="overlay" aria-hidden="true" role="dialog">
-  <div class="modal" role="document" aria-modal="true">
-    <button class="close" onclick="closeModal()" title="إغلاق">✖</button>
-    <h4 id="modal-title">تفاصيل</h4>
-    <div id="modal-content" class="content"></div>
-  </div>
-</div>
-<button class="to-toggle" id="toggleScroll">⬇ النزول للأسفل</button>
-
-<footer>
-  © مركز علوم الدولي للذكاء الاصطناعي 2025 — جميع الحقوق محفوظة.
-</footer>
+  <footer>
+    © مركز علوم الدولي للذكاء الاصطناعي 2025 — جميع الحقوق محفوظة.
+  </footer>
 
 <script>
-const sndOpen = new Audio('data:audio/wav;base64,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');
-const sndClose = new Audio(sndOpen.src);
- sndOpen.volume=0.18;
- sndClose.volume=0.12;
-
-const MODALS = {
+/* =========================================
+   DATA: Top Bar Modals
+   ========================================= */
+const MODAL_CONTENT = {
   desc: `تضم بوابة "النماذج العربية الذكية" حزمة متكاملة من الباقات والبوتات المصممة خصيصًا لدعم المستخدم العربي في مجالات عدة، تشمل: البحث العلمي، والتعليم، والتصميم، والإدارة، والتسويق، والقانون، والبرمجة، وغيرها. تحتوي كل باقة على مجموعة من البوتات التي تؤدي مهامًا ذكية محددة بدقة وسرعة، مثل: إعداد العنوان والفكرة، وصناعة الخطة، وإعداد البحث العلمي، وتوثيق النصوص، وتنسيق المراجع، وإعادة الصياغة، والترجمة الاصطلاحية، وتحليل النصوص، وغيرها.`,
   about: `أسّس هذه المنصة د. عبدالرحمن الزراعي، مشرف أكاديمي وباحث متخصص في مجالات البحوث العلمية، مهتم بالفنون البصرية ونماذج الذكاء الاصطناعي، عمل من وقت طويل على تطوير تعليمات دقيقة ومخصصة للنماذج العربية الذكية GPT، وهذه التعليمات تهدف إلى إنشاء نماذج ذكية تعمل على تحقيق أداء متسق وعالي الجودة في مختلف التخصصات، فضلاً عن استضافة فريق من الباحثين والأكاديميين والمهتمين في العمل لبناء رؤية تحليلية عميقة ومنهجية وصارمة في تصميم كل نموذج، وهذا يضمن توافق تلك النماذج مع المعايير العلمية واللغوية، وتقييم أدائها على نحو منهجي بهدف تحسينها وتطويرها، كما يسعى الفريق إلى تمكين المجتمع العربي من الإفادة الكاملة من قدرات الذكاء الاصطناعي بلغته وثقافته، إيمانًا منه بأن التقنية المصممة بعناية قادرة على أن تكون أداة فعالة، وأن تسهم بقوة في تعزيز الكفاءة والإنتاجية.`,
   courses: `نقدم مجموعة من الدورات التدريبية المصممة بعناية لتعريف المستخدمين بواجهة ChatGPT وطرق التعامل معها باحتراف، وتشمل الدورات محاور أساسية مثل: كيفية طرح الأسئلة، وإدارة الحوار، وهندسة التعليمات وتوجيهها بطريقة صحيحة، كما نقدم دورات في البحث العلمي تتناول كيفية إنشاء نماذج مخصصة للعمل البحثي، وتتناول أيضاً مفاهيم مثل النماذج التوليدية، وتعليمات التكوين، وتدريب النماذج، وفهم آليات التفكير الآلي، وتُعقد الدورات بأسلوب تطبيقي مع ما يرفق ذلك من ملفات معينة ومواد تعليمية تساعد المتدرب على التطبيق الفوري، ويمكن طلب الدورات بشكل فردي أو جماعي حسب الحاجة.`,
   news: `نعمل باستمرار على تطوير نماذج ذكية جديدة تواكب الاحتياجات المتغيرة للمستخدمين، ولعل من أحدث النماذج التي أُضيفت مؤخراً: نموذج 4o ونموذج 5 لبعض الأدوات، وجميع هذه النماذج الذكية يأتي ضمن باقات جاهزة للاستخدام، مصحوبة بفيديوهات شرح وتوجيهات مخصصة، تابعنا باستمرار للاطلاع على كل جديد.`,
   links: `نوفر مجموعة من الروابط التعليمية لمساعدة المستخدم على فهم آلية عمل الذكاء الاصطناعي، وطريقة التعامل مع النماذج المخصصة. من أبرز المحتويات: كتاب "الآلة التي تفكر" التي توضح كيفية تحليل النموذج للمحتوى قبل توليده. وكتاب "الآلة التي ترد" التي تشرح بطريقة عملية وتطبيقية كيف يتفاعل النموذج مع التعليمات، كما نُتيح مؤلفات مختصرة وملفات إرشادية قابلة للتحميل، تحتوي على أمثلة عملية وتعليمات جاهزة للاستخدام، يمكن الاستفادة من هذه التعليمات في تكوين نماذجك الخاصة، وضبط أدائها بما يتناسب مع هدفك، كل المواد التعليمية يتم تحديثها باستمرار، وهي مصممة لتناسب جميع المستويات. #روابط الكتب: https://alzarraei-gpts.github.io/Arabic-GPT-Hub-books/`
 };
-function showModal(title, text){
-  const ov = document.getElementById('overlay');
-  if(!ov) return;
-  document.getElementById('modal-title').textContent = title || 'تفاصيل';
-  document.getElementById('modal-content').textContent = text || '';
-  ov.classList.add('show');
-}
-function closeModal(){
-  const ov = document.getElementById('overlay');
-  if(ov) ov.classList.remove('show');
-  try{ sndClose.currentTime=0; sndClose.play(); }catch(e){}
-}
-document.addEventListener('DOMContentLoaded', ()=>{
-  document.querySelectorAll('.topbtn').forEach(b=>b.addEventListener('click',()=>{
-    const key=b.getAttribute('data-modal');
-    showModal(b.textContent.trim(), MODALS[key]||'');
-    try{ sndOpen.currentTime=0; sndOpen.play(); }catch(e){}
-  }));
-  const inp = document.getElementById('toolSearch');
-  const ac = document.getElementById('acBox');
 
-  const toolButtons = Array.from(document.querySelectorAll('.gpt-button'));
-  const toolIndex = toolButtons.map(btn => ({
-    name: btn.innerText.replace(/\s+/g,' ').trim(),
-    btn
-  }));
+/* =========================================
+   DATA: Tools & Categories
+   ========================================= */
+const TOOLS_DATA = [
+  {
+    category: "نماذج الابتكار",
+    tools: [
+      {
+        name: "اقتراح عنوان وفكرة بحث",
+        links: [
+          { label: "نموذج 4o", url: "https://chatgpt.com/g/g-686b8ac963248191b35f6c4d8629e688-qtrh-nwn-wfkr-bhth-research-titles-mod-4o" },
+          { label: "نموذج 5", url: "https://chatgpt.com/g/g-68c0f53b875881918f4b9ba01c57668a-qtrh-nwn-wfkr-bhth-research-titles-mod-5" }
+        ],
+        desc: "يُعد هذا البوت أداة ذكية متخصصة في دعم الباحثين وطلاب الدراسات العليا في اختيار عناوين أصيلة ومتميزة لرسائل الماجستير والدكتوراه. يقوم بتحليل التخصصات الأكاديمية واستنباط الفرص البحثية غير المستكشفة، ويولّد اقتراحات مبنية على فجوات معرفية حقيقية واتجاهات علمية حديثة. يقدّم العناوين بلغة فصيحة دقيقة، مع مراعاة القابلية للتنفيذ والارتباط بالواقع العلمي.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بالأصالة البحثية، الحياد، الدقة، اللغة العربية الفصيحة، والتوثيق السليم. لا يجوز تقديم عناوين عامة أو متداولة، ولا استخدام مصطلحات دارجة أو دمج المعاني بطريقة غير أكاديمية.",
+        example: "أدخل تخصصك (مثل: التربية الخاصة) وسيقترح البوت 3 عناوين أصيلة لرسائل ماجستير ضمن هذا المجال."
+      },
+      {
+        name: "صناعة الخطة البحثية",
+        links: [
+          { label: "نموذج 5", url: "https://chatgpt.com/g/g-68c0fcbcc7f48191b5236ff7bc232204-sn-lkht-lbhthy-research-plan-mod-5" }
+        ],
+        desc: "يوفّر هذا البوت أداة متخصصة في إعداد خطط بحثية لرسائل الماجستير والدكتوراه. عند إدخال موضوع البحث، يقوم البوت بإنشاء خطة متكاملة تشمل: المقدمة، مشكلة البحث، الأهداف، الأسئلة أو الفرضيات، المنهجية، والإطار النظري.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، مع الالتزام بالمنهجية العلمية الدقيقة واللغة الفصيحة. لا يجوز إنتاج خطط سطحية أو بعيدة عن المعايير الأكاديمية.",
+        example: "أدخل موضوعك البحثي وسيُنشئ البوت خطة بحثية متكاملة وفق المعايير الأكاديمية."
+      },
+      {
+        name: "دليل كتابة الرسائل العلمية",
+        links: [
+          { label: "الدليل", url: "https://chatgpt.com/g/g-6882ebaa86088191bca7962b5b02b41a-dlyl-ktb-lrsyl-l-lmy-university-guide" }
+        ],
+        desc: "يُوفّر هذا البوت أداة إرشادية متكاملة لطلاب الدراسات العليا في إعداد وكتابة الرسائل العلمية. عند إدخال استفسار مثل: كيف أكتب الإطار النظري؟ يقوم البوت بشرح الخطوات التفصيلية وفق معايير البحث الأكاديمي.",
+        limit: "يعمل ضمن نطاق الإرشاد الأكاديمي، مع الالتزام بالحياد والدقة. لا يجوز تقديم شروح مخالفة للمعايير الجامعية أو التوثيقية.",
+        example: "أدخل سؤالًا مثل (كيف أكتب الإطار النظري؟) وسيشرح البوت الخطوات وفق معايير البحث الأكاديمي."
+      },
+      {
+        name: "دليل الأنظمة البحثية",
+        links: [
+          { label: "الدليل", url: "https://chatgpt.com/g/g-EvIbEhTiz-bwt-dlyl-lnzm-lbhthy-researcher-s-guide" }
+        ],
+        desc: "يقدّم هذا البوت دعمًا أكاديميًّا متقدمًا للباحثين في اختيار وتطبيق المناهج العلمية الثلاثة: الاستقرائي، والاستنباطي، والمقارن، بدقة منهجية مرجعية. يساعد الباحث على تحليل طبيعة سؤاله البحثي وتوجيهه نحو المنهج الأنسب وفق أهداف دراسته.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "ابحث مقارن في القانون التجاري، وسينصحك البوت بالمنهج الأنسب ويوجهك في خطوات التنفيذ."
+      }
+    ]
+  },
+  {
+    category: "نماذج التحرير",
+    tools: [
+      {
+        name: "إعادة الصياغة",
+        links: [
+          { label: "نموذج 4", url: "https://chatgpt.com/g/g-6944c05b70a4819187dfa36ee550cdbd-d-lsyg-human-reformulation-mod-4" },
+          { label: "نموذج 5", url: "https://chatgpt.com/g/g-67b44b7c337c81919a26dbe8a22c7329-d-lsyg-human-reformulation-mod-5" }
+        ],
+        desc: "يُعد 'بوت إعادة الصياغة | Human Reformulation' أداة بحثية متقدمة تُسهِم في تعزيز جودة الكتابة الأكاديمية عبر إعادة صياغة النصوص بلغة منهجية دقيقة، تراعي الأسلوب العلمي وتقلل من التكرار والانزياح المعنوي.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل نصًا مثل: 'إن الذكاء الاصطناعي مجال متسارع' وسيعيد البوت صياغته بلغة أكاديمية فصيحة."
+      },
+      {
+        name: "التدقيق اللغوي",
+        links: [
+          { label: "نموذج 4", url: "https://chatgpt.com/g/g-lf64lTcUn-bwt-ltdqyq-llgwy-proofreading" },
+          { label: "نموذج 5", url: "https://chatgpt.com/g/g-68c13b315aa48191befd9fe8441bcf3e-bwt-ltdqyq-llgwy-proofreading-mod-5" }
+        ],
+        desc: "يُعدّ هذا البوت أداة فعّالة في دعم الباحثين لغويًّا وأسلوبيًّا، حيث يُسهِم في رفع جودة النصوص الأكاديمية عبر تدقيقها نحويًّا، صرفيًّا، وإملائيًّا وفق المعايير المعتمدة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل فقرة بها أخطاء لغوية، مثل: 'هاذا الكتاب مفيد جداً' وسيصححها البوت فورًا."
+      },
+      {
+        name: "ضبط الإملاء وعلامات الترقيم",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-694166ef7a58819183b7bcfd455bd091-dbt-lml-w-lmt-ltrqym" }
+        ],
+        desc: "يُفيد هذا البوت في تصحيح الأخطاء الإملائية بدقة عالية مع الحفاظ على المعنى الأصلي للنص، ويساعد على ضبط القواعد النحوية والصرفية دون إدخال إنشاء أو إضافات غير مطلوبة.",
+        limit: "يعمل ضمن نطاق لغوي صارم، بوصفه بوتَ ذكاءٍ اصطناعيًّا متخصصًا في تدقيق النصوص العربية وضبط الإملاء وعلامات الترقيم.",
+        example: "أدخل نصًا مثل: (ذهب الطالب الى المدرسه في الصباح الباكر) وسيُخرجه البوت على النحو الآتي: (ذهب الطالبُ إلى المدرسةِ في الصباحِ الباكرِ.)"
+      },
+      {
+        name: "تشكيل النصوص",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-GhBmeBZb7-bwt-tshkyl-lnsws-text-formation-mod-4" }
+        ],
+        desc: "يُقدِّم هذا البوت قيمة علميّة عالية في المجال البحثي من خلال تمكين الباحثين من تشكيل النصوص بدقّة صوتيّة ونحويّة، مما يعزّز وضوح المعاني ويُسهم في تحسين الفهم القرائي.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل جملة مثل: 'ذهب الطالب إلى المدرسة' وسيظهرها البوت مشكّلة بالكامل."
+      },
+      {
+        name: "الانتحال والأسلوب البشري",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-tXrotFsS3-lnthl-wlslwb-lbshry-human-style" }
+        ],
+        desc: "يسهم هذا البوت في تعزيز النزاهة الأكاديمية في المجال البحثي من خلال فحص النصوص بدقة للكشف عن الانتحال الأسلوبي والمفاهيمي. يُحلل بنية الجمل وتدفق الأفكار لرصد الأساليب الآلية أو المنقولة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل فقرة مشكوكًا بها، وسيفحص البوت مدى طبيعتها البشرية أو الاصطناعية."
+      }
+    ]
+  },
+  {
+    category: "نماذج التوثيق",
+    tools: [
+      {
+        name: "تنسيق مراجع البحث",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-762SWrxgA-bwt-tnsyq-lmrj-reference-formatting" }
+        ],
+        desc: "يُقدّم هذا البوت خدمة متخصصة للباحثين في تنسيق المراجع وفقًا لمعايير التوثيق الأكاديمية المعتمدة عالميًا مثل APA وChicago وMLA.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل المرجع: 'القرطبي، تفسير، دار الكتب'، وسينسّقه البوت تلقائيًا بصيغة APA أو Chicago."
+      },
+      {
+        name: "توثيق البحوث",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-X51QAhBwR-bwt-twthyq-lbhwth-research-documentation" }
+        ],
+        desc: "يُقدّم هذا البوت خدمة أساسية للباحثين عبر إنشاء بيانات توثيق دقيقة للمراجع العلمية بمختلف أنواعها: الكتب، المقالات، الرسائل الجامعية، والمصادر الإلكترونية.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل مرجعًا مثل: تفسير الطبري، وسيعرض البوت بيانات التوثيق كاملة بصيغة APA."
+      },
+      {
+        name: "البحوث الكاملة من المكتبة الشاملة",
+        links: [
+          { label: "نموذج 4", url: "https://chatgpt.com/g/g-687b1b6691308191a307b9e9654eee1e-lbhwth-lkml-mn-lmktb-lshml" },
+          { label: "نموذج 5", url: "https://chatgpt.com/g/g-68c122b16b0481918aa00c125a839ab6-lbhwth-lkml-mn-lmktb-lshml-mod-5" }
+        ],
+        desc: "يوفر هذا البوت أداة متخصصة للباحثين في العلوم الشرعية والإنسانية، إذ يمكّنهم من الوصول إلى النصوص الكاملة للمصادر المتاحة في مكتبة الشاملة الرقمية.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أريد مصدرًا من الشاملة لقول الحافظ ابن حجر عن تقسيمات البدعة."
+      },
+      {
+        name: "الجامع في تحصيل المراجع",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-680a3eefb2bc8191967abacfd909ede3-bwt-lmsdr-wlmrj-l-lmy-research-resources" }
+        ],
+        desc: "يُعد هذا البوت مرجعًا ذكيًا لجمع وتصنيف المراجع العلمية المرتبطة بموضوع البحث. يُسهل على الباحث إدخال عبارة أو مفهوم محدد ليقوم بجمع أبرز المصادر العلمية ذات الصلة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل عبارة: الاستدلال عند الغزالي، وسيقوم البوت بجمع أبرز المصادر العلمية المرتبطة بالموضوع."
+      },
+      {
+        name: "الوصول السريع إلى روابط PDF",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-67d515daced481918a47851b5cc7c5f6-bwt-qwql-lsry-fast-search-engine" }
+        ],
+        desc: "يُقدّم هذا البوت خدمة بحثية متقدمة للباحثين عبر تمكينهم من الوصول المباشر إلى روابط الكتب والمراجع بصيغة PDF من مصادر موثوقة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل كلمات مثل 'المعجم المفهرس لألفاظ الحديث النبوي وسيُظهر روابط مباشرة موثوقة."
+      },
+      {
+        name: "دليل فهارس المخطوطات",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-684aee5a12908191adae472dd09683da-bwt-dlyl-lmkhtwtt-guide-to-arabic-manuscripts" }
+        ],
+        desc: "يُقدّم هذا البوت أداة متخصصة للباحثين في التراث والمخطوطات، حيث يتيح الوصول السريع إلى فهارس المخطوطات العربية والإسلامية في المكتبات العالمية.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل عنوانًا مثل 'المستصفى للغزالي' وسيعرض البوت فهارس وأماكن المخطوطات المتاحة."
+      }
+    ]
+  },
+  {
+    category: "نماذج التحليل",
+    tools: [
+      {
+        name: "تحليل ملفات البحث",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-FG9ivmtVu-bwt-thlyl-lmlft-pdf-file-analysis" }
+        ],
+        desc: "يُعد هذا البوت أداة فعّالة لتحليل ملفات الأبحاث الأكاديمية بجميع الصيغ، وورد، بي دي اف، اكسل، وغيرها.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "حمّل الملف للبحث وسيلخّصه البوت مع تحليل عناصره وتقديم اقتراحات علمية."
+      },
+      {
+        name: "محلل البيانات البحثية",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-67f0bf48eb1c8191b85a522cc7bf8065-bwt-mhll-lbynt-lbhthy-research-data-analyst" }
+        ],
+        desc: "يُعد هذا البوت أداة ذكية لتحليل البيانات البحثية الكمية والنصية بصورة منهجية دقيقة. يمكن للباحث إدخال جدول بيانات بصيغة نصية أو رفع ملف منسق، ليقوم البوت بتحليل المتغيرات إحصائيًا.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل جدول بيانات بصيغة نصية وسيحلله البوت إحصائيًا ويقدّم رسومات توضيحية."
+      },
+      {
+        name: "تحليل تربوي إكسل",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-68809e7f7abc8191a513012f75ed8f5a-excel-thlyl-trbwy" }
+        ],
+        desc: "يُقدّم هذا البوت أداة متخصصة في تحليل البيانات التربوية والإحصائية الواردة في ملفات إكسل. يُمكّن الباحث من رفع استبيانات التقييم أو البيانات التعليمية، ليقوم بتحليلها إحصائيًا.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل ملف استبيان تقييم أو بيانات تعليمية بصيغة إكسل، وسيحللها البوت إحصائيًا، ويخرج بجداول ورسوم بيانية."
+      },
+      {
+        name: "واجهة ويب لخدمة العمل البحثي",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-nq1rwzxlt-wjh-wyb-lbhthy-web-search-interface" }
+        ],
+        desc: "يُقدّم هذا البوت أداة عملية تسهّل على الباحثين الوصول السريع إلى أحدث النتائج والأبحاث عبر واجهة ويب تفاعلية.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل استفسارًا مثل 'أحدث أبحاث الذكاء الاصطناعي 2024' وسيقدّم روابط فورية عبر الويب."
+      }
+    ]
+  },
+  {
+    category: "نماذج المعاجم والمصطلحات",
+    tools: [
+      {
+        name: "معجم الكلمات",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-ngWYTPQ2p-bwt-m-jm-lklmt-dictionary" }
+        ],
+        desc: "يُقدّم هذا البوت خدمة متخصصة في تحليل الكلمات العربية من حيث الجذر، الوزن، والمعنى المعجمي.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل الكلمة 'استبشروا'، وسيوضح البوت جذرها، وزنها، ومعناها من القواميس."
+      },
+      {
+        name: "ترجمة الكتب والمؤلفات",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-6874ffd6fd3481918f962945bfcaed21-trjm-lktb-wlmwlft-translation-of-books" }
+        ],
+        desc: "يُعد هذا البوت أداة متخصصة لترجمة الكتب والنصوص الأكاديمية من العربية إلى الإنجليزية والعكس، مع المحافظة على الدقة العلمية والاصطلاحية.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل: 'الذكاء الاصطناعي يعزز التعليم'، وسيقدّم البوت ترجمة إنجليزية دقيقة."
+      },
+      {
+        name: "ترجمة المصطلحات العلمية",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-6867c4ceb758819180fd00287855fdbe-bwt-ltrjm-l-lmy-scientific-translation" }
+        ],
+        desc: "يُوفّر هذا البوت أداة ذكية لترجمة المصطلحات العلمية المتخصصة في مختلف المجالات مثل الطب، الهندسة، التربية، والعلوم الإنسانية.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل فقرة علمية، وسيقدّم البوت ترجمة فصيحة للمصطلحات مع شرح سياقي مبسط."
+      },
+      {
+        name: "ترجمة الأعلام",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-XYZknTHPW-bwt-trjm-l-lm-translation-of-flags" }
+        ],
+        desc: "يوفّر هذا البوت أداة متميزة لترجمة الأعلام من العلماء، المفكرين، والأدباء، مع تقديم نبذة علمية مختصرة عنهم.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل اسم: 'ابن رشد'، وسيقدم البوت ترجمة علمية مختصرة لحياته ومؤلفاته."
+      }
+    ]
+  },
+  {
+    category: "نماذج علوم الحديث",
+    tools: [
+      {
+        name: "تخريج الأحاديث النبوية",
+        links: [
+          { label: "نموذج 4", url: "https://chatgpt.com/g/g-UEL0GgbkF-tkhryj-lhdyth-lnbwy-graduation-of-hadith-mod-4" },
+          { label: "نموذج 5", url: "https://chatgpt.com/g/g-68c10fec7f8c8191816ce413d394baeb-tkhryj-lhdyth-lnbwy-graduation-of-hadith-mod-5" }
+        ],
+        desc: "يُقدّم هذا البوت خدمة علمية متقدمة للباحثين في مجال علوم الحديث، حيث يُتيح لهم تخريج الأحاديث النبوية من مصادرها الأصلية بدقة عالية.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل الحديث: 'إنما الأعمال بالنيات' وسيعرض البوت مصادره ودرجته الحديثية."
+      },
+      {
+        name: "شرح غريب الحديث",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-68b30581e8a881918204976d605b1271-shrh-gryb-lhdyth" }
+        ],
+        desc: "يُقدّم هذا البوت أداة فريدة لشرح الألفاظ الغريبة في الأحاديث النبوية، بما يُسهّل على الباحثين وطلاب العلم فهم النصوص الشرعية بدقة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل حديثًا مثل: (العقيقة عن الغلام شاتان) وسيشرح البوت الألفاظ الغريبة فيه بلغة فصيحة مبسطة."
+      },
+      {
+        name: "فهرسة وشرح غريب الحديث",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-68ba4892a7b481918fd372a5093aad21-fhrs-wshrh-gryb-lhdyth" }
+        ],
+        desc: "يوفّر هذا البوت خدمة متقدمة للباحثين عبر الجمع بين فهرسة الأحاديث وشرح ألفاظها الغريبة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل حديثًا مثل: (المسلم أخو المسلم) وسيعرض البوت الفهرس الحديثي له مع شرح موجز للألفاظ والمعاني."
+      }
+    ]
+  },
+  {
+    category: "نماذج التنفيذ",
+    tools: [
+      {
+        name: "تعليمات البحث الوصفي",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-6870ad25b828819189c59c4bf012c04c-d-m-lbhth-lnw-y" }
+        ],
+        desc: "يُعد هذا البوت أداة بحثية متقدمة لدعم الدراسات الكيفية (Qualitative Research) من خلال تحليل البيانات النصية الناتجة عن المقابلات والملاحظات الميدانية أو الوثائق.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "ألصق مقطعًا من مقابلة ميدانية، وسيقوم البوت بتحليله وتوليد كودات موضوعية مع تفسيرها."
+      },
+      {
+        name: "تعليمات البحث التجريبي",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-txUGYAgZo-bwt-lbhth-lkmy-quantitative-research" }
+        ],
+        desc: "يُوفّر هذا البوت أداة تحليلية متخصصة في الدراسات الكمية (Quantitative Research)، حيث يُعالج البيانات الرقمية المستخلصة من الاستبانات والاختبارات والجداول الإحصائية.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "حمّل نتائج استبانة (Excel) وسيتولى البوت تحليلها إحصائيًا وإخراج النتائج بتقارير وجداول."
+      }
+    ]
+  },
+  {
+    category: "نماذج الشريعة",
+    tools: [
+      {
+        name: "تقسيم التركة في الفرائض",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-6803f1a7a4a88191b3c7627fbc3a6fac-bwt-ms-d-wwrd-word-assistant" }
+        ],
+        desc: "يُعد هذا البوت أداة فقهية متخصصة في حساب مسائل المواريث وفق أحكام الشريعة الإسلامية. عند إدخال حالة ورثة (مثل: زوجة، ابن، أم) يقوم البوت بحساب نصيب كل وارث بدقة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل حالة مثل 'زوجة، ابن، أم' وسيُحسب نصيب كل وارث بدقة."
+      },
+      {
+        name: "نظام الزكاة",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-6867e1da44588191be51a05f100da88a-bwt-nzm-lzk-zakat-system" }
+        ],
+        desc: "يوفر هذا البوت أداة متخصصة في حساب الزكاة وفق الضوابط الشرعية. عند إدخال قيمة المال وتاريخ امتلاكه، يقوم البوت بتحديد هل تجب فيه الزكاة أم لا، مع بيان مقدارها بدقة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل قيمة المال وتاريخ امتلاكه، وسيحدّد البوت هل تجب فيه الزكاة أم لا ومقدارها."
+      },
+      {
+        name: "الرد الفوري على الفتوى الشرعية",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-6854d69971c08191a9b4fb1cc8520ca5-bwt-lhl-lfwry-llrd-lshr-y" }
+        ],
+        desc: "يُقدّم هذا البوت خدمة فقهية متخصصة للإجابة عن الأسئلة الشرعية بشكل فوري. عند إدخال سؤال شرعي يقوم البوت بتوليد إجابة مستندة إلى المصادر الشرعية المعتبرة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل سؤالًا مثل 'ما حكم إخراج الزكاة قبل وقتها؟' وسيجيب البوت مباشرة بفتوى موثوقة."
+      },
+      {
+        name: "التحليل الدلالي لمفردات التفسير القرآني",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-68cac0cf200c81919c187d97bea6155a-lthlyl-ldlly-lmfrdt-ltfsyr-lqrny" }
+        ],
+        desc: "هذا البوت صُمّم كأداة بحثية متخصصة في التحليل الدلالي لمفردات التفسير القرآني، ليمكّن الباحث من فهم أسرار اختيار الكلمة القرآنية كما عرضها كبار المفسرين.",
+        limit: "يعمل هذا البوت ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في التحليل الدلالي لمفردات التفسير القرآني.",
+        example: "أدخل سؤالًا مثل ما سر اختيار لفظ {الكتاب} في قوله تعالى: {ذَلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ}؟"
+      },
+      {
+        name: "تعليمات بحث الفقه والنظام",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-69252333ae288191842f6507288ec9fc-t-lymt-bhth-lfqh-wlnzm-fiqh-law" }
+        ],
+        desc: "يفيد هذا البوت في تبسيط المسائل الفقهية والنظامية للباحث، ويعمل على تحديد موضوع المسألة بدقة دون إطالة، ويجمع الأقوال المعتمدة من مصادرها الأصل.",
+        limit: "يعمل هذا البوت ضمن نطاق بحثي فقهي–نظامي منضبط، بوصفه أداة مساعدة للباحث في التحليل والتوثيق لا بديلاً عن الاجتهاد العلمي.",
+        example: "أدخل مسألة مثل: حكم اشتراط الشرط الجزائي في العقود، فيقوم البوت بتحديد محل النزاع، وجمع أقوال المذاهب الأربعة."
+      }
+    ]
+  },
+  {
+    category: "نماذج التأليف والتصنيف",
+    tools: [
+      {
+        name: "المساعد في تأليف الكتب",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-681eb9a149508191acdb41536ca221ef-bwt-lms-d-fy-tlyf-lktb-writing-assistant" }
+        ],
+        desc: "يُعد هذا البوت أداة متخصصة لدعم الباحثين والمؤلفين في إعداد الكتب الأكاديمية أو العامة. عند إدخال فكرة عامة عن الكتاب، يقوم البوت بتوليد عناوين وفصول أولية بصيغة متكاملة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "اكتب فكرة عامة عن كتابك وسينتج البوت عناوين وفصول أولية بصيغة متكاملة."
+      },
+      {
+        name: "مؤلف كتب حوارية تفاعلية",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-69046ca941508191b3cdca5e19693b8c-mwlf-ktb-hwry-tf-ly-interactive-books" }
+        ],
+        desc: "يوفر هذا البوت خدمة متخصصة لتأليف كتب تعليمية أو ثقافية بأسلوب الحوار التفاعلي. عند إدخال موضوع محدد يقوم البوت ببناء مشاهد حوارية متسلسلة بين شخصيات.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل موضوعًا مثل 'الذكاء الاصطناعي والتعليم' وسيبني البوت مشاهد حوارية تعليمية."
+      },
+      {
+        name: "محول الكتب الإلكترونية",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-6868ad216e84819187f2c0fe02091a5b-musniwf-lktb-llktrwny-ebook-classifier" }
+        ],
+        desc: "يُعد هذا البوت أداة ذكية لتصنيف وتحويل الكتب الإلكترونية ضمن مجالاتها العلمية أو الأدبية. عند إدخال عنوان كتاب إلكتروني أو فئة محتوى يقوم البوت بتصنيفه ضمن مجاله.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل عنوان كتاب إلكتروني أو فئة محتوى (مثل: رواية خيال علمي)، وسيصنّف البوت الكتاب ضمن مجاله."
+      },
+      {
+        name: "إعداد ورقة عمل",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-68901dbc074081918c7f668e6dd3d350-dd-lwrq-l-lmy" }
+        ],
+        desc: "يوفر هذا البوت أداة متخصصة لإعداد الأوراق العلمية أو أوراق العمل وفق معايير النشر الأكاديمي. عند إدخال بيانات البحث يقوم البوت ببناء ورقة علمية متكاملة.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل بيانات بحثك، وسيقوم البوت ببناء ورقة علمية متكاملة."
+      }
+    ]
+  },
+  {
+    category: "نماذج أدوات الباحث",
+    tools: [
+      {
+        name: "برمجيات العقيل",
+        links: [
+          { label: "الأداة", url: "https://chatgpt.com/g/g-67c877434d24819182fb3212b3e0b931-bwt-brmjyt-l-qyl-al-aqeel-software" }
+        ],
+        desc: "يُقدّم هذا البوت خدمة متخصصة في شرح كيفية استخدام برمجيات العقيل الموجهة للمجال التعليمي والإداري.",
+        limit: "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه.",
+        example: "أدخل استفسارًا مثل: كيفية استخدام برنامج العقيل للمحاسبة المدرسية."
+      }
+    ]
+  }
+];
 
-  function filterTools(q){
-    document.querySelectorAll('.tool').forEach(t=>{
-      const txt = t.innerText;
-      t.style.display = (!q || txt.includes(q)) ? '' : 'none';
+/* =========================================
+   LOGIC: Rendering & Interaction
+   ========================================= */
+
+const mainContainer = document.getElementById('mainContainer');
+const searchInput = document.getElementById('toolSearch');
+const acBox = document.getElementById('acBox');
+
+// --- Sounds ---
+// Quieter version as requested
+const sndClick = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWgAAAA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMmUAAAKAAAAAAAAAAAAAA//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gaaaa');
+sndClick.volume = 0.2; // Quieter sound
+
+function playSound() {
+  try {
+    sndClick.currentTime = 0;
+    sndClick.play().catch(e => {}); 
+  } catch(e) {}
+}
+
+// Render Content
+function renderContent() {
+  mainContainer.innerHTML = '';
+  
+  TOOLS_DATA.forEach(cat => {
+    const section = document.createElement('section');
+    const h2 = document.createElement('h2');
+    h2.className = 'section-title';
+    h2.innerHTML = `${cat.category} <span class="caret">▾</span>`;
+    
+    const body = document.createElement('div');
+    body.className = 'sec-body';
+    
+    cat.tools.forEach(tool => {
+      const toolDiv = document.createElement('div');
+      toolDiv.className = 'tool';
+      
+      // 1. Add Tool Name prominently
+      const title = document.createElement('h3');
+      title.className = 'tool-title';
+      title.textContent = tool.name;
+      toolDiv.appendChild(title);
+      
+      const header = document.createElement('div');
+      header.className = 'tool-header';
+      
+      // Links
+      tool.links.forEach(link => {
+        const btn = document.createElement('a');
+        btn.className = 'btn-gpt';
+        btn.href = link.url;
+        btn.target = '_blank';
+        btn.innerHTML = `🧠 ${link.label}`;
+        btn.onclick = () => playSound();
+        header.appendChild(btn);
+      });
+      
+      // Info Buttons
+      if(tool.desc) {
+        const b = document.createElement('button');
+        b.className = 'btn-info';
+        b.textContent = 'ℹ️ نبذة';
+        b.onclick = () => {
+           playSound();
+           showModal(tool.name, tool.desc);
+        };
+        header.appendChild(b);
+      }
+      
+      if(tool.limit) {
+        const b = document.createElement('button');
+        b.className = 'btn-info';
+        b.textContent = '📏 حدود';
+        b.onclick = () => {
+           playSound();
+           showModal(tool.name, tool.limit);
+        };
+        header.appendChild(b);
+      }
+
+      if(tool.example) {
+        const b = document.createElement('button');
+        b.className = 'btn-info';
+        b.textContent = '📌 مثال';
+        b.onclick = () => {
+           playSound();
+           showModal(tool.name, tool.example);
+        };
+        header.appendChild(b);
+      }
+      
+      toolDiv.appendChild(header);
+      body.appendChild(toolDiv);
     });
-  }
+    
+    section.appendChild(h2);
+    section.appendChild(body);
+    mainContainer.appendChild(section);
+    
+    // Accordion Event
+    h2.addEventListener('click', () => {
+      playSound();
+      const isOpen = body.classList.contains('open');
+      
+      // Close all others
+      document.querySelectorAll('.sec-body').forEach(el => {
+        el.style.maxHeight = null;
+        el.classList.remove('open');
+      });
+      document.querySelectorAll('.section-title').forEach(el => el.classList.remove('active'));
+      
+      if (!isOpen) {
+        body.classList.add('open');
+        h2.classList.add('active');
+        body.style.maxHeight = body.scrollHeight + "px";
+      }
+    });
+  });
+}
 
-  function findFirstTool(query){
-    if(!query) return null;
-    const q = query.trim();
-    if(!q) return null;
-    return toolIndex.find(t => t.name.includes(q)) || null;
-  }
-
-  function renderSuggestions(q){
-    if(!inp || !ac) return;
-    const term = (q || '').trim();
-    if(!term){
-      ac.style.display='none';
-      filterTools('');
-      return;
+// Search Functionality
+searchInput.addEventListener('input', (e) => {
+  const val = e.target.value.toLowerCase();
+  const sections = document.querySelectorAll('section');
+  let firstMatch = null;
+  
+  sections.forEach(sec => {
+    const tools = sec.querySelectorAll('.tool');
+    let secHasMatch = false;
+    
+    tools.forEach(t => {
+      // Search in name and descriptions
+      const txt = (t.querySelector('.tool-title').textContent + ' ' + t.innerText).toLowerCase();
+      if(txt.includes(val)) {
+        t.style.display = 'flex';
+        secHasMatch = true;
+        if(!firstMatch) firstMatch = sec;
+      } else {
+        t.style.display = 'none';
+      }
+    });
+    
+    if(secHasMatch) {
+      sec.style.display = 'block';
+      // Auto-expand section if searching
+      const body = sec.querySelector('.sec-body');
+      const title = sec.querySelector('.section-title');
+      if(val) {
+        body.classList.add('open');
+        title.classList.add('active');
+        body.style.maxHeight = body.scrollHeight + "px";
+      }
+    } else {
+      sec.style.display = 'none';
     }
-    const matches = toolIndex.filter(t => t.name.includes(term)).slice(0,12);
-    ac.innerHTML = matches.map(t => `<div data-name="${t.name}">${t.name}</div>`).join('');
-    ac.style.display = matches.length ? 'block' : 'none';
-    filterTools(term);
+  });
+  
+  updateAutocomplete(val);
+});
+
+// Helper to find tool object by name
+function findToolByName(name) {
+  for (const cat of TOOLS_DATA) {
+    for (const tool of cat.tools) {
+      if (tool.name === name) return tool;
+    }
   }
+  return null;
+}
 
-  if(inp && ac){
-    inp.addEventListener('input', ()=>{
-      renderSuggestions(inp.value || '');
+function updateAutocomplete(val) {
+  acBox.innerHTML = '';
+  if(!val) {
+    acBox.style.display = 'none';
+    return;
+  }
+  
+  let matches = [];
+  TOOLS_DATA.forEach(cat => {
+    cat.tools.forEach(t => {
+      if(t.name.toLowerCase().includes(val)) {
+        matches.push(t.name);
+      }
     });
-
-    inp.addEventListener('keydown', e=>{
-      if(e.key === 'Enter'){
-        const tool = findFirstTool(inp.value || '');
-        if(tool){
-          ac.style.display='none';
-          try{ tool.btn.click(); }catch(err){}
-        }else{
-          filterTools(inp.value || '');
+  });
+  
+  matches = [...new Set(matches)]; // unique
+  
+  if(matches.length > 0) {
+    acBox.style.display = 'block';
+    matches.forEach(m => {
+      const div = document.createElement('div');
+      // Name + Link indicator arrow
+      div.innerHTML = `${m} <span>➔</span>`; 
+      div.onclick = () => {
+        // FIX: Clicking autocomplete opens the link directly
+        const tool = findToolByName(m);
+        if(tool && tool.links.length > 0) {
+          window.open(tool.links[0].url, '_blank');
         }
-      }
+        // Also fill input for consistency
+        searchInput.value = m;
+        searchInput.dispatchEvent(new Event('input'));
+        acBox.style.display = 'none';
+      };
+      acBox.appendChild(div);
     });
-
-    ac.addEventListener('click', e=>{
-      if(e.target.tagName === 'DIV'){
-        const chosen = e.target.getAttribute('data-name') || e.target.textContent;
-        inp.value = chosen;
-        ac.style.display='none';
-        const tool = findFirstTool(chosen);
-        if(tool){
-          try{ tool.btn.click(); }catch(err){}
-        }else{
-          filterTools(chosen);
-        }
-      }
-    });
-
-    document.addEventListener('click', e=>{
-      if(!ac.contains(e.target) && e.target!==inp){
-        ac.style.display='none';
-      }
-    });
+  } else {
+    acBox.style.display = 'none';
   }
-  const tgl = document.getElementById('toggleScroll');
-  function upd(){
-    if(!tgl) return;
-    tgl.textContent = (window.scrollY<=10) ? '⬇ النزول للأسفل' : '⬆ رجوع للأعلى';
-  }
-  if(tgl){
-    upd();
-    window.addEventListener('scroll', upd);
-    tgl.addEventListener('click', ()=>{
-      const atTop = (window.scrollY<=10);
-      window.scrollTo({ top: atTop ? document.body.scrollHeight : 0, behavior:'smooth' });
-      try{ sndOpen.currentTime=0; sndOpen.play(); }catch(e){}
-    });
+}
+
+// Close Autocomplete on click outside
+document.addEventListener('click', (e) => {
+  if (!searchInput.contains(e.target) && !acBox.contains(e.target)) {
+    acBox.style.display = 'none';
   }
 });
-</script>
 
+// Modal Logic
+const overlay = document.getElementById('overlay');
+function showModal(title, content) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-content').textContent = content;
+  overlay.classList.add('show');
+}
+function closeModal() {
+  overlay.classList.remove('show');
+}
+
+overlay.addEventListener('click', (e) => {
+  if(e.target === overlay) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === "Escape") closeModal();
+});
+
+// Top Bar Modals
+document.querySelectorAll('.topbtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const key = btn.getAttribute('data-modal');
+    if(MODAL_CONTENT[key]) {
+      playSound();
+      showModal(btn.textContent.trim(), MODAL_CONTENT[key]);
+    }
+  });
+});
+
+// Scroll Button
+const scrollBtn = document.getElementById('toggleScroll');
+window.addEventListener('scroll', () => {
+  if(window.scrollY > 300) {
+    scrollBtn.innerHTML = '⬆ رجوع للأعلى';
+  } else {
+    scrollBtn.innerHTML = '⬇ النزول للأسفل';
+  }
+});
+
+scrollBtn.addEventListener('click', () => {
+  playSound();
+  if(window.scrollY > 300) {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } else {
+    window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+  }
+});
+
+// Init
+renderContent();
+
+</script>
 </body>
 </html>
