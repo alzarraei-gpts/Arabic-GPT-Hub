@@ -471,6 +471,43 @@
     background-color: #050505;
   }
 
+  .official-links{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+  }
+
+  .official-link{
+    color: var(--fg);
+    text-decoration:none;
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid #222;
+    background-color: rgba(255,255,255,0.03);
+    transition: all 0.2s ease;
+  }
+
+  .official-link:hover{
+    background-color: var(--brand);
+    border-color: var(--brand);
+    color:#000;
+  }
+
+  .official-sep{
+    color: var(--fg-muted);
+    font-size: 12px;
+  }
+
+  .footer-copy{
+    color: var(--fg-muted);
+    font-size: 14px;
+  }
+
+
   /* --- Responsive --- */
   @media (max-width: 768px) {
     .topbar { flex-wrap: wrap; gap: 8px; justify-content: center; padding-bottom: 15px; }
@@ -526,8 +563,13 @@
     </div>
   </div>
 
-  <footer>
-    © مركز علوم الدولي للذكاء الاصطناعي 2025 — جميع الحقوق محفوظة.
+    <footer>
+    <div class="official-links" aria-label="روابط رسمية">
+      <a class="official-link" href="https://arabic-gpts.github.io/web/" target="_blank" rel="noopener">جميع الباقات عبر الموقع</a>
+      <span class="official-sep">•</span>
+      <a class="official-link" href="https://chatgpt.com/g/g-681f47498138819197d357982c29544c-lnmdhj-l-rby-ldhky-arabic-gpt" target="_blank" rel="noopener">Arabic GPT عبر ChatGPT</a>
+    </div>
+    <div class="footer-copy">© مركز علوم الدولي للذكاء الاصطناعي 2025 — جميع الحقوق محفوظة.</div>
   </footer>
 
 <script>
