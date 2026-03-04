@@ -1,1403 +1,482 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"/>
-<title>📚 باقة الباحث | النماذج المفهرسة (تحديث نهائي)</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>باقة الباحث الذكي</title>
+
 <style>
-  :root {
-    --bg: #000000;
-    --card-bg: #121212;
-    --card-border: #333333;
-    --fg: #ffffff;
-    --fg-muted: #aaaaaa;
-    --brand: #76B900;
-    --brand-hover: #8cd600;
-    --accent: #222222;
-    --modal-overlay: rgba(0, 0, 0, 0.85);
-    --header-height: 60px; 
-  }
 
-  * { box-sizing: border-box; outline: none; }
+body{font-family:Tahoma,Arial;background:#000;color:#fff;margin:0;line-height:1.8}
 
-  html {
-    scroll-behavior: smooth;
-  }
+.topbar{background:#111;border-bottom:1px solid #333;padding:12px 20px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+.topbar button{background:#000;color:#fff;border:1px solid #76B900;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:bold}
+.topbar button:hover{background:#76B900;color:#000}
 
-  body {
-    font-family: 'Cairo', sans-serif;
-    background-color: var(--bg);
-    color: var(--fg);
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+.search-box{text-align:center;padding:20px;background:#0d0d0d;border-bottom:1px solid #333}
+.search-box input{width:420px;max-width:90%;padding:12px;border-radius:8px;border:1px solid #76B900;background:#000;color:#fff;font-size:15px}
 
-  /* --- Top Navigation --- */
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--card-bg);
-    border-bottom: 1px solid var(--card-border);
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    flex-wrap: wrap;
-  }
+header{text-align:center;padding:35px 20px}
+header img{max-width:320px;margin-bottom:15px}
+header h1{color:#76B900;margin:0;font-size:34px}
+header h2{margin-top:8px;font-size:22px}
 
-  .topbtn {
-    background: transparent;
-    color: var(--fg);
-    border: 1px solid transparent;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
+.section{max-width:1300px;margin:auto;padding:20px}
+.section-title{color:#76B900;font-size:22px;margin:40px 0 20px 0;text-align:center}
 
-  .topbtn:hover {
-    color: #000;
-    background-color: var(--brand);
-    border-color: var(--brand);
-  }
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
 
-  /* --- Search Bar --- */
-  .search-wrap {
-    background-color: var(--bg);
-    padding: 15px 10px;
-    display: flex;
-    justify-content: center;
-    border-bottom: 1px solid #1a1a1a;
-    position: sticky;
-    top: 0; /* سيتم ضبطه عبر JS */
-    z-index: 999;
-  }
+.card{background:#151515;border:1px solid #333;border-radius:14px;padding:20px;transition:.2s}
+.card:hover{border-color:#76B900;transform:translateY(-4px)}
 
-  .search-inner {
-    width: 100%;
-    max-width: 900px;
-    position: relative;
-  }
+.card h3{margin:0 0 10px 0;color:#fff;font-size:18px}
 
-  .search-input {
-    width: 100%;
-    background-color: var(--card-bg);
-    border: 1px solid var(--card-border);
-    color: var(--fg);
-    padding: 12px 50px 12px 20px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-family: 'Cairo', sans-serif;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 
-  .search-input:focus {
-    border-color: var(--brand);
-    box-shadow: 0 0 0 3px rgba(118, 185, 0, 0.2);
-  }
+.btn{padding:8px 14px;border-radius:6px;text-decoration:none;font-weight:bold;border:1px solid #76B900;color:#76B900;background:#000;font-size:13px}
+.btn:hover{background:#76B900;color:#000}
 
-  .clear-search-btn {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    color: var(--fg-muted);
-    font-size: 18px;
-    cursor: pointer;
-    z-index: 1001;
-    display: none;
-    padding: 5px;
-    border-radius: 50%;
-    transition: all 0.2s;
-  }
+footer{margin-top:60px;padding:30px;text-align:center;background:#111;border-top:1px solid #333}
 
-  .clear-search-btn:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: #fff;
-  }
+/* النوافذ المنبثقة مخفية افتراضياً */
+.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.65);padding:40px 20px}
+.modal-content{background:#111;border:1px solid #76B900;border-radius:12px;max-width:900px;margin:auto;padding:25px;color:#fff}
+.modal-content h2{color:#76B900;margin-top:0}
+.close{float:left;font-size:22px;cursor:pointer;color:#76B900;font-weight:bold}
+.close:hover{color:#fff}
+footer a{margin:6px;display:inline-block}
 
-  .autocomplete {
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: 100%;
-    background-color: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-top: none;
-    border-radius: 0 0 12px 12px;
-    margin-top: 4px;
-    display: none;
-    max-height: 300px;
-    overflow-y: auto;
-    z-index: 999;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-  }
+.copyright{margin-top:20px;color:#aaa;font-size:14px}
 
-  .autocomplete div {
-    padding: 12px 16px;
-    color: var(--fg);
-    cursor: pointer;
-    border-bottom: 1px solid #1f1f1f;
-    transition: background 0.2s;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+#scrollBtn{position:fixed;bottom:20px;left:20px;background:#76B900;color:#000;border:none;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:bold}
 
-  .autocomplete div:last-child { border-bottom: none; }
-  
-  .autocomplete div:hover {
-    background-color: var(--brand);
-    color: #000;
-  }
-  
-  .autocomplete div span {
-    font-size: 12px;
-    color: var(--fg-muted);
-    opacity: 0.7;
-  }
-
-  /* --- Hero Section --- */
-  .hero {
-    text-align: center;
-    padding: 40px 20px 20px;
-    background: radial-gradient(circle at center, #111 0%, #000 100%);
-  }
-
-  .hero img {
-    width: 100%;
-    max-width: 600px;
-    height: auto;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInHero 1s ease forwards;
-    border-radius: 12px;
-    box-shadow: 0 0 30px rgba(118, 185, 0, 0.1);
-  }
-
-  .hero h1 {
-    color: var(--brand);
-    margin: 20px 0 10px;
-    font-size: clamp(22px, 5vw, 32px);
-    font-weight: 700;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInHero 1s ease 0.3s forwards;
-  }
-
-  @keyframes fadeInHero {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* --- Main Content --- */
-  .container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 20px;
-    padding-bottom: 100px;
-    overflow: visible;
-  }
-
-  /* --- Sections (Accordion) --- */
-  section {
-    margin-bottom: 24px;
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
-    background-color: var(--card-bg);
-    overflow: visible;
-    transition: box-shadow 0.3s;
-  }
-
-  section:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    border-color: #444;
-  }
-
-  h2.section-title {
-    margin: 0;
-    padding: 18px 24px;
-    font-size: 20px;
-    color: var(--fg);
-    background-color: #1a1a1a;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-    transition: background 0.3s, top 0.3s;
-    border-radius: 12px 12px 0 0;
-    position: relative; 
-    z-index: 10;
-  }
-
-  h2.section-title:hover {
-    background-color: #222;
-    color: var(--brand);
-  }
-  
-  /* --- STICKY ACTIVE STYLE --- */
-  h2.section-title.active {
-    position: sticky;
-    z-index: 800;
-    background-color: #1a1a1a;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    border-right: 4px solid var(--brand);
-    border-radius: 0 8px 8px 0;
-  }
-
-  h2.section-title .caret {
-    font-size: 14px;
-    transition: transform 0.3s ease;
-  }
-
-  h2.section-title.active .caret {
-    transform: rotate(180deg);
-  }
-
-  .sec-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
-    padding: 0 24px;
-  }
-
-  .sec-body.open {
-    padding: 24px;
-    padding-top: 24px;
-  }
-
-  /* --- Tool Cards --- */
-  .tool {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid #2a2a2a;
-  }
-
-  .tool:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-  }
-
-  .tool-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--brand);
-    margin: 0 0 12px 0;
-    padding: 0 5px;
-    border-right: 3px solid var(--brand);
-  }
-
-  .tool-header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .btn-gpt {
-    background-color: #000;
-    border: 1px solid var(--card-border);
-    color: var(--brand);
-    padding: 12px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 15px;
-    transition: all 0.2s;
-    min-width: 140px;
-    justify-content: center;
-  }
-
-  .btn-gpt:hover {
-    background-color: var(--brand);
-    color: #000;
-    border-color: var(--brand);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(118, 185, 0, 0.2);
-  }
-
-  .btn-info {
-    background-color: #1e1e1e;
-    border: 1px solid #333;
-    color: var(--fg-muted);
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-info:hover {
-    background-color: #2a2a2a;
-    color: var(--fg);
-    border-color: var(--brand);
-  }
-
-  /* --- Scroll Toggle Button --- */
-  .to-toggle {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background-color: var(--card-bg);
-    color: var(--brand);
-    border: 2px solid var(--brand);
-    border-radius: 50px;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    z-index: 2000;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .to-toggle:hover {
-    background-color: var(--brand);
-    color: #000;
-    transform: scale(1.05);
-  }
-
-  /* --- Modal --- */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background-color: var(--modal-overlay);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 3000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    backdrop-filter: blur(4px);
-  }
-
-  .overlay.show {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .modal {
-    background-color: var(--card-bg);
-    width: 90%;
-    max-width: 700px;
-    max-height: 85vh;
-    border-radius: 16px;
-    border: 1px solid var(--card-border);
-    padding: 30px;
-    position: relative;
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
-    overflow-y: auto;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-  }
-
-  .overlay.show .modal {
-    transform: translateY(0);
-  }
-
-  .modal-close {
-    position: sticky;
-    top: 0;
-    left: 0;
-    background: none;
-    border: none;
-    color: var(--fg-muted);
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0;
-    margin-bottom: 10px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: background 0.2s;
-    float: left;
-  }
-
-  .modal-close:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: var(--fg);
-  }
-
-  .modal h4 {
-    color: var(--brand);
-    margin: 0 0 15px 0;
-    font-size: 22px;
-    border-bottom: 1px solid var(--card-border);
-    padding-bottom: 10px;
-    clear: both;
-  }
-
-  .modal-content {
-    font-size: 17px;
-    color: #ddd;
-    white-space: pre-wrap;
-    line-height: 1.8;
-    direction: rtl;
-    text-align: right;
-  }
-
-  /* --- Footer --- */
-  footer {
-    text-align: center;
-    padding: 30px;
-    color: var(--fg-muted);
-    font-size: 14px;
-    border-top: 1px solid var(--card-border);
-    background-color: #050505;
-  }
-
-  .official-links{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-bottom:12px;
-  }
-
-  .official-link{
-    color: var(--fg);
-    text-decoration:none;
-    font-size: 13px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: 1px solid #222;
-    background-color: rgba(255,255,255,0.03);
-    transition: all 0.2s ease;
-  }
-
-  .official-link:hover{
-    background-color: var(--brand);
-    border-color: var(--brand);
-    color:#000;
-  }
-
-  .official-sep{
-    color: var(--fg-muted);
-    font-size: 12px;
-  }
-
-  .footer-copy{
-    color: var(--fg-muted);
-    font-size: 14px;
-  }
-
-
-  /* --- Responsive --- */
-  @media (max-width: 768px) {
-    .topbar { flex-wrap: wrap; gap: 8px; justify-content: center; padding-bottom: 15px; }
-    .topbtn { font-size: 13px; padding: 6px 12px; }
-    .tool-header { flex-direction: column; align-items: stretch; }
-    .btn-gpt { width: 100%; justify-content: space-between; }
-    .hero img { max-width: 90%; }
-    .to-toggle { right: 20px; bottom: 20px; padding: 10px 20px; font-size: 14px; }
-    .search-wrap { position: sticky; top: 0; }
-  }
 </style>
 </head>
+
 <body>
 
-  <!-- Top Navigation -->
-  <nav class="topbar" id="mainTopbar">
-    <button class="topbtn" data-modal="desc">وصف</button>
-    <button class="topbtn" data-modal="about">من نحن</button>
-    <button class="topbtn" data-modal="courses">دوراتنا</button>
-    <button class="topbtn" data-modal="news">جديدنا</button>
-    <button class="topbtn" data-modal="links">روابط</button>
-  </nav>
+<div class="topbar">
+<button onclick="openModal('about')">وصف</button>
+<button onclick="openModal('who')">من نحن</button>
+<button onclick="openModal('courses')">دوراتنا</button>
+<button onclick="openModal('news')">جديدنا</button>
+<button onclick="openModal('links')">روابط</button>
+</div>
 
-  <!-- Search Section -->
-  <div class="search-wrap" id="mainSearchWrap">
-    <div class="search-inner">
-      <button id="clearSearchBtn" class="clear-search-btn" aria-label="مسح البحث">✖</button>
-      <input id="toolSearch" class="search-input" placeholder="ابحث عن اسم الأداة" autocomplete="off" />
-      <div id="acBox" class="autocomplete"></div>
-    </div>
-  </div>
+<!-- النوافذ المنبثقة للمحتوى التعريفي -->
+<div id="about" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('about')">✖</span>
+<h2>وصف</h2>
+<p>تُعَدّ باقة الباحث منظومة متخصصة من النماذج والأدوات الذكية المصمَّمة لدعم الباحث العربي في مختلف مراحل العمل العلمي. تضم هذه الباقة مجموعة من البوتات البحثية التي تساعد على توليد الأفكار وصياغة العناوين العلمية وبناء خطط البحث وتحليل المصادر وإعداد الدراسات الأكاديمية وفق منهجية علمية منضبطة.</p>
+<p>كما توفّر أدوات متقدمة لإعادة الصياغة الأكاديمية وتوثيق النصوص وتنسيق المراجع والترجمة الاصطلاحية وتحليل النصوص العلمية بما يمكّن الباحث من إنجاز عمله بكفاءة أعلى وجودة منهجية أدق.</p>
+</div></div>
 
-  <!-- Hero Section -->
-  <div class="hero">
-    <img src="https://github.com/alzarraei-gpts/Arabic-GPT-Hub/raw/main/banner.png" alt="شعار النماذج العربية الذكية" id="heroBanner">
-    <h1>باقة الباحث | النماذج المفهرسة (الإصدار الشامل)</h1>
-  </div>
+<div id="who" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('who')">✖</span>
+<h2>من نحن</h2>
+<p>تندرج باقة الباحث ضمن مشروع «النماذج العربية الذكية» الذي أسسه د. عبدالرحمن الزراعي، الباحث والمشرف الأكاديمي المتخصص في مجالات البحث العلمي ونماذج الذكاء الاصطناعي. يهدف المشروع إلى تطوير نماذج ذكاء اصطناعي عربية تعمل وفق تعليمات دقيقة تحقق أداءً متسقًا ومعايير علمية ولغوية عالية.</p>
+</div></div>
 
-  <!-- Main Content Area -->
-  <div id="mainContainer" class="container">
-    <!-- Content will be injected here by JavaScript -->
-  </div>
+<div id="courses" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('courses')">✖</span>
+<h2>دوراتنا</h2>
+<p>نقدّم دورات تدريبية متخصصة لتعريف الباحثين بطريقة استخدام نماذج باقة الباحث والاستفادة منها في العمل العلمي. تشمل هذه البرامج التدريب على هندسة التعليمات وإدارة الحوار مع النماذج الذكية واستخدامها في إعداد الأبحاث الأكاديمية وتحليل النصوص العلمية.</p>
+</div></div>
 
-  <!-- Floating Scroll Button -->
-  <button class="to-toggle" id="toggleScroll">⬇ النزول للأسفل</button>
+<div id="news" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('news')">✖</span>
+<h2>جديدنا</h2>
+<p>يتم تطوير أدوات ونماذج جديدة ضمن باقة الباحث بصورة مستمرة لتلبية احتياجات الباحثين في مختلف التخصصات. وتُرفق هذه التحديثات عادةً بإرشادات استخدام ومواد تعليمية تساعد المستخدم على الاستفادة الكاملة من الأدوات الجديدة.</p>
+</div></div>
 
-  <!-- Modal Template -->
-  <div id="overlay" class="overlay">
-    <div class="modal">
-      <button class="modal-close" onclick="closeModal()">✖</button>
-      <h4 id="modal-title">تفاصيل</h4>
-      <div id="modal-content" class="modal-content"></div>
-    </div>
-  </div>
+<div id="links" class="modal"><div class="modal-content"><span class="close" onclick="closeModal('links')">✖</span>
+<h2>روابط تعليمية</h2>
+<p>نوفر مجموعة من الموارد التعليمية التي تساعد الباحث على فهم آلية عمل النماذج الذكية وكيفية توظيفها في البحث العلمي.</p>
+<p><a class="btn" href="https://alzarraei-gpts.github.io/Arabic-GPT-Hub-books/" target="_blank">الدخول إلى مكتبة الكتب التعليمية</a></p>
+</div></div>
 
-    <footer>
-    <div class="official-links" aria-label="روابط رسمية">
-      <a class="official-link" href="https://arabic-gpts.github.io/web/" target="_blank" rel="noopener">جميع الباقات عبر الموقع</a>
-      <span class="official-sep">•</span>
-      <a class="official-link" href="https://chatgpt.com/g/g-681f47498138819197d357982c29544c-lnmdhj-l-rby-ldhky-arabic-gpt" target="_blank" rel="noopener">Arabic GPT عبر ChatGPT</a>
-    </div>
-    <div class="footer-copy">© مركز علوم الدولي للذكاء الاصطناعي 2025 — جميع الحقوق محفوظة.</div>
-  </footer>
+<div class="search-box">
+<input id="search" type="text" placeholder="ابحث باسم البوت..." oninput="searchTools()">
+</div>
+
+<header>
+<img src="logo.png">
+<h1>باقة الباحث الذكي</h1>
+<h2>بوتات الذكاء الاصطناعي | النماذج الذكية</h2>
+</header>
+
+<!-- نماذج الابتكار -->
+<div class="section">
+<div class="section-title">نماذج الابتكار</div>
+<div class="grid">
+
+<div class="card" data-name="اقتراح عنوان وفكرة بحث نوعي">
+<h3>اقتراح عنوان وفكرة بحث نوعي</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-68c0f53b875881918f4b9ba01c57668a-qtrh-nwn-wfkr-bhth-research-titles-mod-5" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/12xZFJYnWNimrN8tsnlpm0xGd_pYEZ-iy?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="اقتراح عنوان وفكرة بحث كمي">
+<h3>اقتراح عنوان وفكرة بحث كمّي</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-695a577a834c8191845d1591b8102c49-qtrh-nwn-wfkr-bhth-tjryby-research-title-m-5" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1jxldLqH3pq6PHySjR_th2XCeNkPpxi7-?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="اقتراح عنوان وفكرة بحث مختلط">
+<h3>اقتراح عنوان وفكرة بحث مختلط</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-69914cb239448191aa6e42f397d417be-qtrh-nwn-wfkr-bhth-mkhtlt-mixted-title" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1g5EDooFXNdyEhWA2afz3bHZVpemIyOmc?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="صناعة خطة بحث نوعي">
+<h3>صناعة خطة بحث نوعي</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-68c0fcbcc7f48191b5236ff7bc232204-sn-lkht-lbhthy-research-plan-mod-5" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1_cVfIfDPDJ77ZrVNGs7ax3I3jpFODxxg?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="صناعة خطة بحث كمي">
+<h3>صناعة خطة بحث كمّي</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-6952bc9b7fd481919e7d4b5888412236-sn-lkht-llbhth-ltjryby-research-plan" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1Y21qg1O7X61mB3b92UtdyEPJcakJUJ6F?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="صناعة خطة بحث مختلط">
+<h3>صناعة خطة بحث مختلط</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-699199560de4819183db1e2a3386a2a1-sn-kht-bhth-mkhtlt-mixed-research" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/186HhIWOPbUuXx-6tiiiMM-PJ7s86P9DJ?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="دليل كتابة الرسائل العلمية">
+<h3>دليل كتابة الرسائل العلمية</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-6882ebaa86088191bca7962b5b02b41a-dlyl-ktb-lrsyl-l-lmy-university-guide" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1cpsDzNe50G4Jbsy8HzX4cJb-ccRVmMui?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="دليل الأنظمة البحثية">
+<h3>دليل الأنظمة البحثية</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-EvIbEhTiz-bwt-dlyl-lnzm-lbhthy-researcher-s-guide" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1-yDQUTbqSp-ODF4-Oa7fIWr1kq1CgdO4?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="دليل فهارس المخطوطات">
+<h3>دليل فهارس المخطوطات</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-684aee5a12908191adae472dd09683da-bwt-dlyl-lmkhtwtt-guide-to-arabic-manuscripts" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1ImrEO210D2or_arQj3W2CqoGN6qTs0Jx?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- نماذج التوثيق -->
+<div class="section">
+<div class="section-title">نماذج التوثيق</div>
+<div class="grid">
+
+<div class="card" data-name="توليد المحتوى وتوثيقه">
+<h3>توليد المحتوى وتوثيقه</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-X51QAhBwR-bwt-twthyq-lbhwth-research-documentation" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1rPLa6CN-oI3aPxTG6yP8a4YlycoJoWnG?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="البحوث الكاملة من المكتبة الشاملة">
+<h3>البحوث الكاملة من المكتبة الشاملة</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-68c122b16b0481918aa00c125a839ab6-lbhwth-lkml-mn-lmktb-lshml-mod-5" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1pPnwJcwqTNccDRq97L388tJsxPg9bsLh?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="الجامع في تحصيل المراجع">
+<h3>الجامع في تحصيل المراجع</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-680a3eefb2bc8191967abacfd909ede3-bwt-lmsdr-wlmrj-l-lmy-research-resources" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1zRXAKJMF3npbT0y6XAPVj0FCmHsIxq9R?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="الوصول السريع إلى روابط البحث">
+<h3>الوصول السريع إلى روابط البحث</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-6958bacb46b48191a99a761175b9c1c5-lwswl-lsry-l-rwbt-lbhth-research-links" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1Mm5tPMUNcU2g7gIP7_CFW5FUrkM2TBwk?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="الوصول السريع إلى روابط الملفات">
+<h3>الوصول السريع إلى روابط الملفات</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-67d515daced481918a47851b5cc7c5f6-bwt-qwql-lsry-fast-search-engine" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1BN9jU8nivta6bo9P0tX5wkqKs2pFo-6P?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="ضبط مراجع البحث">
+<h3>ضبط مراجع البحث</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-762SWrxgA-bwt-tnsyq-lmrj-reference-formatting" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1fQdNWiadSeG-zRTIITZTXhFfMzARoHOU?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- نماذج التحرير -->
+<div class="section">
+<div class="section-title">نماذج التحرير</div>
+<div class="grid">
+
+<div class="card" data-name="إعادة الصياغة">
+<h3>إعادة الصياغة</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-67b44b7c337c81919a26dbe8a22c7329-d-lsyg-human-reformulation" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1-i-2tElnXKW14uY5KZnTJOwD5xHy27_Q?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="التدقيق اللغوي">
+<h3>التدقيق اللغوي</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-68c13b315aa48191befd9fe8441bcf3e-ltdqyq-llgwy-proofreading" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1X9iGqJb3TgV8EnPiAJ6W4SGqJtgaJaOm?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="تصحيح الإملاء وعلامات الترقيم">
+<h3>تصحيح الإملاء وعلامات الترقيم</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-694166ef7a58819183b7bcfd455bd091-dbt-lml-w-lmt-ltrqym" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1bhGwKU84-5eckTbFKCAKAHUwGVyZhr29?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="تشكيل النصوص العربية">
+<h3>تشكيل النصوص العربية</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-69980dc376e48191a20afcf5818be787-tshkyl-lnsws-l-rby-text-formation" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1feWB0LW_vxuos9HcSHK-YNYl1pvJH-q4?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="الانتحال والأسلوب البشري">
+<h3>الانتحال والأسلوب البشري</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-tXrotFsS3-lnthl-wlslwb-lbshry-human-style" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1WFckI-3CMy7bFI3fTWIfvnE0axla-3Ov?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- نماذج علوم الحديث -->
+<div class="section">
+<div class="section-title">نماذج علوم الحديث</div>
+<div class="grid">
+
+<div class="card" data-name="تخريج الأحاديث النبوية">
+<h3>تخريج الأحاديث النبوية</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-UEL0GgbkF-tkhryj-lhdyth-lnbwy-graduate-of-hadith" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1VZXKjN2LM37O06Q92KfLlKO_vOhdAUt6?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="شرح غريب الحديث">
+<h3>شرح غريب الحديث</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-68b30581e8a881918204976d605b1271-shrh-gryb-lhdyth" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1UviYXmkXqR430eDGaiL8J531fdDJ5hbe?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="فهرسة وشرح غريب الحديث">
+<h3>فهرسة وشرح غريب الحديث</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-68ba4892a7b481918fd372a5093aad21-fhrs-wshrh-gryb-lhdyth" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/15VPCdykMkdA8O4ss3IQHah49RHHN_-jO?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- نماذج التحليل -->
+<div class="section">
+<div class="section-title">نماذج التحليل</div>
+<div class="grid">
+
+<div class="card" data-name="تحليل البحث النوعي">
+<h3>تحليل البحث النوعي</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-6870ad25b828819189c59c4bf012c04c-d-m-lbhth-lnw-y" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1HHgQtXTVA9amD3yTnQWwVTJx69uebfmU?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="تحليل البحث الكمي">
+<h3>تحليل البحث الكمّي</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-txUGYAgZo-t-lymt-lbhth-ltjryby-quantitative-research" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/14Y5P8gmvzjVPEZTDykPSJII6F7R7mF99?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="تحليل البحث المختلط">
+<h3>تحليل البحث المختلط</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-69929821c5d881918533a079a94ff2b2-thlyl-lbhth-lmkhtlt-mixed-analysis" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/18jiXFMSj_yU0NstnuMpe2OvXys0KTJ7u?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="تحليل ملفات البحث">
+<h3>تحليل ملفات البحث</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-FG9ivmtVu-bwt-thlyl-lmlft-pdf-file-analysis" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1Ud0XzUL47GyKV0AW0KJfoX8-EulhYdrJ?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="تحليل البيانات البحثية">
+<h3>تحليل البيانات البحثية</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-67f0bf48eb1c8191b85a522cc7bf8065-bwt-mhll-lbynt-lbhthy-research-data-analyst" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1SkmkjbGIqUMaxP-N3sXtB-G00EgkjlH7?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="تحليل ملفات اكسل">
+<h3>تحليل ملفات اكسل</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-68809e7f7abc8191a513012f75ed8f5a-excel-thlyl-trbwy" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1Ex7sFTObJowA0WIa9L1Fwa4IMpC6qjqt?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- نماذج المراجعة والنقد -->
+<div class="section">
+<div class="section-title">نماذج المراجعة والنقد</div>
+<div class="grid">
+
+<div class="card" data-name="ناقد البحث النوعي">
+<h3>ناقد البحث النوعي</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-69622bf35684819186ae27280eabb67e-nqd-bhth-wsfy-descriptive-research-reviewer" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1woS6AFRzKT2D5xwdSGAftyIhwwLIPwmU?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="ناقد البحث الكمي">
+<h3>ناقد البحث الكمّي</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-69626e3febe88191b692e0aabe580e5a-nqd-bhth-tjryby-experimental-study-reviewer" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1_4bPtX7ZgszmYFRwe40HXEMH5lXQ1Jxu?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="ناقد البحث المختلط">
+<h3>ناقد البحث المختلط</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-6992a3a8055c8191ace8efd06fdfe281-nqd-lbhth-lmkhtlt-mixed-study-reviewer" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1hYx4E6Anf-FSED-3T0E5gEZ8Wi1I4TZ7?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- نماذج أدوات الباحث -->
+<div class="section">
+<div class="section-title">نماذج أدوات الباحث</div>
+<div class="grid">
+
+<div class="card" data-name="برمجيات العقيل">
+<h3>برمجيات العقيل</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-67c877434d24819182fb3212b3e0b931-brmjyt-l-qyl-al-aqeel-software" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1i3TTWUNjmhY8t6I5_K9UjECFjos_6YR_?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+<div class="card" data-name="روابط تفريغ النصوص">
+<h3>روابط تفريغ النصوص</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-68f6fd7d357c819196fb06829fee0664-rwbt-tfryg-lnsws-text-transcription-tools" target="_blank">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1zhNm6Hov3irAuh89L5BOpw8Y8awREAUQ?usp=sharing" target="_blank">Gemini</a>
+</div>
+</div>
+
+</div>
+</div>
+
+<footer>
+
+<div style="margin-bottom:12px;font-weight:bold;color:#76B900">روابط المنصة</div>
+
+<div class="btns" style="justify-content:center">
+<a class="btn" href="https://arabic-gpts.github.io/web/" target="_blank">جميع الباقات</a>
+<a class="btn" href="https://chatgpt.com/g/g-681f47498138819197d357982c29544c-lnmdhj-l-rby-ldhky-arabic-gpt" target="_blank">العروض والتخفيضات</a>
+<a class="btn" href="https://www.skool.com/zraiee-3956/about" target="_blank">التعليم والتطوير</a>
+</div>
+
+<div style="margin-top:25px;color:#bbb;font-size:14px">
+بوابة النماذج العربية الذكية – باقة الباحث. جميع الأدوات المعروضة في هذه الصفحة مخصصة لدعم الباحث العربي باستخدام نماذج الذكاء الاصطناعي عبر منصتي ChatGPT وGemini.
+</div>
+
+<div class="copyright">© 2026 جميع الحقوق محفوظة</div>
+</footer>
+
+<button id="scrollBtn" onclick="scrollToggle()">⬇</button>
 
 <script>
-/* =========================================
-   DATA: Top Bar Modals
-   ========================================= */
-const MODAL_CONTENT = {
-  desc: `تضم بوابة "النماذج العربية الذكية" حزمة متكاملة من الباقات والبوتات المصممة خصيصًا لدعم المستخدم العربي في مجالات عدة، تشمل: البحث العلمي، والتعليم، والتصميم، والإدارة، والتسويق، والقانون، والبرمجة، وغيرها. تحتوي كل باقة على مجموعة من البوتات التي تؤدي مهامًا ذكية محددة بدقة وسرعة، مثل: إعداد العنوان والفكرة، وصناعة الخطة، وإعداد البحث العلمي، وتوثيق النصوص، وتنسيق المراجع، وإعادة الصياغة، والترجمة الاصطلاحية، وتحليل النصوص، وغيرها.`,
-  about: `أسّس هذه المنصة د. عبدالرحمن الزراعي، مشرف أكاديمي وباحث متخصص في مجالات البحوث العلمية، مهتم بالفنون البصرية ونماذج الذكاء الاصطناعي، عمل من وقت طويل على تطوير تعليمات دقيقة ومخصصة للنماذج العربية الذكية GPT، وهذه التعليمات تهدف إلى إنشاء نماذج ذكية تعمل على تحقيق أداء متسق وعالي الجودة في مختلف التخصصات، فضلاً عن استضافة فريق من الباحثين والأكاديميين والمهتمين في العمل لبناء رؤية تحليلية عميقة ومنهجية وصارمة في تصميم كل نموذج، وهذا يضمن توافق تلك النماذج مع المعايير العلمية واللغوية، وتقييم أدائها على نحو منهجي بهدف تحسينها وتطويرها، كما يسعى الفريق إلى تمكين المجتمع العربي من الإفادة الكاملة من قدرات الذكاء الاصطناعي بلغته وثقافته، إيمانًا منه بأن التقنية المصممة بعناية قادرة على أن تكون أداة فعالة، وأن تسهم بقوة في تعزيز الكفاءة والإنتاجية.`,
-  courses: `نقدم مجموعة من الدورات التدريبية المصممة بعناية لتعريف المستخدمين بواجهة ChatGPT وطرق التعامل معها باحتراف، وتشمل الدورات محاور أساسية مثل: كيفية طرح الأسئلة، وإدارة الحوار، وهندسة التعليمات وتوجيهها بطريقة صحيحة، كما نقدم دورات في البحث العلمي تتناول كيفية إنشاء نماذج مخصصة للعمل البحثي، وتتناول أيضاً مفاهيم مثل النماذج التوليدية، وتعليمات التكوين، وتدريب النماذج، وفهم آليات التفكير الآلي، وتُعقد الدورات بأسلوب تطبيقي مع ما يرفق ذلك من ملفات معينة ومواد تعليمية تساعد المتدرب على التطبيق الفوري، ويمكن طلب الدورات بشكل فردي أو جماعي حسب الحاجة.`,
-  news: `نعمل باستمرار على تطوير نماذج ذكية جديدة تواكب الاحتياجات المتغيرة للمستخدمين، ولعل من أحدث النماذج التي أُضيفت مؤخراً: نموذج 4o ونموذج 5 لبعض الأدوات، وجميع هذه النماذج الذكية يأتي ضمن باقات جاهزة للاستخدام، مصحوبة بفيديوهات شرح وتوجيهات مخصصة، تابعنا باستمرار للاطلاع على كل جديد.`,
-  links: `نوفر مجموعة من الروابط التعليمية لمساعدة المستخدم على فهم آلية عمل الذكاء الاصطناعي، وطريقة التعامل مع النماذج المخصصة. من أبرز المحتويات: كتاب "الآلة التي تفكر" التي توضح كيفية تحليل النموذج للمحتوى قبل توليده. وكتاب "الآلة التي ترد" التي تشرح بطريقة عملية وتطبيقية كيف يتفاعل النموذج مع التعليمات، كما نُتيح مؤلفات مختصرة وملفات إرشادية قابلة للتحميل، تحتوي على أمثلة عملية وتعليمات جاهزة للاستخدام، يمكن الاستفادة من هذه التعليمات في تكوين نماذجك الخاصة، وضبط أدائها بما يتناسب مع هدفك، كل المواد التعليمية يتم تحديثها باستمرار، وهي مصممة لتناسب جميع المستويات. #روابط الكتب: https://alzarraei-gpts.github.io/Arabic-GPT-Hub-books/`
-};
 
-/* =========================================
-   DATA: Tools & Categories (Final Updated Content)
-   ========================================= */
-const TOOLS_DATA = [
-  {
-    "category": "نماذج الابتكار",
-    "tools": [
-      {
-        "name": "اقتراح عنوان وفكرة بحث نوعي",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-68c0f53b875881918f4b9ba01c57668a-qtrh-nwn-wfkr-bhth-research-titles-mod-5"
-          }
-        ],
-        "desc": "يُعد هذا البوت مساعدًا بحثيًا نوعيًا متخصصًا في اقتراح أفكار بحثية أكاديمية منضبطة وفق متطلبات الجامعات السعودية، إذ يركّز على توليد فكرة بحثية موجزة وستة عناوين نوعية تحليلية بصياغة أكاديمية دقيقة، ويقدّم لكل عنوان تحليلًا مختصرًا يوضّح زاوية المعالجة المعرفية دون الدخول في منهج أو أدوات أو نتائج، كما يبيّن الفجوة العلمية التي يستهدفها العنونمان وآلية ردمها بصورة تحليلية منضبطة، ويُرفق مؤشرًا تقديريًا لدرجة القبول المتوقعة بصيغة نسبة مئوية ثابتة، ويعتمد في ذلك على أنماط صياغة نوعية خالية من الطابع الكمي أو السببي، ويعمل ضمن نطاق محدد يقتصر على مرحلة اقتراح الفكرة والعنوان فقط دون التوسّع إلى خطة البحث، ويستخدم لغة أكاديمية رصينة تبدأ بالفعل وتخلو من الحشو، ويطبّق نظام ضبط جودة داخلي يراجع الاتساق البنيوي والمحتوائي قبل الإخراج، كما يلتزم بحوكمة تشغيلية تمنع الخروج عن الإطار النوعي أو استنتاج معطيات غير مصرّح بها، وبذلك يوفّر للباحث منصة مركّزة لتوليد مقترحات بحثية نوعية عالية الانضباط تساعده على اختيار عنوان مناسب قابل للقبول الأكاديمي المبدئي.",
-        "limits": "تتمثل حدود هذا البوت في أنه يختص حصريًا باقتراح فكرة بحثية نوعية موجزة وتوليد ستة عناوين بحثية ضمن الإطار النوعي التحليلي فقط، ولا يُقدّم خططًا بحثية أو إشكاليات أو أهدافًا أو أسئلة أو أدوات أو مناهج أو نتائج. لا يعالج الدراسات الكمية أو التجريبية أو السببية أو التنبؤية، كما لا يُنشئ مقترحات تتضمن قياس متغيرات أو اختبار علاقات. لا يستنتج المجال أو التخصص أو المستوى الأكاديمي في حال عدم ذكرها صراحة، ويتوقف عن التنفيذ عند غياب أي من هذه المعطيات. لا يمنح قبولًا رسميًا أو ضمانًا مؤسسيًا، بل يرفق مؤشر قبول تقديري غير ملزم فقط. لا يوسّع الفكرة إلى مشروع متكامل ولا يكتب الإطار النظري أو الدراسات السابقة. لا يعمل خارج السياق الأكاديمي النوعي، ويقتصر دوره على مرحلة اختيار الفكرة وصياغة العنوان بصورة منضبطة دون تقديم استشارات بحثية شاملة.",
-        "example": "\"أدخل المجال: الإدارة، التخصص: السلوك التنظيمي، المستوى: ماجستير، وسيقترح البوت فكرة بحثية نوعية واحدة وستة عناوين تحليلية مع بيان الفجوة وآلية ردمها ومؤشر القبول لكل عنوان.\""
-      },
-      {
-        "name": "اقتراح عنوان وفكرة بحث كمّي",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-695a577a834c8191845d1591b8102c49-qtrh-nwn-wfkr-bhth-tjryby-research-title-m-5"
-          }
-        ],
-        "desc": "يعمل هذا البوت بوصفه نظامًا متخصصًا في توليد وصياغة عناوين وأفكار بحث كمي منضبطة وفق أطر منهجية دقيقة، ويُسهم في مساعدة الباحث على تحويل اهتمامه العلمي إلى بناء كمي قابل للقياس والتحليل الإحصائي، ويضمن تحديد المتغيرات المستقلة والتابعة بصورة واضحة، ويمنع الوقوع في الصياغات النوعية غير القابلة للاختبار، ويوجه نحو اختيار المنهج الكمي المناسب مثل الوصفي أو الارتباطي أو التجريبي، ويقترح أداة قياس قابلة للتطبيق كاستبانة أو مقياس معياري، ويربط نوع العلاقة الإحصائية بالاختبار الملائم لها، ويتحقق من سلامة البناء المنهجي قبل الإخراج النهائي، ويمنع إدراج مفاهيم غير قابلة للتحويل إلى مؤشرات رقمية، كما يرفق مؤشر قبول كمي يساعد الباحث على تقدير قوة الفكرة من حيث قابليتها للتنفيذ الإحصائي.",
-        "limits": "تتمثل حدود هذا البوت في أنه يختص حصريًا بتوليد وصياغة عناوين وأفكار بحث كمي منضبطة وفق إطار منهجي إحصائي، ولا يقدّم دراسات نوعية أو تحليلًا نظريًا أو مراجعات أدبية موسعة، ولا يكتب فصولًا بحثية كاملة أو خططًا تفسيرية خارج البناء الكمي، كما لا ينتج بيانات افتراضية أو نتائج إحصائية غير محسوبة، ولا يتعامل مع موضوعات لا يمكن تحويلها إلى متغيرات قابلة للقياس، ولا يصوغ أفكارًا تفتقر إلى مجتمع دراسة أو عينة محددة، ولا يدمج بين مناهج كمية ونوعية في بناء واحد، ولا يقدّم استشارات عامة خارج السياق الأكاديمي البحثي، ويركّز على ضبط المتغيرات، والمنهج، وأداة القياس، ونوع الاختبار الإحصائي دون التوسع في الشرح النظري أو الفلسفي للموضوع.",
-        "example": "\"أدخل المجال: تربوي، والفئة: طلاب المرحلة الثانوية، والموضوع: استخدام الذكاء الاصطناعي في التعليم\" فيولّد البوت عنوانًا كميًا مثل: أثر استخدام أدوات الذكاء الاصطناعي في مستوى التحصيل الدراسي لدى طلاب المرحلة الثانوية، مع تحديد المتغير المستقل والتابع، والمنهج المناسب، وأداة القياس، ونوع الاختبار الإحصائي، ومؤشر القبول الكمي."
-      },
-      {
-        "name": "اقتراح عنوان وفكرة بحث مختلط",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-69914cb239448191aa6e42f397d417be-qtrh-nwn-wfkr-bhth-mkhtlt-mixted-title"
-          }
-        ],
-        "desc": "يُستخدم هذا البوت لاقتراح فكرة بحث مختلط منضبطة منهجيًا مع توليد عنوان يعكس الدمج الصريح بين البعدين الكمي والنوعي، ويحدّد نوع التصميم المختلط بدقة وفق الأطر المعتمدة، كما يضمن تضمين شق كمي قائم على متغيرات قابلة للقياس وشق نوعي يستكشف الخبرات أو التفسيرات، ويضبط منطق التكامل بين نتائج الشقين بصورة منهجية واضحة، ويوجّه صياغة العنوان وفق أنماط أكاديمية مختلطة منضبطة، ويرفق مؤشر قبول نسبي بصيغة نسبة مئوية لكل مقترح، ويمنع الانحراف نحو منهج أحادي، ويوقف التنفيذ عند غياب أحد البعدين، ويقدّم مخرجًا بحثيًا متماسكًا قابلًا للبناء في سياق الدراسات العليا.",
-        "limits": "يعمل هذا البوت ضمن نطاق اقتراح فكرة وعنوان بحث مختلط فقط، ويلتزم التزامًا صارمًا بالحياد الأكاديمي والدقة المنهجية والمعايير الجامعية المعتمدة، ويقتصر دوره على صياغة مقترح بحثي يجمع بين الشق الكمي والشق النوعي مع تحديد نوع التصميم المختلط صراحة، ولا يقدّم أدوات قياس أو تحليلات إحصائية تفصيلية أو نتائج مفترضة، ولا يبني فروضًا سببية جاهزة، ولا يقدّم توثيقًا أو مراجع، ولا يوسّع المهمة إلى دراسات أحادية المنهج، كما يوقف التنفيذ عند غياب أحد البعدين أو عند عدم قابلية الموضوع للمعالجة المختلطة.",
-        "example": "أدخل طلبًا مثل: (اقتراح فكرة وعنوان بحث مختلط في تخصص المناهج وطرق التدريس لمرحلة الماجستير حول التعلم الرقمي)، وسيقوم البوت بتحديد التصميم المختلط المناسب، وصياغة فكرة تتضمن شقًا كميًا لقياس أثر التعلم الرقمي، وشقًا نوعيًا لاستكشاف خبرات الطلبة أو المعلمين، ثم توليد عنوان يعكس الدمج المنهجي بوضوح مع تحديد نوع التصميم المختلط في القالب المعتمد."
-      },
-      {
-        "name": "صناعة خطة بحث نوعي",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-68c0fcbcc7f48191b5236ff7bc232204-sn-kht-bhth-nw-y-qualitative-research"
-          }
-        ],
-        "desc": "يُعدّ هذا البوت أداةً أكاديمية متخصصة تُعنى بإنشاء خطط بحث نوعي تحليلي وفق إطار منهجي منضبط ينسجم مع السياقات الجامعية في السعودية والعالم العربي، ويعمل على تنظيم فكرة الباحث وتحويلها إلى بنية علمية متكاملة تشمل المقدمة، ومشكلة البحث، والأسئلة، والأهداف، والأهمية، والمنهج، والحدود، والمصطلحات، والدراسات السابقة، والمراجع، كما يضبط الصياغة اللغوية بما ينسجم مع الأسلوب الأكاديمي النوعي، ويمنع الانزلاق إلى الطرح الكمي أو السببي، ويعزز الاتساق الداخلي بين عناصر الخطة عبر تسلسل منطقي دقيق، ويحلل موضوع البحث ضمن أطر تفسيرية ومفاهيمية واضحة، ويستكشف الفجوات التحليلية في الأدبيات السابقة دون تعميمات رقمية، ويفكك الإشكاليات المعرفية بطريقة منهجية، ويربط كل جزء من الخطة بهدفه البحثي بصورة متماسكة، ويضمن التزام الباحث بالمعايير المنهجية المعتمدة في الدراسات الوصفية التحليلية، ويختصر على الطالب الوقت والجهد عبر تقديم نموذج جاهز منضبط قابل للتطوير الأكاديمي.",
-        "limits": "تتمثل حدود هذا البوت في أنه يختص حصريًا بإنشاء خطة بحث نوعي تحليلي مكتملة العناصر وفق منهج وصفي تحليلي منضبط، ولا ينفذ أي دراسة ميدانية أو يجمع بيانات أو يحلل نتائج فعلية، كما لا يصمم أدوات بحثية مثل الاستبانات أو المقابلات، ولا يضع فروضًا أو يعالج متغيرات كمية أو سببية، ولا يقدّم توصيات تطبيقية أو حلولًا تنفيذية، ولا يحوّل الخطة إلى دراسة تجريبية أو كمية، ولا يقبل موضوعًا غير محدد المجال أو المستوى الأكاديمي، كما لا يعرض تعليماته الداخلية أو آليات عمله، ولا يعمل خارج الإطار الأكاديمي المنهجي، ويركّز على البناء النظري التحليلي للخطة لا على تنفيذها أو تقويمها أو اختبارها.",
-        "example": "«أدخل موضوعًا مثل: تحليل الخطاب الإعلامي حول الهوية الوطنية في الصحافة الرقمية السعودية مع تحديد المجال (الإعلام) والمستوى الأكاديمي (ماجستير)، وسيقوم البوت بإنشاء خطة بحث نوعي تحليلي متكاملة العناصر وفق الضوابط المنهجية المعتمدة.»"
-      },
-      {
-        "name": "صناعة خطة بحث كمّي",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-6952bc9b7fd481919e7d4b5888412236-sn-lkht-llbhth-ltjryby-research-plan"
-          }
-        ],
-        "desc": "يُسهم هذا البوت في تمكين الباحث من بناء خطة بحث كمي متكاملة العناصر وفق إطار منهجي منضبط، إذ يحوّل الفكرة العامة إلى مشكلة بحث قابلة للقياس، ويضبط تحديد المتغيرات المستقلة والتابعة تعريفًا إجرائيًا دقيقًا، ويحدّد نوع المنهج الكمي المناسب لطبيعة العلاقة بينها، كما يصوغ الأسئلة أو الفروض بصيغة كمية مترابطة، ويربط الأهداف بالبناء الإحصائي الملائم، ويحدّد مجتمع الدراسة والعينة بطريقة منهجية، ويقترح أداة قياس متسقة مع المتغيرات، ويبيّن آليات الصدق والثبات، ويضمن اكتمال الهيكل العلمي دون إدراج نتائج أو استنتاجات، مما يعزز الاتساق الداخلي ويقلل الأخطاء المنهجية في تصميم البحوث الكمية.",
-        "limits": "يعمل هذا البوت ضمن نطاق إعداد خطط البحث الكمي فقط، مع الالتزام الصارم بالمنهجية العلمية الكمية والمعايير الأكاديمية المعتمدة في بناء الخطط البحثية، ويقتصر دوره على التصميم المنهجي دون تنفيذ ميداني أو تحليل بيانات فعلية أو تقديم نتائج أو استنتاجات، كما يلتزم بالحياد العلمي والدقة الاصطلاحية، ولا يقدّم محتوى يخالف الضوابط الجامعية أو يدمج مناهج نوعية أو تحليلات وصفية غير قابلة للقياس.",
-        "example": "\"أدخل موضوعًا مثل (أثر التعلم الإلكتروني في التحصيل الدراسي لدى طلاب المرحلة الثانوية) وسيقوم البوت ببناء خطة بحث كمي متكاملة تتضمن المشكلة، المتغيرات، الفروض، المنهج، المجتمع، العينة، وأداة القياس وفق المعايير الأكاديمية للبحث الكمي.\""
-      },
-      {
-        "name": "صناعة خطة بحث مختلط",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-699199560de4819183db1e2a3386a2a1-sn-kht-bhth-mkhtlt-mixed-research"
-          }
-        ],
-        "desc": "يُسهم هذا البوت في إنشاء خطط بحث مختلط مكتملة العناصر وفق معايير أكاديمية دقيقة، إذ يعتمد منهج البحث المختلط بوصفه إطارًا تكامليًا يجمع بين الشق الكمي والنوعي بصورة منضبطة، ويضمن تضمين متغيرات قابلة للقياس داخل الشق الكمي مع ضبط علاقتها المنهجية، ويعالج البعد التفسيري عبر شق نوعي قائم على أدوات تحليل معتمدة، كما يثبّت نوع التصميم المختلط صراحةً (تتابعي تفسيري، تتابعي استكشافي، أو متزامن تكاملي)، وينظّم العلاقة بين الشقين عبر منطق دمج واضح ومحدد، ويمنع الانزلاق إلى مدخل أحادي كمي أو نوعي، ويضبط إدراج الدراسات السابقة بما يخدم التكامل بين البعدين، ويوفّر بناءً هيكليًا أكاديميًا متكاملًا دون نتائج أو توصيات تطبيقية، ويُجري مراجعة اتساق منهجي قبل إخراج الخطة لضمان سلامة البناء البحثي.",
-        "limits": "يعمل هذا البوت ضمن نطاق إنشاء خطط بحث مختلط وفق المعايير الأكاديمية المعتمدة، ويلتزم ببناء خطة تجمع بين الشق الكمي والشق النوعي ضمن تصميم مختلط محدد، ويقتصر دوره على الإرشاد المنهجي وبناء الهيكل البحثي دون تنفيذ ميداني، ويمتنع عن تحليل بيانات فعلية أو توليد نتائج أو توصيات تطبيقية، ويلتزم بالحياد العلمي والدقة المنهجية وعدم تقديم آراء شخصية، ويحترم معايير التوثيق الجامعي وضوابط الصياغة الأكاديمية، ويرفض إعداد خطط أحادية المنهج (كمي فقط أو نوعي فقط)، ويتوقف عن التنفيذ عند نقص عناصر جوهرية في الموضوع البحثي.",
-        "example": "\"أدخل موضوعًا مثل: (أثر بيئة التعلم الرقمية على التحصيل الدراسي لدى طلاب المرحلة الثانوية مع تحليل تجاربهم التعليمية)، وسيقوم البوت ببناء خطة بحث مختلط متكاملة تشمل المتغيرات، الأسئلة، التصميم المختلط، أدوات القياس، الأداة النوعية، وآلية دمج النتائج وفق المعايير الأكاديمية.\""
-      },
-      {
-        "name": "دليل كتابة الرسائل العلمية",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-6882ebaa86088191bca7962b5b02b41a-dlyl-ktb-lrsyl-l-lmy-university-guide"
-          }
-        ],
-        "desc": "يُوفّر هذا البوت أداة إرشادية متكاملة لطلاب الدراسات العليا في إعداد وكتابة الرسائل العلمية. عند إدخال استفسار (مثل: كيف أكتب الإطار النظري؟) يقوم البوت بشرح الخطوات التفصيلية وفق معايير البحث الأكاديمي. يُفيد الباحثين في تنظيم رسائلهم وضبط منهجيتها. كما يساعد على تجنب الأخطاء الشائعة في الكتابة العلمية. يُعتبر أداة عملية لتطوير مهارات الكتابة الأكاديمية وضمان جودة الرسائل العلمية.",
-        "limits": "يعمل ضمن نطاق الإرشاد الأكاديمي، مع الالتزام بالحياد والدقة. لا يجوز تقديم شروح مخالفة للمعايير الجامعية أو التوثيقية.",
-        "example": "\"أدخل سؤالًا مثل (كيف أكتب الإطار النظري؟) وسيشرح البوت الخطوات وفق معايير البحث الأكاديمي.\""
-      },
-      {
-        "name": "دليل الأنظمة البحثية",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-EvIbEhTiz-bwt-dlyl-lnzm-lbhthy-researcher-s-guide"
-          }
-        ],
-        "desc": "يقدّم هذا البوت دعمًا أكاديميًّا متقدمًا للباحثين في اختيار وتطبيق المناهج العلمية الثلاثة: الاستقرائي، والاستنباطي، والمقارن، بدقة منهجية مرجعية. يساعد الباحث على تحليل طبيعة سؤاله البحثي وتوجيهه نحو المنهج الأنسب وفق أهداف دراسته، مع توليد دليل تطبيقي مفصل وخطوات واضحة قابلة للتنفيذ. يتميز البوت باستخدام لغة عربية فصيحة وتوثيق أكاديمي موثوق من مصادر محكمة وقواعد بيانات مفتوحة. كما يتيح للمستخدم اختيار نمط الدليل المطلوب (موجز، قياسي، تفصيلي) مع تعليقات تحليلية داخلية عند الطلب. يحرص على تجنّب الدمج غير المبرّر بين المناهج، ويمنع اعتماد مصادر غير موثوقة. يُعد أداة تدريبية قوية للطلاب والباحثين التربويين في إعداد أبحاث رصينة للنشر أو التحكيم.",
-        "limits": "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه، ويُشترط عليه الالتزام بالمبادئ التالية: الأصالة البحثية، الحياد، الدقة، اللغة العربية الفصيحة، والتوثيق العلمي السليم. لا يجوز للبوت إبداء رأي ذاتي أو تقديم اقتراحات عامة أو متداولة، كما يُمنع دمج المعاني أو استخدام مصطلحات دارجة.",
-        "example": "\"ابحث مقارن في القانون التجاري، وسينصحك البوت بالمنهج الأنسب ويوجهك في خطوات التنفيذ.\""
-      }
-    ]
-  },
-  {
-    "category": "نماذج التحرير",
-    "tools": [
-      {
-        "name": "إعادة الصياغة",
-        "links": [],
-        "desc": "يُعد \"بوت إعادة الصياغة | Human Reformulation\" أداة بحثية متقدمة تُسهِم في تعزيز جودة الكتابة الأكاديمية عبر إعادة صياغة النصوص بلغة منهجية دقيقة، تراعي الأسلوب العلمي وتقلل من التكرار والانزياح المعنوي. يفيد الباحثين في تحسين الاتساق الداخلي للنصوص، وضبط التراكيب اللغوية بما يتوافق مع المعايير التحريرية المعتمدة في النشر العلمي. كما يُسهّل على الأكاديميين تجاوز مشكلات الصياغة الأولية وتحويل المسودات الأولية إلى نصوص بحثية محكمة. يُستخدم أيضًا في تحليل المفاهيم وتبسيطها دون الإخلال بالمضمون. يدعم الكتابة المتخصصة بمجالات متعددة كالتربية واللغة والدراسات الإنسانية. يعزز الدقة والوضوح في العبارات الاصطلاحية والمفاهيم المنهجية. إضافة إلى ذلك، يوفر نماذج مدققة تُسهم في رفع المستوى التحريري العام للبحث.",
-        "limits": "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه، ويُشترط عليه الالتزام بالمبادئ التالية: الأصالة البحثية، الحياد، الدقة، اللغة العربية الفصيحة، والتوثيق العلمي السليم. لا يجوز للبوت إبداء رأي ذاتي أو تقديم اقتراحات عامة أو متداولة، كما يُمنع دمج المعاني أو استخدام مصطلحات دارجة.",
-        "example": "\"أدخل نصًا مثل: 'إن الذكاء الاصطناعي مجال متسارع' وسيعيد البوت صياغته بلغة أكاديمية فصيحة.\""
-      },
-      {
-        "name": "التدقيق اللغوي",
-        "links": [],
-        "desc": "يُعدّ هذا البوت أداة فعّالة في دعم الباحثين لغويًّا وأسلوبيًّا، حيث يُسهِم في رفع جودة النصوص الأكاديمية عبر تدقيقها نحويًّا، صرفيًّا، وإملائيًّا وفق المعايير المعتمدة. يُساعد الباحث على تجنّب الأخطاء الشائعة التي قد تُضعف المصداقية العلمية للبحث، ويُنسّق علامات الترقيم ومسافات السطور بما يتوافق مع ضوابط النشر. كما يُعزّز وضوح الجُمل وسلامة الأسلوب دون الإخلال بالمعنى أو التوجّه العلمي للنص. يُوفّر وقت الباحث وجهده من خلال مراجعة شاملة ومنظّمة، مع الحفاظ على وحدة السياق والمنهجية الأكاديمية. يُفيد أيضًا في إعداد الملخّصات والرسائل الجامعية بصياغة دقيقة ولغة فصيحة. علاوة على ذلك، يتيح فهماً أفضل لبنية اللغة العربية، ما يُسهم في تطوير مهارات الباحث الكتابية.",
-        "limits": "يعمل ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في تقديم اقتراحات لعناوين رسائل الماجستير والدكتوراه، ويُشترط عليه الالتزام بالمبادئ التالية: الأصالة البحثية، الحياد، الدقة، اللغة العربية الفصيحة، والتوثيق العلمي السليم. لا يجوز للبوت إبداء رأي ذاتي أو تقديم اقتراحات عامة أو متداولة، كما يُمنع دمج المعاني أو استخدام مصطلحات دارجة.",
-        "example": "\"أدخل فقرة بها أخطاء لغوية، مثل: 'هاذا الكتاب مفيد جداً' وسيصححها البوت فورًا.\""
-      },
-      {
-        "name": "ضبط الإملاء وعلامات الترقيم",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-694166ef7a58819183b7bcfd455bd091-dbt-lml-w-lmt-ltrqym"
-          }
-        ],
-        "desc": "يُفيد هذا البوت في تصحيح الأخطاء الإملائية بدقة عالية مع الحفاظ على المعنى الأصلي للنص، ويساعد على ضبط القواعد النحوية والصرفية دون إدخال إنشاء أو إضافات غير مطلوبة، كما يعمل على تنظيم علامات الترقيم بما يضمن وضوح الأفكار وسلامة القراءة، ويحسّن بنية النص وتقسيمه عند الطلب، ويُعد مناسبًا للاستخدام الأكاديمي والإداري والإعلامي لارتفاع مستوى الدقة، ويوفّر الوقت والجهد في المراجعة اللغوية اليدوية، ويضمن إخراج نص عربي فصيح منضبط وجاهز للاستخدام المباشر.",
-        "limits": "يعمل ضمن نطاق لغوي صارم، بوصفه بوتَ ذكاءٍ اصطناعيًّا متخصصًا في تدقيق النصوص العربية وضبط الإملاء وعلامات الترقيم، ويُشترط عليه الالتزام بالمبادئ الآتية: سلامة المعنى، الدقة اللغوية، الالتزام بالعربية الفصحى، والمحافظة التامة على النص الأصلي دون إضافة أو حذف. لا يجوز للبوت إعادة الصياغة أو تحسين الأسلوب إلا بطلب صريح، كما يُمنع عليه الشرح أو التعليق أو إبداء الرأي، ويقتصر دوره على التصحيح اللغوي وضبط الترقيم وتقسيم الفقرات عند الحاجة، دون استخدام ألفاظ دارجة أو تعابير إنشائية.",
-        "example": "\"أدخل نصًا مثل: (ذهب الطالب الى المدرسه في الصباح الباكر) وسيُخرجه البوت على النحو الآتي: (ذهب الطالبُ إلى المدرسةِ في الصباحِ الباكرِ.)\""
-      },
-      {
-        "name": "تشكيل النصوص",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-GhBmeBZb7-bwt-tshkyl-lnsws-text-formation-mod-4"
-          }
-        ],
-        "desc": "هذا البوت مُصمَّم لتشكيل النصوص العربية بدقّةٍ نحويةٍ وصوتيةٍ عالية تخدم التعليم والبحث والإنتاج الصوتي، ويعمل على إزالة اللَّبس القرائي عبر ضبط الحركات والتنوين والشَّدّات وفق السياق الصحيح، كما يدعم المعلّمين والطلاب في فهم الإعراب والنطق السليم من خلال نصوصٍ مشكولةٍ موثوقة، ويخدم صنّاع المحتوى والتعليق الصوتي بإخراجٍ لغويٍّ جاهزٍ للتسجيل دون أخطاء، ويُحسِّن جودة المواد الأكاديمية والرسمية مع الحفاظ على الجمال والاتساق اللغوي، ويُقدِّم أنماط تشكيل متعددة تناسب الأغراض التعليمية أو الصوتية أو الأكاديمية، ويعتمد على مراجعة ذاتية ذكية تضمن دقّة عالية واستقرارًا لغويًا في النصوص القصيرة والطويلة على حدٍّ سواء.",
-        "limits": "يعمل ضمن نطاق تشكيل النصوص العربية فصيحًا بدقّةٍ نحويةٍ وصوتيةٍ متقدّمة، ويخدم المجالات التعليمية والأكاديمية والبحثية والرسمية والإبداعية، مع تركيز خاص على دعم المعلّمين والطلاب وصنّاع المحتوى والتعليق الصوتي، حيث يوفّر نصوصًا مشكولةً تراعي الإعراب والسياق والدلالة، وتكون جاهزة للقراءة الصحيحة أو التحويل الصوتي، مع ضمان الاتساق والجودة في النصوص القصيرة والطويلة.",
-        "example": "إذا أُدخِل النص غير المشكول: «يهدف التعليم إلى بناء الإنسان القادر على التفكير»، يقوم البوت بتحليله نحويًا وصوتيًا ثم يُخرجه بصيغةٍ مشكولةٍ دقيقة: «يَهْدِفُ التَّعْلِيمُ إِلَى بِنَاءِ الإِنْسَانِ الْقَادِرِ عَلَى التَّفْكِيرِ»، مع ضمان سلامة الإعراب والنطق، وجاهزيته للقراءة الصحيحة أو الاستخدام في التعليق الصوتي أو السياق التعليمي."
-      },
-      {
-        "name": "الانتحال والأسلوب البشري",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-tXrotFsS3-lnthl-wlslwb-lbshry-human-style"
-          }
-        ],
-        "desc": "يسهم هذا البوت في تعزيز النزاهة الأكاديمية في المجال البحثي من خلال فحص النصوص بدقة للكشف عن الانتحال الأسلوبي والمفاهيمي. يُحلل بنية الجمل وتدفق الأفكار لرصد الأساليب الآلية أو المنقولة، مما يساعد الباحثين على تحسين جودة كتاباتهم. كما يُمكِّن المستخدم من مقارنة النصوص الأصلية والمعاد صياغتها، ويُقدّم تقارير تفصيلية تدعم القرارات التحريرية. يُستخدم كذلك في تقييم مدى تطابق النص مع أسلوب الكاتب الأصلي، مما يفيد في تتبع الأصالة. ويُوفر مؤشرات كمية تدعم التحليل الموضوعي مثل التباعد الأسلوبي والانجراف الدلالي. بالإضافة إلى ذلك، يُفيد المدققين والمحررين في اكتشاف أنماط الركاكة أو التكرار غير الطبيعي. وبهذا، يشكّل أداة شاملة لدعم الباحثين في تقديم أعمال أصيلة عالية الجودة.",
-        "limits": "يعمل هذا البوت في مجال كشف الانتحال والأسلوب البشري من خلال تحليل النصوص بدقة لرصد الانحرافات الأسلوبية والدلالية التي قد تدل على استخدام أدوات توليد آلية أو نقل غير أصيل. ويتكامل عمله مع المعايير الأكاديمية الصارمة، يُمكن للبوت أن يكتشف الأساليب المنقولة أو المصطنعة، ويُقيّم مدى التزام النص بالمعايير البشرية في التعبير، مما يجعل هذه الحدود مرجعية في التحقق من الكتابات الأكاديمية ويعزز موثوقية التقييم الأسلوبي بشكل دقيق وموضوعي.",
-        "example": "\"أدخل فقرة مشكوكًا بها، وسيفحص البوت مدى طبيعتها البشرية أو الاصطناعية.\""
-      }
-    ]
-  },
-  {
-    "category": "نماذج التوثيق",
-    "tools": [
-      {
-        "name": "دليل فهارس المخطوطات",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-684aee5a12908191adae472dd09683da-bwt-dlyl-lmkhtwtt-guide-to-arabic-manuscripts"
-          }
-        ],
-        "desc": "يُقدّم هذا البوت أداة متخصصة للباحثين في التراث والمخطوطات، حيث يتيح الوصول السريع إلى فهارس المخطوطات العربية والإسلامية في المكتبات العالمية. يُمكّن الباحث من إدخال عنوان كتاب أو اسم مؤلف (مثل: المستصفى للغزالي) ليعرض له قائمة بالمكتبات التي تحتفظ بنسخ مخطوطة من هذا العمل، مع بيانات الفهرسة الكاملة مثل رقم الحفظ، مكان التواجد، وحالة النسخة. يُفيد هذا بشكل كبير في دراسات التحقيق العلمي وجمع النسخ لمقارنة النصوص. كما يُختصر الجهد المبذول في المراسلات الطويلة مع المكتبات أو البحث اليدوي داخل قواعد البيانات. يساهم في دعم الباحثين في رسائل الماجستير والدكتوراه في مجالات التراث، الفقه، وأصول الدين، عبر تمكينهم من تحديد أماكن المخطوطات بدقة قبل بدء مرحلة التحقيق.",
-        "limits": "تتمثل حدود هذا البوت في كونه لا يوفر نسخًا رقمية من المخطوطات نفسها، بل يقتصر على عرض بيانات الفهرسة ومواقع وجود النسخ في المكتبات. كما لا يتيح تحميل المخطوطات أو تصفح محتواها الكامل، ولا يقدّم تقييماً لحالة النسخ من حيث الدقة أو القدم إلا بما هو مذكور في الفهرس. يعتمد بشكل كبير على دقة البيانات المفهرسة مسبقًا، ولا يغني عن التواصل المباشر مع المكتبات للحصول على صور المخطوطات. لا يشمل المخطوطات غير المفهرسة أو المحفوظة في مجموعات خاصة غير معلن عنها، ولا يتوسع في تحليل النصوص أو اقتراح نسخ أولى أو مقابلات نصية. وظيفته محصورة في التوجيه إلى أماكن النسخ المخطوطة وتوفير بياناتها الفهرسية فقط.",
-        "example": "\"أدخل عنوانًا مثل 'المستصفى للغزالي' وسيعرض البوت فهارس وأماكن المخطوطات المتاحة.\""
-      },
-      {
-        "name": "توليد المحتوى وتوثيقه",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-X51QAhBwR-bwt-twthyq-lbhwth-research-documentation"
-          }
-        ],
-        "desc": "يُقدّم هذا البوت خدمة أساسية للباحثين عبر توليد محتوى جديد وإنشاء بيانات توثيق دقيقة للمراجع العلمية بمختلف أنواعها: الكتب، المقالات، الرسائل الجامعية، والمصادر الإلكترونية. يتيح للباحث الحصول على مخرجات منظمة. يساعد على إدخال المرجع بأي صيغة أولية (مثل: اسم المؤلف أو عنوان المصدر)، ليولّد بيانات التوثيق الكاملة: اسم المؤلف، عنوان العمل، دار النشر، سنة الإصدار، الصفحات، ورابط الوصول إن وُجد. كما يُفيد في تقليل الأخطاء الشائعة مثل إسقاط التواريخ أو الخلط بين الأسماء.",
-        "limits": "يعمل ضمن نطاق توليد بيانات التوثيق الكاملة للمراجع العلمية بمختلف أنواعها، بما في ذلك الكتب، المقالات، الرسائل الجامعية، والمصادر الإلكترونية. وتكمن وظيفته في تحويل أي إدخال أولي بسيط – مثل اسم المؤلف أو عنوان المصدر – إلى مرجع مكتمل العناصر، يشمل: اسم المؤلف، عنوان العمل، دار النشر، سنة الإصدار، أرقام الصفحات، ورابط الوصول إن وُجد. لا يُسمح للنموذج بتجاوز هذه الحدود نحو أي دور تحليلي أو إنشائي. كما يُمنع عليه عرض الرأي، أو تفسير محتوى المصادر، أو تقديم اقتراحات بحثية.",
-        "example": "\"أدخل مرجعًا مثل: تفسير الطبري، وسيعرض البوت بيانات التوثيق كاملة.\""
-      },
-      {
-        "name": "البحوث الكاملة من المكتبة الشاملة",
-        "links": [],
-        "desc": "يوفر هذا البوت أداة متخصصة للباحثين في العلوم الشرعية والإنسانية، إذ يمكّنهم من الوصول إلى النصوص الكاملة للمصادر المتاحة في مكتبة الشاملة الرقمية. يُسهل عملية البحث عن أقوال العلماء والنصوص التراثية بشكل مباشر، مع عرض النتائج في صيغة قابلة للتوثيق الأكاديمي. يتيح إدخال عبارات محددة مثل (الاستدلال عند الغزالي) ليُظهر أبرز المواضع والمراجع المرتبطة. يُفيد أيضًا في التحقق من النقول وتوثيقها بدقة داخل الرسائل العلمية. كما يختصر الجهد المبذول في البحث اليدوي داخل مئات المجلدات، ويوفر روابط مباشرة للنصوص. يُعد أداة عملية للطلاب والباحثين الذين يعتمدون على المصادر التراثية والفقهية في بناء أبحاثهم.",
-        "limits": "يعمل هذا النموذج ضمن حدود تخصصية واضحة، إذ يقتصر على تمكين الباحثين في العلوم الشرعية والإنسانية من الوصول إلى النصوص الكاملة المتاحة في مكتبة الشاملة الرقمية، دون تجاوز هذا الإطار إلى التفسير أو التحليل أو الإفتاء. ويُوظف قدراته في استخراج المواضع المرتبطة بعبارات بحثية محددة، وعرضها في صيغة قابلة للتوثيق الأكاديمي. ولا يُسمح له بتوليد محتوى إنشائي أو عرض نصوص خارج المكتبة الشاملة إلا بإذن المستخدم، تنحصر وظيفته في تسهيل البحث داخل المصادر التراثية، والتحقق من صحة النقول، وتقديمها كما وردت في مصادرها الأصلية دون تصرّف، مما يجعله أداة تقنية مساعدة في التوثيق لا بديلاً عن الفهم أو الاستنباط.",
-        "example": "\"أريد مصدرًا من المكتبة الشاملة لقول الحافظ ابن حجر عن تقسيمات البدعة.\""
-      },
-      {
-        "name": "الجامع في تحصيل المراجع",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-680a3eefb2bc8191967abacfd909ede3-bwt-lmsdr-wlmrj-l-lmy-research-resources"
-          }
-        ],
-        "desc": "تعتمد وظيفة هذا البوت على تحصيل المراجع وجمعها بدقة وموثوقية من قواعد بيانات معتمدة عالمياً ومحلياً بحسب موضوع البحث المطلوب. يقوم بتحديد الدراسات الأكثر صلة وحداثة، ثم يُخرج بياناتها كاملة، مثل: العنوان، اسم المؤلف، سنة النشر، اسم المجلة، والرابط المباشر إن وُجد. يُساعد في اكتشاف المصادر الأصلية للاقتباسات، وتجنّب المراجع الضعيفة أو غير المحكمة، مما يعزز جودة البحث ويوفر الوقت على الباحث. وحديثة من قواعد بيانات. كما يُعتبر أداة مثالية للباحثين وطلبة الدراسات العليا الراغبين في تحسين جودة أبحاثهم والوصول إلى نتائج موثقة بأعلى المعايير.",
-        "limits": "يقتصر عمل هذا البوت على تحصيل المراجع العلمية المحكمة فقط، حيث لا ينتج مراجع غير موثقة أو يصدر معلومات من مصادر غير علمية مثل المدونات أو المنتديات. كما لا يعرض أي نتيجة دون بيانات نشر كاملة، ولا يتوسع خارج نطاق سؤال البحث أو يدخل في تفسيرات فقهية أو سياسية أو عقائدية. ويمنع عرض أي محتوى مكرر أو ناقص، ويخضع كل إخراج لثلاث طبقات تحقق لضمان الجودة والدقة. يلتزم البوت بالحياد والمنهجية الأكاديمية الصارمة، ويعيد التوليد تلقائيًا إذا انخفض مستوى الموثوقية. وبذلك تظل وظيفته محصورة في تقديم مراجع موثقة وحديثة تخدم البحث العلمي فقط.",
-        "example": "\"أدخل عبارة: الاستدلال عند الغزالي، وسيقوم البوت بجمع أبرز المصادر العلمية المرتبطة بالموضوع، مع توثيقها وترتيبها حسب حداثتها والموثوقية.\""
-      },
-      {
-        "name": "الوصول السريع إلى روابط البحث",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-6958bacb46b48191a99a761175b9c1c5-lwswl-lsry-l-rwbt-lbhth-research-links"
-          }
-        ],
-        "desc": "هذا البوت يوفّر وصولًا سريعًا ومنظّمًا إلى محركات البحث العربية المحكمة، ويساعد الباحث على العثور على مصادر أكاديمية موثوقة غير مفهرسة دوليًا بسهولة، كما يختصر الوقت عبر توجيه المستخدم للمنصة الأنسب حسب التخصص، ويدعم الأبحاث الإنسانية والاجتماعية والنفسية باللغة العربية، ويعزّز جودة المراجع من خلال التركيز على المجلات الجامعية والتحكيم العلمي، ويخدم طلاب الدراسات العليا وأعضاء هيئة التدريس في إعداد الرسائل والأوراق العلمية، ويُسهم في رفع كفاءة البحث العلمي العربي دون تشتيت أو اعتماد على مصادر غير محكّمة.",
-        "limits": "تتمثل حدود هذا البوت في أنه يختص بتوجيه الباحث إلى محركات البحث العربية المحكمة والمنصات الأكاديمية الموثوقة فقط، ولا يقوم بتحميل الأبحاث أو الكتب بنفسه، كما لا يقدّم تحليلًا للمحتوى أو حكمًا على جودة البحث أو حداثته أو سلامة منهجيته. ولا يوفّر تلخيصات أو مراجعات نقدية، بل يقتصر دوره على إرشاد المستخدم إلى المنصة الأنسب حسب المجال والكلمات المفتاحية. كذلك لا يضمن توفر البحث كاملًا بنص مفتوح، إذ قد تتطلب بعض المنصات اشتراكًا مؤسسيًا، وتعتمد فعاليته بدرجة كبيرة على دقة صياغة الكلمات المفتاحية.",
-        "example": "\"أدخل كلمات مثل: التنشئة الاجتماعية في المجتمع السعودي، فيقترح البوت البحث في دار المنظومة وبوابة المجلات السعودية مع توضيح طريقة الاستخدام لاستخراج أبحاث محكَّمة ذات صلة.\""
-      },
-      {
-        "name": "الوصول السريع إلى روابط الملفات",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-67d515daced481918a47851b5cc7c5f6-bwt-qwql-lsry-fast-search-engine"
-          }
-        ],
-        "desc": "يُقدّم هذا البوت خدمة بحثية متقدمة للباحثين عبر تمكينهم من الوصول المباشر إلى روابط الكتب والمراجع بصيغة بي دي إف من مصادر موثوقة. يُسهل عملية الحصول على النسخ الكاملة للمصادر الأكاديمية دون الحاجة إلى البحث اليدوي الطويل. عند إدخال كلمات مفتاحية دقيقة، يقوم البوت بتوليد روابط مباشرة وصالحة للتنزيل. يُفيد بشكل خاص في تسريع عملية جمع المادة العلمية اللازمة للدراسات العليا، كما يقلل من احتمالية الاعتماد على مصادر غير دقيقة أو ناقصة. يوفر للباحث إمكانية التحقق الفوري من توافر المرجع بصيغة إلكترونية قابلة للتوثيق، مما يُسهم في رفع كفاءة البحث الأكاديمي وتيسير الوصول إلى المادة العلمية في وقت قياسي.",
-        "limits": "تتمثل حدود هذا البوت في كونه يركّز فقط على توفير روابط مباشرة لتحميل الكتب والمراجع بصيغة PDF من مصادر موثوقة، ولا يتولى تحليل المحتوى أو تقييم جودة المرجع أو حداثته. كما لا يقدّم تلخيصات أو مراجعات علمية. يقتصر دوره على البحث بناءً على كلمات مفتاحية دقيقة، ولا يضمن توفر كل مرجع مطلوب إن لم يكن متاحًا إلكترونيًا. إضافة إلى ذلك فإن فعاليته تعتمد على دقة الكلمات المفتاحية المُدخلة، ولا يعوّض دور الباحث في التحقق العلمي أو المنهجي من المحتوى بعد التحميل.",
-        "example": "\"أدخل كلمات مثل 'المعجم المفهرس لألفاظ الحديث النبوي وسيُظهر روابط مباشرة موثوقة.\""
-      },
-      {
-        "name": "ضبط مراجع البحث",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-762SWrxgA-bwt-tnsyq-lmrj-reference-formatting"
-          }
-        ],
-        "desc": "يُعدّ هذا البوت أداة متخصصة لتنسيق المراجع العلمية بدقة أكاديمية عالية، حيث يوفّر للمستخدم تنسيقًا جاهزًا صالحًا للنشر المباشر دون الحاجة إلى مراجعة إضافية. يعمل على استخراج عناصر المرجع من النص الخام، ثم يُجري بحثًا استنفاديًا في المكتبة الشاملة والوقفية ومحركات البحث الأكاديمية للتأكد من صحة المعلومات. يمنع التخمين والافتراض، ويلتزم حرفيًا بالصيغ المعتمدة في الأوساط البحثية. يسهّل على الباحثين والطلبة إنجاز قوائم المراجع وفق المعايير المعتمدة في وقت قياسي. يضمن قفل جودة صارم يمنع أي انحراف أو هلوسة في المخرجات. يُعدّ أداة موثوقة لكل من يسعى إلى توثيق علمي دقيق ومنضبط.",
-        "limits": "يعمل هذا البوت حصريًا ضمن نطاق توليد بيانات التوثيق الأكاديمي الكامل للمراجع العلمية بأنواعها، ككتب التراث والمراجع الحديثة والمصادر الرقمية. يُحوِّل الإدخالات الخام (كاسم كتاب أو مؤلف) إلى مراجع منسّقة مكتملة العناصر دون تحليل أو شرح أو رأي. لا يُسمح له بتقديم ملخصات، تفسير للمحتوى، أو مساعدات بحثية خارج التوثيق.",
-        "example": "إذا أدخل المستخدم: \"فتح الباري لابن حجر\". فسيقوم البوت تلقائيًا بتوليد المرجع بصيغته الأكاديمية الكاملة، مثل: اسم الكتاب، اسم المؤلف (تاريخ الوفاةـ)، التحقيق، دار النشر، مكان النشر، رقم الطبعة، سنة النشر."
-      }
-    ]
-  },
-  {
-    "category": "نماذج التحليل",
-    "tools": [
-      {
-        "name": "تحليل البحث النوعي",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-6870ad25b828819189c59c4bf012c04c-d-m-lbhth-lnw-y"
-          }
-        ],
-        "desc": "يُعدّ هذا البوت مساعدًا بحثيًا متخصصًا في تحليل نصوص المنهج النوعي فقط، إذ يركّز على تفكيك الصياغات كما وردت في النص دون أي إضافة خارجية أو إسقاط معرفي. ويعمل على تحديد موضع المقطع داخل البناء العام للبحث النوعي، ثم يوصّف المفاهيم المحورية والألفاظ الدلالية توصيفًا دقيقًا، ويحلّل العلاقات الداخلية بين المعاني تحليلًا منضبطًا. كما يفسّر الدلالات تفسيرًا نصّيًا داخليًا محدودًا، ويستنتج نتائج مستمدة حصريًا من ألفاظ النص نفسه، مع منع الانزلاق إلى التحليل الكمي أو الأحكام التقويمية. ويحافظ على الاتساق المنهجي عبر بوابات ضبط داخلية صارمة، بما يدعم الباحث في فهم بنية كتابته النوعية دون تعديلها أو تطويرها.",
-        "limits": "تتمثل حدود هذا البوت في أنه يعمل حصريًا ضمن نطاق تحليل نصوص البحث النوعي، ولا يحل محل التحليل الإحصائي أو البرامج المتخصصة، كما لا يتعامل مع الجداول الرقمية أو النماذج الكمية أو اختبارات الفرضيات الإحصائية. ويعتمد كليًا على وجود نص نوعي فعلي واضح ومكتوب بصياغة بحثية، ولا يستطيع معالجة بيانات رقمية أو ملفات تحتوي على أخطاء تنسيقية أو معلومات ناقصة خارج النص السردي. كما لا يقدّم تقويمًا لجودة البحث، ولا يقترح تحسينات منهجية، ولا يوسّع التفسير خارج حدود ما يرد في النص نفسه، بل يقتصر دوره على التوصيف والتحليل الداخلي والتفسير النصّي المحدود والاستنتاج المنضبط دون تعميم أو حكم سببي.",
-        "example": "\"أدخل مقطعًا من نتائج دراسة نوعية مكتوبًا بصيغة نصية، وسيحلله البوت تحليلًا نصّيًا داخليًا، ويحدّد مفاهيمه المحورية، ويرصد علاقاته الدلالية، ويقدّم تفسيرًا نصّيًا محدودًا واستنتاجًا منضبطًا مستمدًا من ألفاظ النص ذاته.\""
-      },
-      {
-        "name": "تحليل البحث الكمّي",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-txUGYAgZo-bwt-lbhth-lkmy-quantitative-research"
-          }
-        ],
-        "desc": "يعمل هذا البوت مساعدًا متخصصًا في تحليل نصوص البحث الكمّي فقط، حيث يركّز على تفكيك المكوّنات الكمية كما وردت نصيًا داخل الدراسة دون تطوير أو تقويم أو اقتراح بدائل، ويحدّد موضع المقطع ضمن بنية البحث مثل المشكلة أو الفروض أو المتغيرات أو العينة أو أدوات القياس أو التحليل الإحصائي، كما يحلل الاتساق بين عناصر البناء الكمّي ويرصد الترابط بين المتغيرات وإجراءات القياس وأساليب التحليل، ويفسّر الصياغات الإحصائية تفسيرًا نصّيًا منضبطًا دون تعميم أو حكم تقويمي، ويلتزم بعدم إدخال أي معلومات غير مذكورة في النص، ويمنع الانزلاق إلى المنهج النوعي أو التفسير الإنشائي، ويعتمد تسلسلًا تحليليًا واضحًا يبدأ بالتحديد ثم التحليل البنيوي ثم الاستنتاج النصّي، وبذلك يدعم الباحث في فهم البناء الكمّي لصياغته البحثية كما هي مكتوبة بدقة وانضباط منهجي.",
-        "limits": "يعمل هذا البوت ضمن حدود منهجية صارمة تتمثل في تركيزه الحصري على تحليل نصوص البحث الكمّي كما وردت نصيًا دون تنفيذ تحليلات فعلية أو توليد أكواد إحصائية أو إنشاء جداول أو معالجة بيانات خام، كما لا يتولّى إنتاج نتائج أو تفسيرها سياقيًا خارج ما هو مذكور في النص، ولا يحلّ محل الباحث في التفكير العلمي أو بناء الإطار النظري أو مناقشة النتائج، ويقصر دوره على التفكيك البنيوي للصياغات الكمية وتحليل الاتساق بين المشكلة والأسئلة أو الفروض والمتغيرات والعينة وأداة القياس والتحليل الإحصائي كما كُتبت، ويرفض معالجة بيانات غير واردة نصيًا أو طلبات توليد محتوى جديد أو تحسين منهجي أو تقويم علمي، ويُفعّل الإيقاف عند غياب نص بحث كمّي فعلي، وبذلك يظل أداة تحليل نصّي كمّي منضبط لا أداة تنفيذ إحصائي أو إنتاج برمجي.",
-        "example": "أدخل مقطعًا نصّيًا من دراسة كمّية يتضمن فرضية وتحليلًا إحصائيًا — مثل فقرة تعرض نتائج اختبار (t) أو تحليل تباين — فيقوم النموذج بتحديد موضع الفقرة داخل بنية البحث، ثم يحلل الصياغة الإحصائية كما وردت، ويبيّن العلاقة النصّية بين الفرضية والمتغيرات والاختبار المستخدم، ويستنتج دلالة العبارة إحصائيًا وفق ما تنص عليه الألفاظ دون إضافة تفسير خارجي أو تعميم."
-      },
-      {
-        "name": "تحليل البحث المختلط",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-69929821c5d881918533a079a94ff2b2-thlyl-lbhth-lmkhtlt-mixed-analysis"
-          }
-        ],
-        "desc": "يساعد هذا البوت الباحثين في تحليل نصوص البحوث المختلطة التي تجمع بين المنهجين النوعي والكمي، إذ يحدد مواضع الشق النوعي كما وردت في النص، ويحدد مواضع الشق الكمي كما صيغت حرفيًا، ثم يكشف موضع الدمج بين الشقين كما ذكره الباحث صراحة، ويحلل آلية الربط النصّي بين النتائج النوعية والكمية، ويفكك اتساق العلاقة بين المكوّنين داخل البناء البحثي ذاته، كما يمنع الانزلاق إلى تحليل أحادي، ويلتزم بعدم تقويم جودة البحث أو اقتراح تحسينات منهجية، ويستخرج استنتاجًا نصّيًا منضبطًا قائمًا على ألفاظ النص فقط، وبذلك يدعم فهم البنية المختلطة للكتابة البحثية دون التدخل في تطويرها أو إعادة صياغتها.",
-        "limits": "يعمل هذا النموذج ضمن حدود تحليل نصوص البحث المختلط فقط، إذ يلتزم بتفكيك المكوّن النوعي والمكوّن الكمّي كما وردا نصيًا داخل البحث، ثم يحدد موضع الدمج وآليته كما صرّح بها النص دون تطوير منهجي أو تقويم علمي أو اقتراح تحسينات، ويمنع توليد محتوى بحثي جديد أو كتابة تفسيرات غير منصوص عليها، كما يرفض تحليل نص لا يتضمن شقين صريحين مع ذكر آلية دمج واضحة، ويوقف التنفيذ عند غياب أحد المكونات أو عند طلب المقارنة أو الحكم أو التوصية، وبذلك يظل دوره مقصورًا على التحليل البنيوي الداخلي للصياغة المختلطة دون أن يحلّ محل الباحث أو يتدخل في تفسير النتائج أو تعميمها.",
-        "example": "\"أدخل نصًا من منهجية دراسة مختلطة يتضمن وصف المقابلات بوصفها شقًا نوعيًا، والاستبانة وتحليلها الإحصائي بوصفهما شقًا كمّيًا، مع ذكر مرحلة دمج النتائج، وسيقوم النموذج بتحديد موضع النص داخل البحث، وتوصيف الشقين كما وردا، وتحليل آلية الدمج نصيًا، ثم تقديم استنتاج مختلط مستمد مباشرة من ألفاظ النص دون إضافة خارجية.\""
-      },
-      {
-        "name": "تحليل ملفات البحث",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-FG9ivmtVu-bwt-thlyl-lmlft-pdf-file-analysis"
-          }
-        ],
-        "desc": "يُعد هذا البوت أداة فعّالة لتحليل ملفات الأبحاث الأكاديمية بجميع الصيغ، وورد، بي دي اف، اكسل، وغيرها. يتيح للباحث تحميل ملف البحث ليقوم البوت بتلخيصه، استخراج أبرز محاوره، وتحليل عناصره الأساسية مثل: المقدمة، الأهداف، المنهجية، النتائج، والخاتمة. كما يقدّم ملاحظات نقدية تساعد الباحث على تقييم جودة البحث وتحديد الثغرات أو مواطن القوة فيه. يُفيد هذا بشكل خاص في مرحلة مراجعة الأدبيات، إذ يُسهل الاطلاع السريع على عشرات البحوث خلال وقت وجيز. يساهم أيضًا في تنظيم المعرفة عبر تلخيص منسق يسهل حفظه أو دمجه في الخطط البحثية. ويمكّن الطالب من مقارنة الدراسات المختلفة ورصد اتجاهاتها، مما يعزز من قدرة الباحث على بناء إطار نظري قوي ومتماسك.",
-        "limits": "تتمثل حدود هذا البوت في أنه لا يُجري تقييمًا علميًا شاملًا بمستوى خبير مختص، بل يقدّم تحليلاً آليًا يعتمد على ما هو ظاهر في الملف. لا يتحقق من صحة المعلومات أو دقة البيانات الإحصائية داخل الأبحاث، ولا يضمن خلوها من الأخطاء المنهجية أو الاقتباسات غير الموثقة. كما لا يعوّض القراءة المتعمقة أو الفهم النقدي من قِبل الباحث نفسه، ولا يقدّم حكمًا نهائيًا حول جودة البحث من منظور النشر الأكاديمي. يظل أداؤه محدودًا بجودة تنسيق الملفات المُحمّلة، وقد لا يتعرّف بدقة على الأجزاء إذا كانت غير مُعنونة بوضوح. كذلك لا يستخرج المراجع أو يتحقق من توثيقها إلا إذا طُلب منه ذلك صراحة. وظيفته تركز على التلخيص السريع والتحليل الأولي فقط، لا على الفحص العميق أو المتخصص.",
-        "example": "\"حمّل الملف للبحث وسيلخّصه البوت مع تحليل عناصره وتقديم اقتراحات علمية.\""
-      },
-      {
-        "name": "تحليل البيانات البحثية",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-67f0bf48eb1c8191b85a522cc7bf8065-bwt-mhll-lbynt-lbhthy-research-data-analyst"
-          }
-        ],
-        "desc": "يُعد هذا البوت أداة ذكية لتحليل البيانات البحثية الكمية والنصية بصورة منهجية دقيقة. يمكن للباحث إدخال جدول بيانات بصيغة نصية أو رفع ملف منسق، ليقوم البوت بتحليل المتغيرات إحصائيًا، واستخراج العلاقات بين البيانات، وعرض النتائج في صورة جداول ورسومات بيانية. يُفيد في معالجة بيانات الاستبيانات، الاختبارات التربوية، والدراسات التطبيقية. كما يوفّر تفسيرات علمية للنتائج تساعد الباحث على صياغة مناقشات واضحة ومدعمة بالأدلة. يتميز بقدرته على كشف الأنماط والاتجاهات، مما يُسهل ربط النتائج بالإطار النظري للبحث. يُعتبر أداة مساندة للطلاب في مرحلة تحليل النتائج وصياغة الفصل الرابع في الرسائل العلمية، ويوفر وقتًا وجهدًا كبيرين.",
-        "limits": "تتمثل حدود هذا البوت في أنه لا يحل محل التحليل الإحصائي المتقدم الذي يجريه مختصون باستخدام برامج احترافية مثل SPSS، خاصة في النماذج المعقدة أو الدراسات المتقدمة. كما يعتمد على جودة البيانات المدخلة، ولا يمكنه معالجة ملفات فيها أخطاء تنسيقية أو بيانات ناقصة بشكل فعال. لا يقوم باختبارات الفرضيات المعمقة إلا ضمن نطاق محدود، ولا يختار الأساليب الإحصائية تلقائيًا ما لم تكن البيانات واضحة ومهيكلة. كذلك، لا يقدّم تفسيرًا شاملاً للنتائج ضمن السياق التربوي أو الاجتماعي ما لم يتم تزويده بإطار نظري دقيق. يقتصر دوره على التحليل الأولي، عرض النتائج بصريًا، وتقديم شروحات مبدئية تساعد في صياغة فصل النتائج، دون ضمان قبولها كما هي في المجلات أو الجامعات ما لم يُراجعها خبير بشري.",
-        "example": "\"أدخل جدول بيانات بصيغة نصية وسيحلله البوت إحصائيًا ويقدّم رسومات توضيحية.\""
-      },
-      {
-        "name": "تحليل ملفات اكسل",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-68809e7f7abc8191a513012f75ed8f5a-excel-thlyl-trbwy"
-          }
-        ],
-        "desc": "يعمل هذا البوت على تحليل ملفات اكسل بدقة عالية واستخراج المعلومات منها بصورة منظمة. يقرأ البيانات كما هي داخل الملف دون إضافة أو افتراض أي معلومات خارجية. يفحص جودة البيانات من حيث القيم المفقودة والتكرارات والأخطاء الشكلية والمنطقية. يقدّم تحليلات وصفية وإحصائية مبنية فقط على محتوى الملف. ينفّذ مقارنات وتحليلات ارتباطية عند طلب المستخدم وتوافر الشروط اللازمة داخل البيانات. يكتشف المشكلات البنيوية في الأعمدة وأنواع البيانات ويعرضها بوضوح. يلتزم بقفل النطاق فلا يتجاوز حدود الملف المرفوع. يطرح سؤالًا توضيحيًا واحدًا عند نقص معلومة مؤثرة في التحليل. يخرج تقارير منظمة وفق قالب احترافي يتضمن الوصف والفحص والنتائج وحدود التحليل. يراجع الحسابات داخليًا لضمان دقة النتائج واتساقها قبل عرضها للمستخدم.",
-        "limits": "تتمثل حدود بوت تحليل ملفات اكسل في أنه يركّز حصريًا على البيانات الموجودة داخل ملف اكسل المرفوع، ويعمل ضمن نطاقها دون إدخال أي معلومات خارجية أو افتراضات غير مدعومة. ينفّذ التحليلات الحسابية والإحصائية الممكنة بناءً على بنية البيانات الفعلية، ويولّد نتائج قابلة للتتبع إلى العمليات الحسابية الواضحة فقط. لا يستبدل دور الباحث أو المحلل في التفسير العلمي أو بناء الإطار النظري، بل يعمل كمساعد تقني يسرّع تنفيذ الإجراءات التحليلية. لا يقدّم استنتاجات سببية أو تعميمات خارج حدود البيانات. يرفض معالجة الأعمدة غير المعرّفة أو البيانات غير المكتملة إذا كانت تؤثر جوهريًا في التحليل، ويطرح سؤالًا توضيحيًا واحدًا عند غياب معلومة حاسمة. يفعّل تنبيهًا ضمنيًا عند وجود خلل بنيوي مثل تعارض أنواع البيانات أو كثرة القيم المفقودة. يلتزم بإخراج منظم يشمل وصف الملف، وفحص الجودة، ونتائج التحليل، وحدوده. وعليه، يظل أداة قوية لتسريع الجانب التطبيقي والتحليلي داخل اكسل، دون أن يحل محل الحكم العلمي أو التفسير الأكاديمي للباحث.",
-        "example": "أدخل طلبًا مثل: \"احسب المتوسط والانحراف المعياري وقارن بين المجموعتين في العمود (Group) بناءً على المتغير (Score)\"، فيقوم البوت بفحص الملف، والتحقق من صلاحية البيانات، ثم تنفيذ الاختبار الإحصائي المناسب إذا كانت شروطه متحققة، ويعرض جدول النتائج مع القيم الإحصائية الأساسية وحدود التحليل ضمن إطار البيانات المتاحة."
-      },
-      {
-        "name": "واجهة ويب لخدمة العمل البحثي",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-nq1rwzxlt-wjh-wyb-lbhthy-web-search-interface"
-          }
-        ],
-        "desc": "يُعد هذا البوت أداة تنفيذ بحثي متقدمة تساعد الباحثين وطلاب الدراسات العليا في إجراء التحليلات الكمية والكيفية بدقة واحتراف. يُوفر تقارير منظمة بثلاث مستويات (موجز، قياسي، تفصيلي) تشمل خطوات تحليلية واضحة. يُنتج جداول ومصفوفات تنفيذية تسهّل تفسير البيانات. كما يُولد أكواد تشغيلية جاهزة (Excel، SPSS، Python) لتسريع العمل البحثي. يُفعّل تنبيهات ذكية عند وجود نقص أو تضارب في البيانات. يُعتمد عليه لتقديم توصيات تطبيقية مستندة إلى نتائج التحليل. ويضمن جودة الإخراج بمؤشرات دقيقة ومعايير أكاديمية عالية الموثوقية.",
-        "limits": "تتمثل حدود هذا البوت في أنها تُركّز على تسريع الجانب التطبيقي من البحث، مثل إجراء التحليلات الكمية والنوعية، وإنتاج الجداول والمصفوفات والأكواد الجاهزة، كما أنها لا تُغني عن دور الباحث، بل تعمل كمساعد تقني يُسرّع إنجاز المهام التنفيذية دون أن تحلّ محل التفكير النقدي أو التفسير العلمي. يمكن للواجهة توليد كود SPSS لتحليل التباين، لكنها لن تكتب لك تفسير النتائج في سياق دراستك ما لم تُزوّدها بالمعلومات والسياق الكامل. وترفض معالجة البيانات غير المكتملة أو غير المصنفة بشكل واضح، وتُفعّل تنبيهات المخاطر عند وجود خلل. بالتالي، تظل الواجهة أداة قوية لتسريع العمل، ولكن ضمن حدود التنفيذ التطبيقي والمنهجي فقط، لا التعويض عن الدور العلمي للباحث.",
-        "example": "\"أدخل طلبًا مثل: 'حلل بيانات الفرضية الأولى باستخدام اختبار ت' وستحصل على كود SPSS جاهز، مع جدول النتائج وتفسير مبدئي يمكن إدماجه في فصل النتائج.\""
-      },
-      {
-        "name": "ناقد البحث النوعي",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-69622bf35684819186ae27280eabb67e-nqd-bhth-wsfy-descriptive-research-reviewer"
-          }
-        ],
-        "desc": "يقدّم دعمًا أكاديميًا متخصصًا للباحثين في مجال البحوث النوعية من خلال تقويم أعمالهم تقويمًا وصفيًا تحليليًا منضبطًا غير حكمي، إذ يتحقق من اتساق العنوان والمشكلة وأسئلة البحث، ويفحص ملاءمة التصميم النوعي المعلن ومبررات اختياره، ويراجع أدوات جمع البيانات وإجراءات التحليل كما وردت نصيًا، ويحلّل مستوى الموثوقية النوعية بما في ذلك المثلثية والتحقق من المشاركين، ويضبط سلامة الاستنتاجات وحدودها دون تعميم أو سببية، كما يشخّص نقاط القوة والضعف تعليلًا بضوابط منهجية واضحة، ويقترح حلولًا تنفيذية تعليمية ومنهجية قابلة للتطبيق تعزّز جودة البناء العلمي للبحث النوعي.",
-        "limits": "يعمل هذا البوت ضمن نطاق محدد يركّز حصريًا على نقد البحوث النوعية تقويمًا وصفيًا تحليليًا منضبطًا، ولا يتجاوز ذلك إلى البحوث الكمية أو المختلطة أو النصوص غير المصنّفة بوصفها بحثًا نوعيًا صريحًا. لا يقدّم أحكام قبول أو رفض نهائية، ولا يدّعي صفة التحكيم المؤسسي أو الاعتماد الأكاديمي، كما لا يعيد كتابة البحث كاملًا أو ينشئ تصميمًا بديلًا له. يقتصر دوره على تحليل النص المقدم كما ورد، وربط الملاحظات بضوابط منهجية واضحة، واقتراح حلول تنفيذية تعليمية ومنهجية قابلة للتطبيق داخل حدود النص. لا يدرج تحليلًا إحصائيًا، ولا يفسّر السببية، ولا يتوسّع خارج المعطيات المتاحة. لا يغني عن المشرف الأكاديمي أو لجان التحكيم الرسمية، ولا يعمل عند نقص جوهري في المادة أو غموض غير قابل للحسم. تتمثل وظيفته الأساسية في التوجيه الأكاديمي المنهجي المنضبط لتعزيز جودة البناء العلمي للبحث النوعي فقط.",
-        "example": "«أرسل مقدمة بحث نوعي معلن بوصفه دراسة حالة، وسيحلل البوت اتساق المشكلة مع أسئلة البحث، ويقيّم وضوح مبررات اختيار التصميم، ويحدّد نقاط القوة والضعف، ثم يقترح تحسينات منهجية منضبطة دون إعادة كتابة النص.»"
-      },
-      {
-        "name": "ناقد البحث الكمّي",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-69626e3febe88191b692e0aabe580e5a-nqd-bhth-tjryby-experimental-study-reviewer"
-          }
-        ],
-        "desc": "يُعدّ هذا البوت أداة أكاديمية متخصصة في نقد البحوث الكمية وفق منهجية جامعية منضبطة، إذ يُسهم في تقويم الدراسات التجريبية وشبه التجريبية والارتباطية استنادًا إلى ضوابط منهجية وإحصائية دقيقة، ويُحلّل تصميم البحث والمتغيرات وأدوات القياس والعينة وإجراءات التحليل كما وردت نصيًا دون افتراضات خارجية، ويُشخّص نقاط القوة والضعف بناءً على قرائن كمية مباشرة، ويربط كل ملاحظة نقدية بموضعها داخل النص، ويقترح حلولًا منهجية وإجرائية وإحصائية بوصفها بدائل محتملة قابلة للتطبيق، ويُقيّد النقد بحدود البيانات المعروضة دون تعميم غير مبرر، ويلتزم بقالب إخراج أكاديمي ثابت يضمن الاتساق والموضوعية، ويُفعّل آليات إيقاف عند غياب العناصر الكمية الجوهرية، ويمنع إدخال التفسيرات غير المسندة أو إعادة كتابة البحث، ويُصدر في النهاية تقديرًا لمستوى الثقة الإحصائية وفق اكتمال المؤشرات المنهجية داخل النص.",
-        "limits": "يعمل هذا البوت ضمن نطاق أكاديمي منضبط يقتصر على نقد البحوث الكمية فقط كما تَرِد نصيًا، إذ يركّز على الدراسات ذات التصميم التجريبي أو شبه التجريبي أو الارتباطي التي تتضمن متغيرات قابلة للقياس وتحليلًا إحصائيًا صريحًا، ولا يتعامل مع البحوث النوعية أو المختلطة عند غياب مؤشرات كمية واضحة، كما لا يعيد كتابة البحث أو يصدر حكم قبول أو رفض أكاديمي، ولا يقدّم تفسيرًا سببيًا يتجاوز ما تثبته النتائج الإحصائية الواردة في النص، ولا يُدخل معلومات أو معايير خارج المادة المقدّمة، ويوقف التنفيذ عند غياب عناصر التحليل الكمي الجوهرية، وتبقى وظيفته الأساسية مقصورة على التقويم المنهجي والإحصائي واقتراح بدائل محتملة قابلة للتطبيق دون فرضها بوصفها أحكامًا ملزمة.",
-        "example": "يمكن للباحث إدخال سؤال مثل: «هل الاختبار الإحصائي المستخدم مناسب لفرضيات الدراسة؟» فيقوم البوت بتحليل ملاءمة الاختبار وشروطه، ويبيّن نقاط القوة والقصور، ويقترح بدائل إحصائية أو إجرائية منضبطة وفق معايير البحث الكمي الأكاديمي."
-      },
-      {
-        "name": "ناقد البحث المختلط",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-6992a3a8055c8191ace8efd06fdfe281-nqd-lbhth-lmkhtlt-mixed-study-reviewer"
-          }
-        ],
-        "desc": "يعمل هذا البوت بوصفه ناقدًا أكاديميًا متخصصًا في تقويم البحوث المختلطة، إذ يتحقق أولًا من توافر المكوّن الكمي والمكوّن النوعي وآلية الدمج قبل الشروع في أي تحليل، ثم يقوّم اتساق كل مكوّن مع هدف الدراسة داخل الإطار المختلط كما ورد نصيًا، ويفحص سلامة التكامل بين النتائج دون افتراضات خارج النص، ويستخرج نقاط القوة المرتبطة بالتصميم والتنفيذ والدمج، ويشخّص نقاط الضعف استنادًا إلى قرائن نصية مباشرة، كما يقترح بدائل منهجية وإجرائية وتكاملية بوصفها حلولًا محتملة لا أحكامًا ملزمة، ويلتزم بقالب نقد أكاديمي منضبط ومتسلسل، ويضبط نطاق التحليل داخل حدود النص مع التصريح بمستوى الثقة المنهجي.",
-        "limits": "يعمل هذا البوت ضمن نطاق محدد يركّز حصريًا على نقد وتقويم البحوث المختلطة كما ترد نصيًا من المستخدم، ولا يتجاوز ذلك إلى كتابة البحوث أو إعادة صياغتها أو إنتاج محتوى بديل عنها. يقتصر دوره على التحليل المنهجي التكاملـي الذي يتحقق من وجود المكوّن الكمي والمكوّن النوعي وآلية الدمج قبل الشروع في النقد، ولا يتعامل مع بحوث كمية خالصة أو نوعية خالصة بوصفها مختلطة. لا يقدّم تحكيمًا نهائيًا بالقبول أو الرفض، ولا يصدر أحكامًا شخصية أو انطباعية، كما لا يستند إلى مصادر خارج النص المقدَّم. لا يفسّر النتائج تفسيرًا سببيًا يتجاوز ما يسمح به النص، ولا يعمّم خارج حدوده. لا يضيف أدوات أو إجراءات غير مذكورة، ولا يفترض آليات دمج غير مصرّح بها. يلتزم بقالب نقد منهجي محدد ومتسلسل، ويوقف التنفيذ عند غياب أحد أركان البحث المختلط الثلاثة. وظيفته الأساسية هي تقديم نقد أكاديمي منضبط يساعد الباحث على تحسين جودة التصميم والتكامل المنهجي داخل حدود النص فقط.",
-        "example": "\"أدخل جزء المنهج في دراسة تستخدم استبانة إحصائية ومقابلات نوعية مع توضيح آلية دمج النتائج، وسيقوم البوت بتحليل التصميم المختلط، وتوصيف المكوّنين، وتقويم سلامة الدمج، ثم استخراج نقاط القوة والضعف مع حلول تنفيذية محتملة.\""
-      }
-    ]
-  },
-  {
-    "category": "نماذج المعاجم والمصطلحات",
-    "tools": [
-      {
-        "name": "معجم الكلمات",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-ngWYTPQ2p-bwt-m-jm-lklmt-dictionary"
-          }
-        ],
-        "desc": "يُقدّم هذا البوت خدمة متخصصة في تحليل الكلمات العربية من حيث الجذر، الوزن، والمعنى المعجمي. يُفيد الباحثين في الدراسات اللغوية والشرعية والأدبية عبر إيضاح البنية الصرفية والدلالية للكلمات. كما يُساعد في كشف الفروق بين المعاني القاموسية والاستخدامات السياقية، مما يُثري التحليل النصي. يُفيد في توثيق الاستشهادات اللغوية وضبط المصطلحات في الرسائل العلمية. بالإضافة إلى ذلك، يُعتبر أداة عملية في تعليم اللغة العربية للناطقين بغيرها، عبر تقديم شروح مبسطة وسياقات متعددة. يتيح للباحث إدخال كلمة (مثل: استبشروا) ليعرض جذرها ووزنها ومعناها في القواميس المعتبرة. يختصر بذلك الوقت المبذول في مراجعة المعاجم الورقية، ويضمن نتائج دقيقة وسريعة.",
-        "limits": "تتمثل حدود هذا البوت في أنه يركّز على تحليل الكلمات المفردة أو المركبة تحليلاً صرفيًا ومعجميًا، ولا يُعالج الجمل الكاملة أو النصوص الموسّعة. ولا يُقدّم شروحات نحوية تفصيلية، ولا يُغني عن كتب النحو أو البلاغة. كما أنه لا يقدّم تفاسير دينية أو فقهية للكلمات، بل يكتفي بإظهار معناها المعجمي من المصادر المعتمدة. لا يُحلّل المعاني العميقة أو الرمزية ما لم تكن واردة في المعاجم، ولا يُنشئ محتوى لغوياً إبداعياً مثل الشعر أو الأمثال. يقتصر استخدامه على التوثيق والتحليل اللغوي الدقيق للمفردات، لذا فهو أداة مساعدة وليست بديلة عن الاجتهاد اللغوي أو التفسير السياقي الكامل.",
-        "example": "\"أدخل الكلمة 'استبشروا'، وسيوضح البوت جذرها، وزنها، ومعناها من القواميس.\""
-      },
-      {
-        "name": "مفردات القرآن",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-68cac0cf200c81919c187d97bea6155a-lthlyl-ldlly-lmfrdt-ltfsyr-lqrny"
-          }
-        ],
-        "desc": "هذا البوت صُمّم كأداة بحثية متخصصة في التحليل الدلالي لمفردات التفسير القرآني، ليمكّن الباحث من فهم أسرار اختيار الكلمة القرآنية كما عرضها كبار المفسرين. يوفّر مخرجات متعددة (موجزة، قياسية، احترافية) بحسب حاجة المستخدم، مع جداول مقارنة وتلخيص ثنائي اللغة عند اللزوم. يربط المعنى اللغوي بالبعد البلاغي والبياني، ويعرض وجوه الترجيح بين الألفاظ كما نقلها الطبري والقرطبي والرازي وابن كثير وابن عاشور. يساعد على اختصار وقت الباحث بجمع الأقوال المعتبرة في موضع واحد بشكل منظم وواضح. يضمن الحياد العلمي بتوثيق الإحالات إلى مصادرها مباشرة. بذلك يصبح وسيلة تدريسية وبحثية عملية لطلاب العلم وأساتذته. والغاية الأعمق: إبراز جمال البيان القرآني عبر عدسة المفسرين.",
-        "limits": "يعمل هذا البوت ضمن نطاق أكاديمي صارم، بوصفه بوتاً ذكاء اصطناعي متخصص في التحليل الدلالي لمفردات التفسير القرآني، ويُشترط عليه الالتزام بالمبادئ التالية: الاعتماد على المصادر التفسيرية المعتبرة (الطبري، القرطبي، الرازي، ابن كثير، التحرير والتنوير)، الحياد العلمي، الدقة اللغوية والبيانية، والتوثيق الصارم. لا يجوز له إبداء رأي شخصي أو اجتهاد خارج ما ورد في كتب التفسير، كما يُمنع استخدام لغة عامية أو إسقاطات معاصرة غير موثقة.",
-        "example": "\"أدخل سؤالًا مثل ما سر اختيار لفظ {الكتاب} في قوله تعالى: {ذَلِكَ الْكِتَابُ لَا رَيْبَ فِيهِ}؟ وسيجيب البوت بجدول مقارن يلخّص أقوال المفسرين، مع بيان البعد البلاغي\""
-      },
-      {
-        "name": "ترجمة الأعلام",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-XYZknTHPW-bwt-trjm-l-lm-translation-of-flags"
-          }
-        ],
-        "desc": "يوفّر هذا البوت أداة متميزة لترجمة الأعلام من العلماء، المفكرين، والأدباء، مع تقديم نبذة علمية مختصرة عنهم. يُفيد في البحوث المقارنة، ودراسات الترجمة، والمقالات العلمية التي تتطلب تعريفًا موجزًا بالشخصية محل الدراسة. عند إدخال اسم علم (مثل: ابن رشد)، يقوم البوت بترجمته ترجمة علمية دقيقة مع إضافة معلومات أساسية عن سيرته ومؤلفاته. يُعزز هذا من جودة الهوامش والتوثيقات في الرسائل الجامعية. كما يُفيد في إعداد فهارس الأعلام أو السير الذاتية المختصرة داخل البحوث. يدعم الترجمة الثنائية (عربي–إنجليزي) مع مراعاة السياق الأكاديمي.",
-        "limits": "تتمثل حدود هذا البوت في أنه يركّز فقط على ترجمة أسماء الأعلام العلمية والأدبية وتقديم نبذة مختصرة عنهم، ولا يُقدّم تحليلات نقدية موسّعة أو سير ذاتية تفصيلية. لا يشمل أعلامًا مجهولي الهوية أو غير موثّقين أكاديميًا، كما لا يُترجم الأسماء العامة أو غير المرتبطة بإنتاج علمي واضح. لا يُناسب الاستخدامات غير الأكاديمية مثل الترجمة التجارية أو الإعلامية، ولا يدعم إدخال قوائم طويلة دفعة واحدة دون تنظيم. كما أن المعلومات المقدمة لا تُغني عن الرجوع إلى المصادر الأصلية للتوثيق الكامل، بل تُقدَّم كملخص أولي يعزز من جودة الهوامش والتعريفات داخل البحوث العلمية.",
-        "example": "\"أدخل اسم: 'ابن رشد'، وسيقدم البوت ترجمة علمية مختصرة لحياته ومؤلفاته.\""
-      },
-      {
-        "name": "ترجمة المصطلحات",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-6867c4ceb758819180fd00287855fdbe-bwt-ltrjm-l-lmy-scientific-translation"
-          }
-        ],
-        "desc": "يُوفّر هذا البوت أداة ذكية لترجمة المصطلحات العلمية المتخصصة في مختلف المجالات مثل الطب، الهندسة، التربية، والعلوم الإنسانية. يُسهم في توحيد المصطلحات داخل الأبحاث، مما يضمن دقة الترجمة واتساقها عبر الرسالة العلمية. يتيح إدخال فقرة علمية كاملة ليُترجمها بلغة فصيحة مع شرح سياقي مبسط يوضح معنى المصطلحات ضمن سياقها. يُفيد الباحثين الذين يكتبون بالعربية أو الإنجليزية ويرغبون في توثيق مصطلحات دقيقة تُطابق المعايير الأكاديمية. كما يُسهم في تجنّب الخلط بين المصطلحات المتشابهة، ويقدّم بدائل معجمية عند الحاجة. يُعتبر أداة استراتيجية في إعداد الرسائل الموجهة للنشر الدولي.",
-        "limits": "تتمثل حدود هذا البوت في أنه يُركّز على ترجمة وتفسير المصطلحات العلمية فقط ضمن السياقات الأكاديمية، ولا يُقدّم ترجمة أدبية أو عامة للنصوص غير المتخصصة. لا يُغني عن خدمات الترجمة الكاملة للنصوص الطويلة، ولا يُعد بديلاً عن الترجمة البشرية في المواد التي تتطلب حسًّا لغويًا أو تخصصيًا دقيقًا جدًا. كما أنه لا يدعم المصطلحات غير الواضحة أو المختصرة بدون سياق كافٍ، ولا يُترجم الجمل الركيكة أو غير المكتملة. يختص بتحليل الفقرات أو المصطلحات ضمن مجالات علمية واضحة، ولا يُناسب الاستخدامات اليومية أو غير الأكاديمية. وأخيرًا، لا يُصدر ترجمات نهائية جاهزة للنشر دون مراجعة الباحث، بل يقدّم مسودة علمية دقيقة قابلة للتدقيق.",
-        "example": "\"أدخل فقرة علمية، وسيقدّم البوت ترجمة فصيحة للمصطلحات مع شرح سياقي مبسط.\""
-      },
-      {
-        "name": "ترجمة البحوث العلمية",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-6874ffd6fd3481918f962945bfcaed21-trjm-lktb-wlmwlft-translation-of-books"
-          }
-        ],
-        "desc": "يُعد هذا البوت أداة متخصصة لترجمة الكتب والنصوص والبحوث الأكاديمية من العربية إلى الإنجليزية والعكس، مع المحافظة على الدقة العلمية والاصطلاحية. يُفيد في ترجمة عناوين الكتب، محتوياتها، وأجزائها بما يتوافق مع الاستخدام الأكاديمي. يساعد الباحثين في تقديم ملخصات مترجمة لرسائلهم أو أبحاثهم للنشر الدولي. كما يُسهم في تجاوز العقبات اللغوية عبر تبسيط النصوص دون الإخلال بالمضمون. يدعم الترجمة الثنائية (النص العربي إلى الإنجليزية والعكس)، ويُراعي السياق العلمي للمصطلحات. يُعتبر أداة عملية في إعداد الدراسات المقارنة أو البحوث المشتركة بين لغتين. يوفر للمستخدم نتائج دقيقة وسريعة يمكن اعتمادها مباشرة في المراجع أو الأبحاث العلمية.",
-        "limits": "تتمثل حدود هذا البوت في أنه يُركّز فقط على الترجمة الأكاديمية للنصوص، ولا يُقدّم ترجمة أدبية أو إبداعية مثل الروايات أو الشعر. لا يدعم الترجمة الفورية للمحادثات أو النصوص غير العلمية مثل الأخبار أو الإعلانات. كما أنه لا يُغني عن المترجم البشري في الحالات التي تتطلب تدقيقًا ثقافيًا عميقًا أو معرفة تخصصية دقيقة جدًا في مجالات نادرة. لا يُترجم دون توفر نص واضح ومُنظّم، ولا يُقدّم شروحًا لغوية خارج نطاق الترجمة. يُراعي السياق العلمي فقط، لذا قد لا يكون مناسبًا للترجمة العامة أو اليومية. كما لا يُقدّم تنسيقًا كاملًا للكتب الجاهزة للطباعة، بل يكتفي بالنصوص القابلة للاستخدام في الأبحاث أو التقديمات الأكاديمية.",
-        "example": "\"أدخل: 'الذكاء الاصطناعي يعزز التعليم'، وسيقدّم البوت ترجمة إنجليزية دقيقة.\""
-      }
-    ]
-  },
-  {
-    "category": "نماذج علوم الحديث",
-    "tools": [
-      {
-        "name": "تخريج الأحاديث النبوية",
-        "links": [],
-        "desc": "يُقدّم هذا البوت خدمة علمية متقدمة للباحثين في مجال علوم الحديث، حيث يُتيح لهم تخريج الأحاديث النبوية من مصادرها الأصلية بدقة عالية. يُمكّن الباحث من إدخال نص حديث (مثل: \"إنما الأعمال بالنيات\") ليعرض له مصادر الحديث في كتب السنة، ودرجة صحته وفق أقوال العلماء، مع ذكر الرواة وسلاسل الإسناد الأساسية. يُفيد في التحقق من النصوص المقتبسة داخل الرسائل الجامعية والمقالات العلمية. كما يختصر الوقت الذي يُبذل في مراجعة كتب التخريج الورقية. يُعتبر أداة مساعدة للطلاب والباحثين في الفقه والدراسات الإسلامية، حيث يضمن الاعتماد على نصوص صحيحة وموثوقة. بالإضافة إلى ذلك، يُوفّر للمستخدم بيانات دقيقة عن أقوال المحدّثين مثل البخاري، مسلم، الترمذي، وابن حجر وغيرهم، مما يدعم النزاهة العلمية في البحث.",
-        "limits": "تتمثل حدود هذا البوت في أنه يختص فقط بتخريج الأحاديث النبوية الواردة بالنصوص الدقيقة، ولا يُقدّم فتاوى أو اجتهادات فقهية أو شرحًا موسّعًا لمعاني الأحاديث. لا يُعالج الأحاديث غير المكتملة أو التي تم تحريفها لفظيًا، كما لا يُخرّج الأحاديث دون توفر صيغة قريبة من الأصل المروي. لا يُعدّ بديلًا عن الرجوع للمصادر الحديثية الكاملة عند الحاجة إلى تدقيق شامل أو دراسة إسنادية معمقة. لا يقدّم تصحيحًا اجتهاديًا جديدًا لدرجة الحديث، بل يعرض الأقوال المعتمدة للمحدّثين المشهورين فقط. كما لا يدعم الاستخدامات العامة خارج السياق الأكاديمي أو الشرعي، ويُركّز على توثيق الحديث لا على شرحه أو تأويله.",
-        "example": "\"أدخل الحديث: 'إنما الأعمال بالنيات' وسيعرض البوت مصادره ودرجته الحديثية.\""
-      },
-      {
-        "name": "شرح غريب الحديث",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-68b30581e8a881918204976d605b1271-shrh-gryb-lhdyth"
-          }
-        ],
-        "desc": "يُقدّم هذا البوت أداة فريدة لشرح الألفاظ الغريبة في الأحاديث النبوية، بما يُسهّل على الباحثين وطلاب العلم فهم النصوص الشرعية بدقة. عند إدخال نص حديث يحتوي على مفردات غامضة (مثل: \"العقيقة عن الغلام شاتان\") يقوم البوت بشرح تلك المفردات بلغة عربية فصيحة مبسطة، مدعومة بالمعاني المعجمية والاصطلاحية. يُفيد في إعداد الشروح والحواشي على الأحاديث داخل الرسائل العلمية. كما يُعين في ضبط الاستشهادات اللغوية وتحقيقها، مما يدعم الدراسات الفقهية واللغوية المرتبطة بالسنة النبوية. يُعد أداة تعليمية وتدريبية للطلاب المبتدئين والمتقدمين في علوم الحديث، حيث يجمع بين البيان اللغوي والتحليل الدلالي.",
-        "limits": "تتمثل حدود هذا البوت في أنه يركّز فقط على شرح المفردات الغريبة والغامضة في الأحاديث النبوية من الناحية اللغوية والدلالية، ولا يُقدّم شروحًا فقهية موسعة أو استنباطات حكمية. لا يُفسر الحديث كاملًا من حيث المعنى العام أو السياق الفقهي، بل يكتفي بتوضيح الغريب من الألفاظ. لا يُعتمد عليه في الترجيح بين أقوال العلماء أو فهم المسائل الخلافية. كما لا يُعالج الأحاديث غير الموثقة أو المروية بصيغ غير صحيحة. لا يُستخدم في إصدار فتاوى أو تعليم أحكام شرعية مباشرة، بل يهدف لتسهيل الفهم اللغوي للحديث. يُعد أداة مساعدة مكملة للباحث، ولا تغني عن الرجوع إلى شروح كتب الحديث المعتمدة.",
-        "example": "\"أدخل حديثًا مثل: (العقيقة عن الغلام شاتان) وسيشرح البوت الألفاظ الغريبة فيه بلغة فصيحة مبسطة.\""
-      },
-      {
-        "name": "فهرسة وشرح غريب الحديث",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-68ba4892a7b481918fd372a5093aad21-fhrs-wshrh-gryb-lhdyth"
-          }
-        ],
-        "desc": "يوفّر هذا البوت خدمة متقدمة للباحثين عبر الجمع بين فهرسة الأحاديث وشرح ألفاظها الغريبة. عند إدخال نص حديث (مثل: \"المسلم أخو المسلم\") يقوم البوت بتحديد موضع الحديث في مصادره الأصلية (مثل الصحاح والسنن)، مع تقديم شرح موجز للألفاظ الغريبة والمعاني الاصطلاحية. يُفيد في الدراسات العلمية التي تتطلب تتبع مواضع الحديث في كتب متعددة، كما يُسهم في ضبط معاني النصوص للباحثين. يُعتبر أداة قوية لطلاب الحديث والفقه واللغة، حيث يجمع بين الجانب التوثيقي والتحليلي. كما يُختصر الجهد المبذول في البحث عن الحديث وشرحه في مصادر مختلفة، ويضمن دقة ووضوحًا في العرض.",
-        "limits": "حدود هذا البوت تتمثل في أنه يركّز فقط على تحديد مصادر الحديث الأصلية وشرح الألفاظ الغريبة فيه، ولا يقدّم شرحًا فقهيًا موسّعًا أو تفسيرًا عقديًا أو استنباطًا للأحكام. لا يُغني عن الرجوع إلى كتب الشروح المتخصصة عند الحاجة إلى تحليل دقيق أو تفصيل موسّع للحديث. كما لا يُخرّج الأحاديث غير المعروفة أو غير الدقيقة لفظيًا، ولا يتعامل مع النصوص المرسلة أو المنقطعة دون سياق كافٍ. لا يُقدّم تحليلًا بلاغيًا أو لغويًا شاملاً، بل يقتصر على شرح المصطلحات الغامضة وبيان موضع الحديث في المصادر. هو أداة توثيقية ولغوية داعمة، لا تُغني عن البحث العلمي المتعمق.",
-        "example": "\"أدخل حديثًا مثل: (المسلم أخو المسلم) وسيعرض البوت الفهرس الحديثي له مع شرح موجز للألفاظ والمعاني.\""
-      }
-    ]
-  },
-  {
-    "category": "نماذج أدوات الباحث",
-    "tools": [
-      {
-        "name": "برمجيات العقيل",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-67c877434d24819182fb3212b3e0b931-bwt-brmjyt-l-qyl-al-aqeel-software"
-          }
-        ],
-        "desc": "يُقدّم هذا البوت خدمة متخصصة في شرح كيفية استخدام برمجيات العقيل الموجهة للمجال التعليمي والإداري. عند إدخال استفسار محدد (مثل: كيفية استخدام برنامج العقيل للمحاسبة المدرسية)، يقوم البوت بعرض الخطوات التفصيلية مدعومة بتوجيهات عملية. يُفيد المعلمين والإداريين في المدارس والمؤسسات التعليمية عبر تسهيل استخدام هذه البرمجيات. كما يساعد في توضيح وظائف النظام وإعداد التقارير والفواتير ومتابعة الحسابات. يُعتبر أداة دعم فني افتراضية تقلل الحاجة إلى التدريب المباشر. يُفيد أيضًا في إعداد المستخدمين الجدد وإرشادهم خطوة بخطوة، مما يوفر الوقت ويزيد من كفاءة العمل المؤسسي.",
-        "limits": "يعمل هذا البوت ضمن نطاق محدد يركّز على تقديم شروحات تعليمية لبرمجيات العقيل فقط، ولا يتجاوز ذلك إلى برمجيات أخرى أو استخدامات خارج السياق التعليمي والإداري. لا يقدّم خدمات صيانة تقنية أو إصلاح أعطال برمجية فعلية، كما لا يتصل مباشرة بأنظمة العقيل أو يجري أي عمليات حقيقية داخلها. يقتصر دوره على الشرح النظري والإرشاد العملي خطوة بخطوة بناءً على استفسارات المستخدم. لا يُغني عن الدعم الفني الرسمي ولا يمكنه تنفيذ أو تعديل بيانات فعلية. كما أنه لا يستجيب لطلبات خارجة عن نطاق برمجيات العقيل أو تتطلب صلاحيات إدارية داخل النظام. وظيفته الأساسية هي التوجيه والمساعدة التعليمية فقط، مما يجعله أداة دعم موثوقة للمستخدمين الجدد والقائمين على الإدارة المدرسية.",
-        "example": "\"أدخل استفسارًا مثل: كيفية استخدام برنامج العقيل للمحاسبة المدرسية، وسيشرح البوت خطوات الاستخدام مع توجيهات عملية.\""
-      },
-      {
-        "name": "روابط تفريغ النصوص",
-        "links": [
-          {
-            "label": "رابط البوت",
-            "url": "https://chatgpt.com/g/g-68f6fd7d357c819196fb06829fee0664-rwbt-tfryg-lnsws-text-transcription-tools"
-          }
-        ],
-        "desc": "يفيد هذا البوت في مساعدة المستخدم على اكتشاف أفضل أدوات تفريغ الصوت والفيديو إلى نصوص بدقة وموثوقية، حيث يقدّم شرحًا تحليليًا مبسّطًا يوضح الفروق بين الخدمات دون تعقيد تقني، ويساعد على اختيار الأداة الأنسب بحسب اللغة ونوع المحتوى ومستوى الدقة المتوقع، مع دعم واضح للغة العربية واحتياجات المستخدم غير المتخصص، كما يعتمد على مصادر رسمية ويتجنب التوصية بخدمات غير موثوقة، ويعرض رؤية نقدية محايدة بعيدًا عن الترويج، مما يختصر الوقت والجهد ويوجّه المستخدم مباشرة إلى الحل الأنسب لاحتياجه.",
-        "limits": "يعمل هذا البوت ضمن نطاق محدد يركّز على تحليل وشرح وتقييم أدوات وخدمات تفريغ الصوت والفيديو إلى نصوص فقط، ولا يتجاوز ذلك إلى تنفيذ عمليات تفريغ فعلية أو التعامل المباشر مع الملفات الصوتية أو المرئية. لا يقدّم خدمات تقنية مباشرة، ولا يرفع أو يعالج محتوى المستخدم، كما لا يرتبط بأي منصة تفريغ اتصالًا مباشرًا أو ينفّذ إجراءات داخل أنظمتها. يقتصر دوره على التوجيه التحليلي، وشرح الخصائص، والمقارنة السردية، وتقديم توصيات مبنية على مصادر رسمية وموثوقة. لا يُغني عن الاشتراك في الخدمات الأصلية ولا عن الدعم الفني الرسمي لتلك الأدوات.",
-        "example": "\"أدخل استفسارًا مثل: ما أفضل أداة لتفريغ محاضرة صوتية باللغة العربية بدقة عالية؟ وسيقوم البوت بشرح الخيارات المتاحة، وبيان الفروق بينها، وتقديم توجيه عملي يساعدك على اختيار الأداة الأنسب دون تنفيذ أي عملية تفريغ فعلية.\""
-      }
-    ]
-  }
-];
-/* =========================================
-   LOGIC: Rendering & Interaction
-   ========================================= */
-
-const mainContainer = document.getElementById('mainContainer');
-const searchInput = document.getElementById('toolSearch');
-const acBox = document.getElementById('acBox');
-const clearBtn = document.getElementById('clearSearchBtn');
-
-// --- Helper: Calculate Sticky Offset ---
-function getStickyOffset() {
-  const topbar = document.getElementById('mainTopbar');
-  const searchWrap = document.getElementById('mainSearchWrap');
-  let offset = 10; 
-  if (topbar) offset += topbar.offsetHeight;
-  if (searchWrap) offset += searchWrap.offsetHeight;
-  return offset;
+/* إظهار وإخفاء النوافذ المنبثقة */
+function openModal(id){
+ document.getElementById(id).style.display='block';
 }
 
-// --- Sounds ---
-const sndClick = new Audio('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWgAAAA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABMmUAAAKAAAAAAAAAAAAAA//uQZAAAAAAA0gAAAAAAAAA0gAAAAAAAB//uQZAAAAAAA0gAAAAAAAAA0gAAAAaa');
-sndClick.volume = 0.2;
-
-function playSound() {
-  try {
-    sndClick.currentTime = 0;
-    sndClick.play().catch(e => {}); 
-  } catch(e) {}
+function closeModal(id){
+ document.getElementById(id).style.display='none';
 }
 
-// Clear Button Logic
-function updateClearBtn() {
-  if(searchInput.value.length > 0) {
-    clearBtn.style.display = 'block';
-  } else {
-    clearBtn.style.display = 'none';
-  }
-}
 
-clearBtn.addEventListener('click', () => {
-  searchInput.value = '';
-  updateClearBtn();
-  acBox.style.display = 'none';
-  searchInput.dispatchEvent(new Event('input'));
-  searchInput.focus();
+function searchTools(){
+const value=document.getElementById('search').value.trim().toLowerCase();
+const cards=document.querySelectorAll('.card');
+
+cards.forEach(card=>{
+const name=card.getAttribute('data-name').toLowerCase();
+card.style.display=name.includes(value)?'block':'none';
 });
-
-// --- Adjust Sticky Positions dynamically ---
-function adjustStickyHeaders() {
-  const offset = getStickyOffset();
-  document.querySelectorAll('.section-title.active').forEach(title => {
-    title.style.top = offset + 'px';
-  });
-  const searchWrap = document.getElementById('mainSearchWrap');
-  const topbar = document.getElementById('mainTopbar');
-  if(searchWrap && topbar) {
-    searchWrap.style.top = topbar.offsetHeight + 'px';
-  }
 }
 
-window.addEventListener('resize', adjustStickyHeaders);
-window.addEventListener('load', adjustStickyHeaders);
-
-// Render Content
-function renderContent() {
-  mainContainer.innerHTML = '';
-  
-  TOOLS_DATA.forEach(cat => {
-    const section = document.createElement('section');
-    const h2 = document.createElement('h2');
-    h2.className = 'section-title';
-    h2.innerHTML = `${cat.category} <span class="caret">▾</span>`;
-    
-    const body = document.createElement('div');
-    body.className = 'sec-body';
-    
-    cat.tools.forEach(tool => {
-      const toolDiv = document.createElement('div');
-      toolDiv.className = 'tool';
-      
-      const title = document.createElement('h3');
-      title.className = 'tool-title';
-      title.textContent = tool.name;
-      toolDiv.appendChild(title);
-      
-      const header = document.createElement('div');
-      header.className = 'tool-header';
-      
-      tool.links.forEach(link => {
-        const btn = document.createElement('a');
-        btn.className = 'btn-gpt';
-        btn.href = link.url;
-        btn.target = '_blank';
-        btn.innerHTML = `🧠 ${link.label}`;
-        btn.onclick = () => playSound();
-        header.appendChild(btn);
-      });
-      
-      if(tool.desc) {
-        const b = document.createElement('button');
-        b.className = 'btn-info';
-        b.textContent = 'ℹ️ نبذة';
-        b.onclick = () => {
-           playSound();
-           showModal(tool.name, tool.desc);
-        };
-        header.appendChild(b);
-      }
-      
-      if((tool.limits || tool.limit)) {
-        const b = document.createElement('button');
-        b.className = 'btn-info';
-        b.textContent = '📏 حدود';
-        b.onclick = () => {
-           playSound();
-           showModal(tool.name, (tool.limits || tool.limit));
-        };
-        header.appendChild(b);
-      }
-
-      if(tool.example) {
-        const b = document.createElement('button');
-        b.className = 'btn-info';
-        b.textContent = '📌 مثال';
-        b.onclick = () => {
-           playSound();
-           showModal(tool.name, tool.example);
-        };
-        header.appendChild(b);
-      }
-      
-      toolDiv.appendChild(header);
-      body.appendChild(toolDiv);
-    });
-    
-    section.appendChild(h2);
-    section.appendChild(body);
-    mainContainer.appendChild(section);
-    
-    h2.addEventListener('click', () => {
-      playSound();
-      const isOpen = body.classList.contains('open');
-      
-      // إغلاق جميع الأقسام الأخرى
-      document.querySelectorAll('.sec-body').forEach(el => {
-        el.style.maxHeight = null;
-        el.classList.remove('open');
-      });
-      document.querySelectorAll('.section-title').forEach(el => {
-        el.classList.remove('active');
-        el.style.top = ''; 
-      });
-      
-      if (!isOpen) {
-        body.classList.add('open');
-        h2.classList.add('active');
-        
-        // تعيين الإزاحة (Offset) للعنوان ليصبح ثابتاً أسفل الشريط العلوي
-        adjustStickyHeaders();
-        
-        // فتح المحتوى للأسفل
-        body.style.maxHeight = body.scrollHeight + "px";
-      }
-    });
-  });
+var atTop=true;
+function scrollToggle(){
+if(atTop){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});document.getElementById('scrollBtn').innerText='⬆';atTop=false}
+else{window.scrollTo({top:0,behavior:'smooth'});document.getElementById('scrollBtn').innerText='⬇';atTop=true}
 }
-
-// Search Functionality
-searchInput.addEventListener('input', (e) => {
-  updateClearBtn();
-  const val = e.target.value.toLowerCase();
-  const sections = document.querySelectorAll('section');
-  
-  sections.forEach(sec => {
-    const tools = sec.querySelectorAll('.tool');
-    let secHasMatch = false;
-    
-    tools.forEach(t => {
-      const txt = (t.querySelector('.tool-title').textContent + ' ' + t.innerText).toLowerCase();
-      if(txt.includes(val)) {
-        t.style.display = 'flex';
-        secHasMatch = true;
-      } else {
-        t.style.display = 'none';
-      }
-    });
-    
-    if(secHasMatch) {
-      sec.style.display = 'block';
-      const body = sec.querySelector('.sec-body');
-      const title = sec.querySelector('.section-title');
-      if(val) {
-        body.classList.add('open');
-        title.classList.add('active');
-        adjustStickyHeaders(); 
-        body.style.maxHeight = body.scrollHeight + "px";
-      } else {
-        body.style.maxHeight = null;
-        body.classList.remove('open');
-        title.classList.remove('active');
-        title.style.top = '';
-        tools.forEach(t => t.style.display = 'flex');
-      }
-    } else {
-      sec.style.display = 'none';
-    }
-  });
-  
-  updateAutocomplete(val);
-});
-
-function findToolByName(name) {
-  for (const cat of TOOLS_DATA) {
-    for (const tool of cat.tools) {
-      if (tool.name === name) return tool;
-    }
-  }
-  return null;
-}
-
-function updateAutocomplete(val) {
-  acBox.innerHTML = '';
-  if(!val) {
-    acBox.style.display = 'none';
-    return;
-  }
-  
-  let matches = [];
-  TOOLS_DATA.forEach(cat => {
-    cat.tools.forEach(t => {
-      if(t.name.toLowerCase().includes(val)) {
-        matches.push(t.name);
-      }
-    });
-  });
-  
-  matches = [...new Set(matches)];
-  
-  if(matches.length > 0) {
-    acBox.style.display = 'block';
-    matches.forEach(m => {
-      const div = document.createElement('div');
-      div.innerHTML = `${m} <span>➔</span>`; 
-      div.onclick = () => {
-        const tool = findToolByName(m);
-        if(tool && tool.links.length >0) {
-          window.open(tool.links[0].url, '_blank');
-        }
-        searchInput.value = m;
-        searchInput.dispatchEvent(new Event('input'));
-        acBox.style.display = 'none';
-      };
-      acBox.appendChild(div);
-    });
-  } else {
-    acBox.style.display = 'none';
-  }
-}
-
-document.addEventListener('click', (e) => {
-  if (!searchInput.contains(e.target) && !acBox.contains(e.target)) {
-    acBox.style.display = 'none';
-  }
-});
-
-// Modal Logic
-const overlay = document.getElementById('overlay');
-function showModal(title, content) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-content').textContent = content;
-  overlay.classList.add('show');
-}
-function closeModal() {
-  overlay.classList.remove('show');
-}
-
-overlay.addEventListener('click', (e) => {
-  if(e.target === overlay) closeModal();
-});
-document.addEventListener('keydown', (e) => {
-  if(e.key === "Escape") closeModal();
-});
-
-document.querySelectorAll('.topbtn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const key = btn.getAttribute('data-modal');
-    if(MODAL_CONTENT[key]) {
-      playSound();
-      showModal(btn.textContent.trim(), MODAL_CONTENT[key]);
-    }
-  });
-});
-
-const scrollBtn = document.getElementById('toggleScroll');
-window.addEventListener('scroll', () => {
-  if(window.scrollY > 300) {
-    scrollBtn.innerHTML = '⬆ رجوع للأعلى';
-  } else {
-    scrollBtn.innerHTML = '⬇ النزول للأسفل';
-  }
-});
-
-scrollBtn.addEventListener('click', () => {
-  playSound();
-  if(window.scrollY > 300) {
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  } else {
-    window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
-  }
-});
-
-// Init
-renderContent();
 
 </script>
+
 </body>
 </html>
