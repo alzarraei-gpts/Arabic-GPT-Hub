@@ -55,7 +55,37 @@ header h2{margin-top:8px;font-size:22px}
 .btn{padding:8px 14px;border-radius:6px;text-decoration:none;font-weight:bold;border:1px solid #76B900;color:#76B900;background:#000;font-size:13px}
 .btn:hover{background:#76B900;color:#000}
 
-footer{margin-top:60px;padding:30px;text-align:center;background:#111;border-top:1px solid #333}
+
+.card-desc{margin:0;color:#e8e8e8;min-height:132px}
+
+.intro-strip{padding-top:0}
+.intro-box{background:linear-gradient(180deg,#121212 0%,#0b0b0b 100%);border:1px solid rgba(118,185,0,.18);border-radius:18px;padding:22px 24px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.intro-box h3{margin:0 0 8px;color:#fff;font-size:22px}
+.intro-box p{margin:0;color:#d7d7d7}
+
+footer{margin-top:70px;padding:0;background:radial-gradient(circle at top,#1a1a1a 0%,#090909 58%,#050505 100%);border-top:1px solid rgba(118,185,0,.22)}
+.footer-shell{max-width:1300px;margin:auto;padding:42px 20px 26px}
+.footer-head{text-align:center;max-width:920px;margin:0 auto 28px}
+.footer-head h3{margin:0 0 10px;font-size:30px;color:#fff}
+.footer-head p{margin:0;color:#cfcfcf;font-size:16px;line-height:1.95}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;align-items:stretch}
+.footer-panel{position:relative;background:linear-gradient(180deg,rgba(20,20,20,.96) 0%,rgba(10,10,10,.96) 100%);border:1px solid rgba(118,185,0,.18);border-radius:20px;padding:22px;box-shadow:0 18px 40px rgba(0,0,0,.28);overflow:hidden}
+.footer-panel::before{content:"";position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent 0%,#76B900 50%,transparent 100%);opacity:.9}
+.footer-title{display:flex;align-items:center;gap:10px;margin:0 0 16px;font-size:18px;font-weight:700;color:#fff}
+.footer-symbol{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:rgba(118,185,0,.14);border:1px solid rgba(118,185,0,.28);color:#9de000;font-size:13px;font-weight:700;flex:0 0 38px}
+.footer-list{display:flex;flex-direction:column;gap:12px}
+.footer-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);color:#efefef;transition:.25s ease}
+.footer-item:hover{transform:translateY(-2px);border-color:rgba(118,185,0,.45);background:rgba(118,185,0,.08)}
+.footer-item-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.footer-item-text strong{font-size:15px;color:#fff}
+.footer-item-text span{font-size:13px;color:#bdbdbd}
+.footer-badge{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:42px;padding:0 10px;border-radius:12px;background:#0f0f0f;border:1px solid rgba(118,185,0,.3);color:#9de000;font-size:12px;font-weight:700;flex:0 0 auto}
+.footer-socials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.footer-social{display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:12px 14px;border-radius:14px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);color:#efefef;transition:.25s ease}
+.footer-social:hover{transform:translateY(-2px);border-color:rgba(118,185,0,.45);background:rgba(118,185,0,.08)}
+.footer-note{margin:24px auto 0;max-width:1060px;padding:16px 18px;border-radius:16px;background:rgba(118,185,0,.07);border:1px solid rgba(118,185,0,.18);color:#d8d8d8;text-align:center}
+.copyright{margin-top:16px;color:#9b9b9b;font-size:14px;text-align:center}
+
 
 /* النوافذ المنبثقة */
 .modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.65);padding:40px 20px;overflow:auto}
@@ -64,7 +94,6 @@ footer{margin-top:60px;padding:30px;text-align:center;background:#111;border-top
 .close{float:left;font-size:22px;cursor:pointer;color:#76B900;font-weight:bold}
 .close:hover{color:#fff}
 
-footer a{margin:6px;display:inline-block}
 
 .copyright{margin-top:20px;color:#aaa;font-size:14px}
 
@@ -109,6 +138,10 @@ padding:7px 10px;
 .modal{padding:20px 10px}
 
 .modal-content{padding:18px}
+.footer-head h3{font-size:24px}
+.footer-grid{grid-template-columns:1fr}
+.footer-socials{grid-template-columns:1fr}
+.card-desc{min-height:auto}
 
 }
 
@@ -182,6 +215,7 @@ padding:10px 14px;
 <h1>باقة الباحث الذكي</h1>
 <h2>بوتات الذكاء الاصطناعي | النماذج الذكية</h2>
 </header>
+
 
 <!-- نماذج الابتكار -->
 <div class="section">
@@ -267,6 +301,15 @@ padding:10px 14px;
 <div class="section">
 <div class="section-title">نماذج التوثيق</div>
 <div class="grid">
+
+<div class="card" data-name="البحث عن الدراسات السابقة">
+<h3>البحث عن الدراسات السابقة</h3>
+<div class="btns">
+<a class="btn" href="https://chatgpt.com/g/g-69ba3a3162ac819186520ef7f6293fed-lbhth-n-ldrst-lsbq-literature-search" target="_blank" rel="noopener">ChatGPT</a>
+<a class="btn" href="https://gemini.google.com/gem/1ptgj6xHxCbuZi1hj8CXS0xo4ayrHfwuv?usp=sharing" target="_blank" rel="noopener">Gemini</a>
+</div>
+</div>
+
 
 <div class="card" data-name="توليد المحتوى وتوثيقه">
 <h3>توليد المحتوى وتوثيقه</h3>
@@ -512,20 +555,59 @@ padding:10px 14px;
 </div>
 
 <footer>
-
-<div style="margin-bottom:12px;font-weight:bold;color:#76B900">روابط المنصة</div>
-
-<div class="btns" style="justify-content:center">
-<a class="btn" href="https://arabic-gpts.github.io/web/" target="_blank">جميع الباقات</a>
-<a class="btn" href="https://chatgpt.com/g/g-681f47498138819197d357982c29544c-lnmdhj-l-rby-ldhky-arabic-gpt" target="_blank">العروض والتخفيضات</a>
-<a class="btn" href="https://www.skool.com/zraiee-3956/about" target="_blank">التعليم والتطوير</a>
+<div class="footer-shell">
+<div class="footer-head">
+<h3>روابط مختارة بعرض أنيق ومتوازن</h3>
+<p>يمنحك هذا الشريط السفلي وصولًا سريعًا ومنظمًا إلى روابط المنصة الرئيسة، وملفات الشرح الخاصة بنموذج البحث عن الدراسات السابقة، وحسابات التواصل الاجتماعي، ووسائل الدعم المباشر؛ ضمن توزيع بصري متناسق يحافظ على أناقة الواجهة وسهولة الاستخدام.</p>
 </div>
 
-<div style="margin-top:25px;color:#bbb;font-size:14px">
-بوابة النماذج العربية الذكية – باقة الباحث. جميع الأدوات المعروضة في هذه الصفحة مخصصة لدعم الباحث العربي باستخدام نماذج الذكاء الاصطناعي عبر منصتي ChatGPT وGemini.
+<div class="footer-grid">
+
+<div class="footer-panel">
+<div class="footer-title"><span class="footer-symbol">PL</span><span>روابط المنصة</span></div>
+<div class="footer-list">
+<a class="footer-item" href="https://arabic-gpts.github.io/web/" target="_blank" rel="noopener"><span class="footer-badge">AG</span><span class="footer-item-text"><strong>جميع الباقات</strong><span>الدخول إلى الواجهة العامة لمنصات Arabic GPTs</span></span></a>
+<a class="footer-item" href="https://chatgpt.com/g/g-681f47498138819197d357982c29544c-lnmdhj-l-rby-ldhky-arabic-gpt" target="_blank" rel="noopener"><span class="footer-badge">OF</span><span class="footer-item-text"><strong>العروض والتخفيضات</strong><span>الاطلاع على أحدث العروض والفرص المتاحة</span></span></a>
+<a class="footer-item" href="https://www.skool.com/zraiee-3956/about" target="_blank" rel="noopener"><span class="footer-badge">SK</span><span class="footer-item-text"><strong>التعليم والتطوير</strong><span>الوصول إلى مجتمع التعلم والمواد المصاحبة</span></span></a>
+<a class="footer-item" href="https://alzarraei-gpts.github.io/Arabic-GPT-Hub-books/" target="_blank" rel="noopener"><span class="footer-badge">BK</span><span class="footer-item-text"><strong>الكتب التعليمية</strong><span>استعراض المكتبة المعرفية والكتب الإرشادية</span></span></a>
+</div>
 </div>
 
+<div class="footer-panel">
+<div class="footer-title"><span class="footer-symbol">PDF</span><span>ملفات الشرح والتقييم</span></div>
+<div class="footer-list">
+<a class="footer-item" href="./01%20Searcher.pdf" target="_blank" rel="noopener"><span class="footer-badge">PDF</span><span class="footer-item-text"><strong>الشرح المختصر</strong><span>عرض سريع يعرّف بوظائف النموذج ومسار استخدامه</span></span></a>
+<a class="footer-item" href="./01%20Searcher%20info.pdf" target="_blank" rel="noopener"><span class="footer-badge">PDF</span><span class="footer-item-text"><strong>الشرح الكامل</strong><span>تفصيل موسع لآلية النموذج ومجالات تطبيقه</span></span></a>
+<a class="footer-item" href="./01%20Searcher%20Assessment.pdf" target="_blank" rel="noopener"><span class="footer-badge">PDF</span><span class="footer-item-text"><strong>الشرح التقييمي</strong><span>تقييم منهجي يساعد على فهم جودة المخرجات وضبطها</span></span></a>
+</div>
+</div>
+
+<div class="footer-panel">
+<div class="footer-title"><span class="footer-symbol">SO</span><span>وسائل التواصل</span></div>
+<div class="footer-socials">
+<a class="footer-social" href="https://t.me/zraiee" target="_blank" rel="noopener"><span class="footer-badge">TG</span><span class="footer-item-text"><strong>تليغرام</strong><span>قناة التواصل السريع والمستجدات</span></span></a>
+<a class="footer-social" href="https://www.instagram.com/alzarraei.gpts/" target="_blank" rel="noopener"><span class="footer-badge">IG</span><span class="footer-item-text"><strong>إنستغرام</strong><span>محتوى بصري وتحديثات المنصة</span></span></a>
+<a class="footer-social" href="https://www.facebook.com/alzarraei.gpts/" target="_blank" rel="noopener"><span class="footer-badge">FB</span><span class="footer-item-text"><strong>فيسبوك</strong><span>منشورات وتعريفات وأخبار متنوعة</span></span></a>
+<a class="footer-social" href="https://www.youtube.com/@shaifarah" target="_blank" rel="noopener"><span class="footer-badge">YT</span><span class="footer-item-text"><strong>يوتيوب</strong><span>شروحات مرئية ومقاطع تعليمية</span></span></a>
+<a class="footer-social" href="https://www.tiktok.com/@alzarraei" target="_blank" rel="noopener"><span class="footer-badge">TT</span><span class="footer-item-text"><strong>تيك توك</strong><span>مقاطع مختصرة وعرض سريع للأفكار</span></span></a>
+<a class="footer-social" href="https://www.linkedin.com/in/abdulrahman-alzarraei/" target="_blank" rel="noopener"><span class="footer-badge">IN</span><span class="footer-item-text"><strong>لينكدإن</strong><span>الحضور المهني والروابط الأكاديمية</span></span></a>
+</div>
+</div>
+
+<div class="footer-panel">
+<div class="footer-title"><span class="footer-symbol">CT</span><span>التواصل المباشر</span></div>
+<div class="footer-list">
+<a class="footer-item" href="https://wa.me/966552191598" target="_blank" rel="noopener"><span class="footer-badge">WA</span><span class="footer-item-text"><strong>واتساب</strong><span>التواصل المباشر والاستفسارات السريعة</span></span></a>
+<a class="footer-item" href="mailto:zraieee@gmail.com"><span class="footer-badge">@</span><span class="footer-item-text"><strong>البريد الإلكتروني</strong><span>المراسلات الرسمية والطلبات التفصيلية</span></span></a>
+<a class="footer-item" href="https://www.paypal.com/paypalme/zraiee" target="_blank" rel="noopener"><span class="footer-badge">PP</span><span class="footer-item-text"><strong>باي بال</strong><span>الدفع والدعم عبر المنصة المالية</span></span></a>
+</div>
+</div>
+
+</div>
+
+<div class="footer-note">يكفي رفع ملفات <strong>01 Searcher.pdf</strong> و<strong>01 Searcher info.pdf</strong> و<strong>01 Searcher Assessment.pdf</strong> داخل المجلد نفسه الذي يحتوي ملف <strong>index.html</strong> في GitHub Pages حتى تعمل روابط PDF مباشرة من الشريط السفلي.</div>
 <div class="copyright">© 2026 جميع الحقوق محفوظة</div>
+</div>
 </footer>
 
 <button id="scrollBtn" onclick="scrollToggle()">⬇</button>
