@@ -22,147 +22,110 @@
 <style>
 
 *{box-sizing:border-box}
-body{font-family:Tahoma,Arial;background:#000;color:#fff;margin:0;line-height:1.8;overflow-x:hidden}
+:root{
+  --bg:#050505;
+  --panel:#0d0d0d;
+  --panel-2:#121212;
+  --stroke:#1f1f1f;
+  --stroke-strong:#76B900;
+  --text:#ffffff;
+  --muted:#bfc7b2;
+  --shadow:0 18px 40px rgba(0,0,0,.28);
+}
+body{font-family:Tahoma,Arial;background:radial-gradient(circle at top,#0c1400 0%,#030303 18%,#000 42%);color:var(--text);margin:0;line-height:1.8;overflow-x:hidden}
+a{transition:.2s ease}
 
 /* الشريط العلوي */
-.topbar{background:#111;border-bottom:1px solid #333;padding:12px 20px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
-.topbar button{background:#000;color:#fff;border:1px solid #76B900;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:bold}
-.topbar button:hover{background:#76B900;color:#000}
+.topbar{background:rgba(12,12,12,.92);backdrop-filter:blur(8px);border-bottom:1px solid #1f2911;padding:14px 20px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:50}
+.topbar button{background:linear-gradient(180deg,#0d0d0d,#060606);color:#fff;border:1px solid #2e4611;padding:10px 18px;border-radius:999px;cursor:pointer;font-weight:bold;box-shadow:var(--shadow)}
+.topbar button:hover{background:#76B900;color:#000;border-color:#76B900;transform:translateY(-1px)}
 
 /* البحث */
-.search-box{text-align:center;padding:20px;background:#0d0d0d;border-bottom:1px solid #333}
-.search-box input{width:420px;max-width:90%;padding:12px;border-radius:8px;border:1px solid #76B900;background:#000;color:#fff;font-size:15px}
+.search-box{text-align:center;padding:20px;background:linear-gradient(180deg,rgba(13,13,13,.94),rgba(7,7,7,.96));border-bottom:1px solid #171f0d}
+.search-wrap{position:relative;display:inline-block;width:min(520px,92vw)}
+.search-box input{width:100%;padding:14px 48px 14px 52px;border-radius:14px;border:1px solid #5c9200;background:#050505;color:#fff;font-size:15px;outline:none;box-shadow:inset 0 0 0 1px rgba(118,185,0,.08)}
+.search-box input:focus{border-color:#8fe000;box-shadow:0 0 0 4px rgba(118,185,0,.12)}
+.clear-search{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:none;border-radius:50%;background:#141414;color:#d8d8d8;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;border:1px solid #2f2f2f;opacity:0;visibility:hidden}
+.clear-search.show{opacity:1;visibility:visible}
+.clear-search:hover{background:#76B900;color:#000;border-color:#76B900}
+.search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:#8ba55a;font-size:14px;pointer-events:none}
 
 /* الهيدر */
-header{text-align:center;padding:35px 20px}
+header{text-align:center;padding:40px 20px 28px}
 header img{max-width:320px;width:100%;height:auto;margin-bottom:15px}
-header h1{color:#76B900;margin:0;font-size:34px}
-header h2{margin-top:8px;font-size:22px}
+header h1{color:#fff;margin:0;font-size:34px}
+header h2{margin-top:8px;font-size:22px;color:#9fb76c;font-weight:normal}
 
 .section{max-width:1300px;margin:auto;padding:20px}
-.section-title{color:#76B900;font-size:22px;margin:40px 0 20px 0;text-align:center}
+.section-title{color:#cfe6a4;font-size:22px;margin:40px 0 20px;text-align:center}
 
 /* شبكة الأدوات */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
-
-.card{background:#151515;border:1px solid #333;border-radius:14px;padding:20px;transition:.2s}
-.card:hover{border-color:#76B900;transform:translateY(-4px)}
-
-.card h3{margin:0 0 10px 0;color:#fff;font-size:18px}
-
+.card{background:linear-gradient(180deg,rgba(20,20,20,.98),rgba(11,11,11,.98));border:1px solid #2d3a18;border-radius:18px;padding:22px;transition:.25s ease;box-shadow:var(--shadow);min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+.card:hover{border-color:#76B900;transform:translateY(-6px)}
+.card h3{margin:0 0 12px;color:#fff;font-size:18px;line-height:1.7}
 .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-
-.btn{padding:8px 14px;border-radius:6px;text-decoration:none;font-weight:bold;border:1px solid #76B900;color:#76B900;background:#000;font-size:13px}
-.btn:hover{background:#76B900;color:#000}
-
-
-.card-desc{margin:0;color:#e8e8e8;min-height:132px}
-
-.intro-strip{padding-top:0}
-.intro-box{background:linear-gradient(180deg,#121212 0%,#0b0b0b 100%);border:1px solid rgba(118,185,0,.18);border-radius:18px;padding:22px 24px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25)}
-.intro-box h3{margin:0 0 8px;color:#fff;font-size:22px}
-.intro-box p{margin:0;color:#d7d7d7}
-
-footer{margin-top:70px;padding:0;background:radial-gradient(circle at top,#1a1a1a 0%,#090909 58%,#050505 100%);border-top:1px solid rgba(118,185,0,.22)}
-.footer-shell{max-width:1300px;margin:auto;padding:42px 20px 26px}
-.footer-head{text-align:center;max-width:920px;margin:0 auto 28px}
-.footer-head h3{margin:0 0 10px;font-size:30px;color:#fff}
-.footer-head p{margin:0;color:#cfcfcf;font-size:16px;line-height:1.95}
-.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;align-items:stretch}
-.footer-panel{position:relative;background:linear-gradient(180deg,rgba(20,20,20,.96) 0%,rgba(10,10,10,.96) 100%);border:1px solid rgba(118,185,0,.18);border-radius:20px;padding:22px;box-shadow:0 18px 40px rgba(0,0,0,.28);overflow:hidden}
-.footer-panel::before{content:"";position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent 0%,#76B900 50%,transparent 100%);opacity:.9}
-.footer-title{display:flex;align-items:center;gap:10px;margin:0 0 16px;font-size:18px;font-weight:700;color:#fff}
-.footer-symbol{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:rgba(118,185,0,.14);border:1px solid rgba(118,185,0,.28);color:#9de000;font-size:13px;font-weight:700;flex:0 0 38px}
-.footer-list{display:flex;flex-direction:column;gap:12px}
-.footer-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);color:#efefef;transition:.25s ease}
-.footer-item:hover{transform:translateY(-2px);border-color:rgba(118,185,0,.45);background:rgba(118,185,0,.08)}
-.footer-item-text{display:flex;flex-direction:column;gap:2px;min-width:0}
-.footer-item-text strong{font-size:15px;color:#fff}
-.footer-item-text span{font-size:13px;color:#bdbdbd}
-.footer-badge{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:42px;padding:0 10px;border-radius:12px;background:#0f0f0f;border:1px solid rgba(118,185,0,.3);color:#9de000;font-size:12px;font-weight:700;flex:0 0 auto}
-.footer-socials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.footer-social{display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:12px 14px;border-radius:14px;text-decoration:none;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);color:#efefef;transition:.25s ease}
-.footer-social:hover{transform:translateY(-2px);border-color:rgba(118,185,0,.45);background:rgba(118,185,0,.08)}
-.footer-note{margin:24px auto 0;max-width:1060px;padding:16px 18px;border-radius:16px;background:rgba(118,185,0,.07);border:1px solid rgba(118,185,0,.18);color:#d8d8d8;text-align:center}
-.copyright{margin-top:16px;color:#9b9b9b;font-size:14px;text-align:center}
-
+.btn{padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:bold;border:1px solid #76B900;color:#bff05f;background:#060606;font-size:13px;min-width:116px;text-align:center}
+.btn:hover{background:#76B900;color:#000;box-shadow:0 10px 22px rgba(118,185,0,.18)}
 
 /* النوافذ المنبثقة */
-.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.65);padding:40px 20px;overflow:auto}
-.modal-content{background:#111;border:1px solid #76B900;border-radius:12px;max-width:900px;width:100%;margin:auto;padding:25px;color:#fff}
+.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.68);padding:40px 20px;overflow:auto}
+.modal-content{background:#111;border:1px solid #76B900;border-radius:18px;max-width:900px;width:100%;margin:auto;padding:25px;color:#fff;box-shadow:var(--shadow)}
 .modal-content h2{color:#76B900;margin-top:0}
 .close{float:left;font-size:22px;cursor:pointer;color:#76B900;font-weight:bold}
 .close:hover{color:#fff}
 
+/* الشريط السفلي */
+footer{margin-top:64px;padding:0 22px 34px;background:transparent;border-top:none}
+.footer-shell{max-width:1300px;margin:0 auto;background:linear-gradient(180deg,rgba(12,12,12,.98),rgba(7,7,7,.98));border:1px solid #273315;border-radius:28px;padding:34px 28px 24px;box-shadow:var(--shadow)}
+.footer-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:start}
+.footer-box{background:linear-gradient(180deg,#101010,#090909);border:1px solid #1f2911;border-radius:20px;padding:18px 16px;min-height:100%;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.footer-title{font-size:18px;font-weight:700;color:#fff;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+.footer-title::before{content:'';width:8px;height:8px;border-radius:50%;background:#76B900;box-shadow:0 0 0 6px rgba(118,185,0,.12)}
+.footer-links,.pdf-links,.social-links{display:flex;flex-direction:column;gap:10px}
+.footer-subgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.footer-link,.pdf-link,.social-link{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;background:#0b0b0b;border:1px solid #232323;border-radius:14px;padding:12px 14px;min-height:54px}
+.footer-link:hover,.pdf-link:hover,.social-link:hover{border-color:#76B900;transform:translateY(-2px);background:#0f1406}
+.link-icon,.pdf-icon,.social-icon{flex:0 0 38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(118,185,0,.12);border:1px solid rgba(118,185,0,.36);color:#bff05f;font-weight:700;font-size:12px;letter-spacing:.3px}
+.footer-meta{margin-top:18px;padding-top:16px;border-top:1px solid #1f2911;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.footer-caption{color:#b7c5a1;font-size:14px}
+.copyright{color:#9ba289;font-size:14px}
 
-.copyright{margin-top:20px;color:#aaa;font-size:14px}
-
-#scrollBtn{position:fixed;bottom:20px;left:20px;background:#76B900;color:#000;border:none;padding:12px 16px;border-radius:8px;cursor:pointer;font-weight:bold}
-
-/* ===== تحسين التوافق مع الأجهزة ===== */
+#scrollBtn{position:fixed;bottom:20px;left:20px;background:#76B900;color:#000;border:none;padding:12px 16px;border-radius:12px;cursor:pointer;font-weight:bold;box-shadow:var(--shadow)}
+#scrollBtn:hover{transform:translateY(-2px)}
 
 /* التابلت */
 @media (max-width:1024px){
-
-header h1{font-size:28px}
-header h2{font-size:20px}
-
-.grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-
-.section{padding:15px}
-
+  header h1{font-size:28px}
+  header h2{font-size:20px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+  .section{padding:15px}
+  .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 /* الجوال */
 @media (max-width:768px){
-
-.topbar{gap:10px}
-
-.topbar button{
-font-size:14px;
-padding:7px 12px;
-}
-
-header{padding:25px 15px}
-
-header h1{font-size:24px}
-header h2{font-size:18px}
-
-.grid{grid-template-columns:1fr}
-
-.btn{
-font-size:12px;
-padding:7px 10px;
-}
-
-.modal{padding:20px 10px}
-
-.modal-content{padding:18px}
-.footer-head h3{font-size:24px}
-.footer-grid{grid-template-columns:1fr}
-.footer-socials{grid-template-columns:1fr}
-.card-desc{min-height:auto}
-
+  .topbar{gap:10px}
+  .topbar button{font-size:14px;padding:8px 13px}
+  header{padding:25px 15px}
+  header h1{font-size:24px}
+  header h2{font-size:18px}
+  .grid{grid-template-columns:1fr}
+  .btn{font-size:12px;padding:9px 10px;min-width:104px}
+  .modal{padding:20px 10px}
+  .modal-content{padding:18px}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-subgrid{grid-template-columns:1fr}
+  .footer-shell{padding:24px 16px 20px;border-radius:22px}
+  .footer-box{padding:16px 14px}
 }
 
 /* الشاشات الصغيرة جداً */
 @media (max-width:480px){
-
-.search-box input{
-width:100%;
-font-size:14px;
-}
-
-header img{
-max-width:180px;
-}
-
-#scrollBtn{
-bottom:15px;
-left:15px;
-padding:10px 14px;
-}
-
+  .search-wrap{width:100%}
+  .search-box input{font-size:14px}
+  header img{max-width:180px}
+  #scrollBtn{bottom:15px;left:15px;padding:10px 14px}
 }
 
 </style>
@@ -207,7 +170,11 @@ padding:10px 14px;
 </div></div>
 
 <div class="search-box">
-<input id="search" type="text" placeholder="ابحث باسم البوت..." oninput="searchTools()">
+<div class="search-wrap">
+<span class="search-icon">⌕</span>
+<input id="search" type="text" placeholder="ابحث باسم البوت..." oninput="searchTools();toggleClearButton()">
+<button id="clearSearch" class="clear-search" type="button" aria-label="مسح البحث" onclick="clearSearch()">✕</button>
+</div>
 </div>
 
 <header>
@@ -215,8 +182,6 @@ padding:10px 14px;
 <h1>باقة الباحث الذكي</h1>
 <h2>بوتات الذكاء الاصطناعي | النماذج الذكية</h2>
 </header>
-
-
 <!-- نماذج الابتكار -->
 <div class="section">
 <div class="section-title">نماذج الابتكار</div>
@@ -556,56 +521,57 @@ padding:10px 14px;
 
 <footer>
 <div class="footer-shell">
-<div class="footer-head">
-<h3>روابط مختارة بعرض أنيق ومتوازن</h3>
-<p>يمنحك هذا الشريط السفلي وصولًا سريعًا ومنظمًا إلى روابط المنصة الرئيسة، وملفات الشرح الخاصة بنموذج البحث عن الدراسات السابقة، وحسابات التواصل الاجتماعي، ووسائل الدعم المباشر؛ ضمن توزيع بصري متناسق يحافظ على أناقة الواجهة وسهولة الاستخدام.</p>
-</div>
-
 <div class="footer-grid">
 
-<div class="footer-panel">
-<div class="footer-title"><span class="footer-symbol">PL</span><span>روابط المنصة</span></div>
-<div class="footer-list">
-<a class="footer-item" href="https://arabic-gpts.github.io/web/" target="_blank" rel="noopener"><span class="footer-badge">AG</span><span class="footer-item-text"><strong>جميع الباقات</strong><span>الدخول إلى الواجهة العامة لمنصات Arabic GPTs</span></span></a>
-<a class="footer-item" href="https://chatgpt.com/g/g-681f47498138819197d357982c29544c-lnmdhj-l-rby-ldhky-arabic-gpt" target="_blank" rel="noopener"><span class="footer-badge">OF</span><span class="footer-item-text"><strong>العروض والتخفيضات</strong><span>الاطلاع على أحدث العروض والفرص المتاحة</span></span></a>
-<a class="footer-item" href="https://www.skool.com/zraiee-3956/about" target="_blank" rel="noopener"><span class="footer-badge">SK</span><span class="footer-item-text"><strong>التعليم والتطوير</strong><span>الوصول إلى مجتمع التعلم والمواد المصاحبة</span></span></a>
-<a class="footer-item" href="https://alzarraei-gpts.github.io/Arabic-GPT-Hub-books/" target="_blank" rel="noopener"><span class="footer-badge">BK</span><span class="footer-item-text"><strong>الكتب التعليمية</strong><span>استعراض المكتبة المعرفية والكتب الإرشادية</span></span></a>
+<div class="footer-box">
+<div class="footer-title">روابط المنصة</div>
+<div class="footer-links">
+<a class="footer-link" href="https://arabic-gpts.github.io/web/" target="_blank" rel="noopener"><span class="link-icon">AG</span><span>جميع الباقات</span></a>
+<a class="footer-link" href="https://chatgpt.com/g/g-681f47498138819197d357982c29544c-lnmdhj-l-rby-ldhky-arabic-gpt" target="_blank" rel="noopener"><span class="link-icon">OF</span><span>العروض والتخفيضات</span></a>
+<a class="footer-link" href="https://www.skool.com/zraiee-3956/about" target="_blank" rel="noopener"><span class="link-icon">SK</span><span>التعليم والتطوير</span></a>
+<a class="footer-link" href="https://alzarraei-gpts.github.io/Arabic-GPT-Hub-books/" target="_blank" rel="noopener"><span class="link-icon">BK</span><span>الكتب التعليمية</span></a>
 </div>
 </div>
 
-<div class="footer-panel">
-<div class="footer-title"><span class="footer-symbol">PDF</span><span>ملفات الشرح والتقييم</span></div>
-<div class="footer-list">
-<a class="footer-item" href="./01%20Searcher.pdf" target="_blank" rel="noopener"><span class="footer-badge">PDF</span><span class="footer-item-text"><strong>الشرح المختصر</strong><span>عرض سريع يعرّف بوظائف النموذج ومسار استخدامه</span></span></a>
-<a class="footer-item" href="./01%20Searcher%20info.pdf" target="_blank" rel="noopener"><span class="footer-badge">PDF</span><span class="footer-item-text"><strong>الشرح الكامل</strong><span>تفصيل موسع لآلية النموذج ومجالات تطبيقه</span></span></a>
-<a class="footer-item" href="./01%20Searcher%20Assessment.pdf" target="_blank" rel="noopener"><span class="footer-badge">PDF</span><span class="footer-item-text"><strong>الشرح التقييمي</strong><span>تقييم منهجي يساعد على فهم جودة المخرجات وضبطها</span></span></a>
+<div class="footer-box" id="footer-pdfs">
+<div class="footer-title">ملفات الشرح</div>
+<div class="pdf-links">
+<a class="pdf-link" href="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/01%20Searcher.pdf" target="_blank" rel="noopener"><span class="pdf-icon">PDF</span><span>الشرح المختصر</span></a>
+<a class="pdf-link" href="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/01%20Searcher%20info.pdf" target="_blank" rel="noopener"><span class="pdf-icon">PDF</span><span>الشرح الكامل</span></a>
+<a class="pdf-link" href="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/01%20Searcher%20Assessment.pdf" target="_blank" rel="noopener"><span class="pdf-icon">PDF</span><span>الشرح التقييمي</span></a>
 </div>
 </div>
 
-<div class="footer-panel">
-<div class="footer-title"><span class="footer-symbol">SO</span><span>وسائل التواصل</span></div>
-<div class="footer-socials">
-<a class="footer-social" href="https://t.me/zraiee" target="_blank" rel="noopener"><span class="footer-badge">TG</span><span class="footer-item-text"><strong>تليغرام</strong><span>قناة التواصل السريع والمستجدات</span></span></a>
-<a class="footer-social" href="https://www.instagram.com/alzarraei.gpts/" target="_blank" rel="noopener"><span class="footer-badge">IG</span><span class="footer-item-text"><strong>إنستغرام</strong><span>محتوى بصري وتحديثات المنصة</span></span></a>
-<a class="footer-social" href="https://www.facebook.com/alzarraei.gpts/" target="_blank" rel="noopener"><span class="footer-badge">FB</span><span class="footer-item-text"><strong>فيسبوك</strong><span>منشورات وتعريفات وأخبار متنوعة</span></span></a>
-<a class="footer-social" href="https://www.youtube.com/@shaifarah" target="_blank" rel="noopener"><span class="footer-badge">YT</span><span class="footer-item-text"><strong>يوتيوب</strong><span>شروحات مرئية ومقاطع تعليمية</span></span></a>
-<a class="footer-social" href="https://www.tiktok.com/@alzarraei" target="_blank" rel="noopener"><span class="footer-badge">TT</span><span class="footer-item-text"><strong>تيك توك</strong><span>مقاطع مختصرة وعرض سريع للأفكار</span></span></a>
-<a class="footer-social" href="https://www.linkedin.com/in/abdulrahman-alzarraei/" target="_blank" rel="noopener"><span class="footer-badge">IN</span><span class="footer-item-text"><strong>لينكدإن</strong><span>الحضور المهني والروابط الأكاديمية</span></span></a>
+<div class="footer-box">
+<div class="footer-title">وسائل التواصل</div>
+<div class="footer-subgrid">
+<div class="social-links">
+<a class="social-link" href="https://t.me/zraiee" target="_blank" rel="noopener"><span class="social-icon">TG</span><span>تليغرام</span></a>
+<a class="social-link" href="https://www.instagram.com/alzarraei.gpts/" target="_blank" rel="noopener"><span class="social-icon">IG</span><span>إنستغرام</span></a>
+<a class="social-link" href="https://www.facebook.com/alzarraei.gpts/" target="_blank" rel="noopener"><span class="social-icon">FB</span><span>فيسبوك</span></a>
 </div>
+<div class="social-links">
+<a class="social-link" href="https://www.youtube.com/@shaifarah" target="_blank" rel="noopener"><span class="social-icon">YT</span><span>يوتيوب</span></a>
+<a class="social-link" href="https://www.tiktok.com/@alzarraei" target="_blank" rel="noopener"><span class="social-icon">TT</span><span>تيك توك</span></a>
+<a class="social-link" href="https://www.linkedin.com/in/abdulrahman-alzarraei/" target="_blank" rel="noopener"><span class="social-icon">IN</span><span>لينكدإن</span></a>
 </div>
-
-<div class="footer-panel">
-<div class="footer-title"><span class="footer-symbol">CT</span><span>التواصل المباشر</span></div>
-<div class="footer-list">
-<a class="footer-item" href="https://wa.me/966552191598" target="_blank" rel="noopener"><span class="footer-badge">WA</span><span class="footer-item-text"><strong>واتساب</strong><span>التواصل المباشر والاستفسارات السريعة</span></span></a>
-<a class="footer-item" href="mailto:zraieee@gmail.com"><span class="footer-badge">@</span><span class="footer-item-text"><strong>البريد الإلكتروني</strong><span>المراسلات الرسمية والطلبات التفصيلية</span></span></a>
-<a class="footer-item" href="https://www.paypal.com/paypalme/zraiee" target="_blank" rel="noopener"><span class="footer-badge">PP</span><span class="footer-item-text"><strong>باي بال</strong><span>الدفع والدعم عبر المنصة المالية</span></span></a>
 </div>
 </div>
 
+<div class="footer-box" id="footer-contact">
+<div class="footer-title">التواصل المباشر</div>
+<div class="footer-links">
+<a class="footer-link" href="https://wa.me/966552191598" target="_blank" rel="noopener"><span class="link-icon">WA</span><span>واتساب</span></a>
+<a class="footer-link" href="https://mail.google.com/mail/?view=cm&fs=1&to=zraieee@gmail.com" target="_blank" rel="noopener"><span class="link-icon">@</span><span>البريد الإلكتروني</span></a>
+<a class="footer-link" href="https://www.paypal.com/paypalme/zraiee" target="_blank" rel="noopener"><span class="link-icon">PP</span><span>باي بال</span></a>
+</div>
 </div>
 
+</div>
+
+<div class="footer-meta">
 <div class="copyright">© 2026 جميع الحقوق محفوظة</div>
+</div>
 </div>
 </footer>
 
@@ -622,22 +588,49 @@ function closeModal(id){
  document.getElementById(id).style.display='none';
 }
 
-
 function searchTools(){
-const value=document.getElementById('search').value.trim().toLowerCase();
-const cards=document.querySelectorAll('.card');
+ const value=document.getElementById('search').value.trim().toLowerCase();
+ const cards=document.querySelectorAll('.card');
+ cards.forEach(card=>{
+   const name=(card.getAttribute('data-name')||'').toLowerCase();
+   card.style.display=name.includes(value)?'flex':'none';
+ });
+}
 
-cards.forEach(card=>{
-const name=card.getAttribute('data-name').toLowerCase();
-card.style.display=name.includes(value)?'block':'none';
-});
+function toggleClearButton(){
+ const input=document.getElementById('search');
+ const button=document.getElementById('clearSearch');
+ button.classList.toggle('show',input.value.trim().length>0);
+}
+
+function clearSearch(){
+ const input=document.getElementById('search');
+ input.value='';
+ searchTools();
+ toggleClearButton();
+ input.focus();
 }
 
 var atTop=true;
 function scrollToggle(){
-if(atTop){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});document.getElementById('scrollBtn').innerText='⬆';atTop=false}
-else{window.scrollTo({top:0,behavior:'smooth'});document.getElementById('scrollBtn').innerText='⬇';atTop=true}
+ if(atTop){
+   window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+   document.getElementById('scrollBtn').innerText='⬆';
+   atTop=false;
+ }else{
+   window.scrollTo({top:0,behavior:'smooth'});
+   document.getElementById('scrollBtn').innerText='⬇';
+   atTop=true;
+ }
 }
+
+window.addEventListener('keydown',function(event){
+ if(event.key==='Escape'){
+   document.querySelectorAll('.modal').forEach(modal=>modal.style.display='none');
+ }
+});
+
+window.addEventListener('load',toggleClearButton);
 
 </script>
 
