@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&display=swap" rel="stylesheet">
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=kyc6IYzEjkwUUR64arBVsvfMLy2UBrw0cwiTm1mvzWXDA0kizB-s4XhGj4Ke2YZ3eCyjHpusZH9k6wcSWZQyYAyqis-EB1cpCWr0NfSzMt_WrBfa21PRPmccTT4yuViydcEd7FbwUE5fqSTa3VHitYlegWNScVeHt1GeJ23R6Yoq9ieGRQOarnKFE_7ASY4uzv1FuRD2nHFHohymMyyLmzq12rlchwazV07nAN_z2h3wvGcWa03inlbdzkwtgXTPnf6-Y8yozsMhYTN7qKDMJg" charset="UTF-8"></script><style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=ujjn2WHDgGfMUjRvcQttAvi3nW4yF-vE43ti6h_nzVROG-6B6Fq4nOb1JH2MYlBu2X7b7OZ7QAGGL3AQ1AzFgIGp7VWGqnUYM3XT-wJ0dWG2zF14rguMDILqmIwyodDcQCagSK54WDrFK_b7DowZGcV1hsb-SflUMKHSaTxqqjYj2HoD6Cob2cyzpe3m5eeOnWM2kTDK6WK7oJgTyAmiGxwis14JBc0ZC4XxP-NcILQ-3WHXMe6Uay8tly1TrvQXT61puUW09BiwEmKz_PoP4A" charset="UTF-8"></script><style>
 *{box-sizing:border-box}
 :root{
   --bg:#060809;
@@ -118,7 +118,8 @@ footer{margin-top:34px;padding:30px 22px 38px;background:linear-gradient(180deg,
 .social-link:hover{background:#162024;border-color:rgba(141,228,17,.24);box-shadow:0 0 18px rgba(141,228,17,.12);transform:translateY(-1px)}
 .social-icon{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:rgba(141,228,17,.12);color:#dff5c0;font-size:.78rem;font-weight:900;overflow:hidden;flex:0 0 24px;border:1px solid rgba(141,228,17,.14)}
 .social-icon img{width:100%;height:100%;display:block;object-fit:contain}
-.social-icon .icon-fallback{font-size:.64rem;font-weight:900;line-height:1}
+.social-link.no-icon{gap:0}
+.social-icon:empty{display:none}
 .social-icon--plain{border-radius:50%}
 .social-link .social-label,.social-link .email-label{font-weight:800}
 .social-link--iconized{padding:10px 14px}
@@ -1305,24 +1306,15 @@ applySearch();
 
 
 (function(){
-  document.querySelectorAll('.social-link').forEach(link => {
-    const label = (link.querySelector('.social-label, .email-label')?.textContent || '').trim();
-    const iconWrap = link.querySelector('.social-icon');
-    const img = iconWrap?.querySelector('img');
-    if (!iconWrap || !img) return;
-    const fallback = label ? label.slice(0,2) : '•';
-    iconWrap.setAttribute('data-fallback', fallback);
-    const showFallback = () => {
-      if (img) img.style.display = 'none';
-      if (!iconWrap.querySelector('.icon-fallback')) {
-        const span = document.createElement('span');
-        span.className = 'icon-fallback';
-        span.textContent = fallback;
-        iconWrap.appendChild(span);
-      }
+  document.querySelectorAll('.social-link .social-icon img').forEach(img => {
+    const removeIcon = () => {
+      const link = img.closest('.social-link');
+      const iconWrap = img.closest('.social-icon');
+      if (iconWrap) iconWrap.remove();
+      if (link) link.classList.add('no-icon');
     };
-    if (img.complete && img.naturalWidth === 0) showFallback();
-    img.addEventListener('error', showFallback);
+    if (img.complete && img.naturalWidth === 0) removeIcon();
+    img.addEventListener('error', removeIcon);
   });
 })();
 
