@@ -54,7 +54,18 @@ body{
 }
 a{color:inherit;text-decoration:none}
 button,input{font-family:inherit}
-.page-shell{max-width:1040px;margin:0 auto;padding:18px 16px 42px}
+.page-shell{max-width:1040px;margin:0 auto;padding:0 16px 42px}
+
+
+.site-banner-wrap{padding:18px 0 2px}
+.site-banner{
+  display:flex;justify-content:flex-start;align-items:center;min-height:78px;
+  padding:0 12px;
+}
+.site-banner img{
+  width:56px;height:56px;object-fit:contain;display:block;
+  filter:drop-shadow(0 10px 22px rgba(0,0,0,.28));
+}
 
 .topbar-wrap{
   position:sticky;top:0;z-index:50;
@@ -63,7 +74,7 @@ button,input{font-family:inherit}
   border-bottom:1px solid rgba(255,255,255,.04);
 }
 .topbar{
-  max-width:1040px;margin:0 auto;padding:10px 16px 14px;
+  max-width:1040px;margin:0 auto;padding:6px 16px 12px;
 }
 .topnav{
   display:grid;grid-template-columns:repeat(7,1fr);gap:10px;
@@ -286,6 +297,9 @@ button,input{font-family:inherit}
 }
 @media (max-width:720px){
   .page-shell{padding:14px 12px 28px}
+  .site-banner-wrap{padding:12px 0 8px}
+  .site-banner{min-height:56px;padding:0 6px}
+  .site-banner img{width:42px;height:42px}
   .topbar{padding:10px 12px 12px}
   .topnav{grid-template-columns:repeat(5,max-content);overflow:auto;justify-content:flex-start}
   .topnav button{padding:0 16px;white-space:nowrap}
@@ -301,6 +315,14 @@ button,input{font-family:inherit}
 </style>
 </head>
 <body>
+
+  <div class="page-shell">
+    <div class="site-banner-wrap">
+      <div class="site-banner">
+        <img src="banner.png" alt="شعار باقة الباحث الذكي">
+      </div>
+    </div>
+  </div>
   <div class="topbar-wrap">
     <div class="topbar">
       <nav class="topnav">
@@ -318,6 +340,7 @@ button,input{font-family:inherit}
   <main class="page-shell">
     <section class="hero">
       <div class="hero-media">
+        <div class="hero-tag">واجهة عرض منسقة</div>
         <video autoplay muted loop playsinline preload="metadata" poster="hero-crop.png" aria-label="الفيديو المرجعي للواجهة">
           <source src="1080-60fps-ai.mp4" type="video/mp4">
           <img src="hero-crop.png" alt="الصورة المرجعية للواجهة">
