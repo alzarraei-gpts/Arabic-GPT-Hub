@@ -75,7 +75,8 @@ button,input{font-family:inherit}
   position:relative;border-radius:26px;overflow:hidden;min-height:260px;background:#090b0e;
   border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow);
 }
-.hero-media img{display:block;width:100%;height:100%;object-fit:cover}
+.hero-media img,.hero-media video{display:block;width:100%;height:100%;object-fit:cover}
+.hero-media video{background:#090b0e}
 .hero-tag{
   position:absolute;top:0;left:50%;transform:translateX(-50%);
   background:rgba(120,125,135,.45);color:#d9dde2;border:1px solid rgba(255,255,255,.08);
@@ -270,7 +271,10 @@ button,input{font-family:inherit}
     <section class="hero">
       <div class="hero-media">
         <div class="hero-tag">واجهة عرض منسقة</div>
-        <img src="hero-crop.png" alt="صورة مرجعية للواجهة">
+        <video autoplay muted loop playsinline preload="metadata" poster="hero-crop.png" aria-label="الفيديو المرجعي للواجهة">
+          <source src="1080-60fps-ai.mp4" type="video/mp4">
+          <img src="hero-crop.png" alt="الصورة المرجعية للواجهة">
+        </video>
       </div>
       <div class="hero-copy">
         <h1><span class="line"></span>باقة الباحث الذكي</h1>
