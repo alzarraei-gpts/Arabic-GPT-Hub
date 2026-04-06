@@ -147,6 +147,40 @@ button,input{font-family:inherit}
 .summary-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .quick-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 16px;border-radius:12px;font-size:.92rem;font-weight:800}
 .quick-btn.video{background:#3761cf;color:#fff}
+.video-menu-wrap{position:relative}
+.video-toggle{gap:8px;border:none;cursor:pointer}
+.video-badge{
+  display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;
+  border-radius:999px;background:rgba(255,255,255,.2);color:#fff;font-size:.72rem;font-weight:900
+}
+.video-caret{font-size:.78rem;transition:transform .2s ease}
+.video-menu-wrap.open .video-caret{transform:rotate(180deg)}
+.video-links-menu{
+  position:absolute;top:calc(100% + 10px);right:0;min-width:290px;max-width:min(92vw,340px);padding:10px;
+  border-radius:18px;background:linear-gradient(180deg,#141923,#0f131b);border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 22px 48px rgba(0,0,0,.38);display:none;z-index:40
+}
+.video-menu-wrap.open .video-links-menu{display:grid;gap:8px;animation:fadeDrop .18s ease}
+.video-link-item{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 13px;border-radius:14px;
+  background:#11161f;border:1px solid rgba(255,255,255,.07);color:#fff;text-decoration:none;transition:.18s ease
+}
+.video-link-item:hover{background:#18202c;border-color:rgba(255,255,255,.14);transform:translateY(-1px)}
+.video-link-item.featured{
+  background:linear-gradient(90deg,rgba(122,224,69,.16),rgba(115,214,255,.12));
+  border-color:rgba(122,224,69,.28)
+}
+.video-link-text{display:grid;gap:3px}
+.video-link-text strong{font-size:.92rem;line-height:1.5}
+.video-link-text small{color:#b7c0cc;font-size:.78rem}
+.video-link-arrow{
+  display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:10px;
+  background:rgba(255,255,255,.06);font-size:.95rem;flex:0 0 28px
+}
+@keyframes fadeDrop{
+  from{opacity:0;transform:translateY(-6px)}
+  to{opacity:1;transform:translateY(0)}
+}
 .quick-btn.short{background:#73d6ff;color:#08243a}
 .quick-btn.full{background:#7ae045;color:#0a2207}
 .summary-title{
@@ -297,7 +331,43 @@ button,input{font-family:inherit}
 
     <section class="summary-bar">
       <div class="summary-actions">
-        <a class="quick-btn video" href="https://www.skool.com/zraiee-3956/classroom/7d7bd75f?md=ed658462309c45d381f2dd74189a982e" target="_blank" rel="noopener">فيديو</a>
+        <div class="video-menu-wrap" id="videoMenuWrap">
+          <button class="quick-btn video video-toggle" type="button" id="videoMenuToggle" aria-expanded="false" aria-controls="videoLinksMenu" onclick="toggleVideoMenu(event)">
+            <span>فيديو</span>
+            <span class="video-badge" id="videoMenuBadge">4</span>
+            <span class="video-caret">▾</span>
+          </button>
+          <div class="video-links-menu" id="videoLinksMenu" role="menu" aria-label="روابط الفيديو">
+            <a class="video-link-item featured" href="https://www.skool.com/zraiee-3956/classroom/7d7bd75f?md=ed658462309c45d381f2dd74189a982e" target="_blank" rel="noopener" role="menuitem">
+              <span class="video-link-text">
+                <strong>الرابط الثالث بجودة عالية</strong>
+                <small>الانتقال إلى النسخة الأعلى جودة</small>
+              </span>
+              <span class="video-link-arrow">↗</span>
+            </a>
+            <a class="video-link-item" href="https://youtu.be/tCf6sZNxcq0?si=zZWAT1DS_D6muDdL" target="_blank" rel="noopener" role="menuitem">
+              <span class="video-link-text">
+                <strong>الرابط الأول</strong>
+                <small>يوتيوب</small>
+              </span>
+              <span class="video-link-arrow">↗</span>
+            </a>
+            <a class="video-link-item" href="https://www.youtube.com/watch?v=cB5VyUtnyzY&t=200s" target="_blank" rel="noopener" role="menuitem">
+              <span class="video-link-text">
+                <strong>الرابط الثاني</strong>
+                <small>يوتيوب</small>
+              </span>
+              <span class="video-link-arrow">↗</span>
+            </a>
+            <a class="video-link-item" href="https://www.youtube.com/watch?v=Gc9mCElTwH0&t=1142s" target="_blank" rel="noopener" role="menuitem">
+              <span class="video-link-text">
+                <strong>الرابط الثالث بجودة عادية</strong>
+                <small>يوتيوب</small>
+              </span>
+              <span class="video-link-arrow">↗</span>
+            </a>
+          </div>
+        </div>
         <a class="quick-btn short" href="01%20Searcher.pdf" target="_blank" rel="noopener">مختصر</a>
         <a class="quick-btn full" href="01%20Searcher%20info.pdf" target="_blank" rel="noopener">شرح كامل</a>
       </div>
@@ -1261,6 +1331,27 @@ function closeModal() {
 
 function handleBackdrop(event) {
   if (event.target.id === 'infoModal') closeModal();
+}
+
+function closeVideoMenu() {
+  const wrap = document.getElementById('videoMenuWrap');
+  const toggle = document.getElementById('videoMenuToggle');
+  if (!wrap || !toggle) return;
+  wrap.classList.remove('open');
+  toggle.setAttribute('aria-expanded', 'false');
+}
+
+function toggleVideoMenu(event) {
+  event.stopPropagation();
+  const wrap = document.getElementById('videoMenuWrap');
+  const toggle = document.getElementById('videoMenuToggle');
+  if (!wrap || !toggle) return;
+  const willOpen = !wrap.classList.contains('open');
+  closeVideoMenu();
+  if (willOpen) {
+    wrap.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+  }
 }
 
 document.addEventListener('keydown', (e) => {
