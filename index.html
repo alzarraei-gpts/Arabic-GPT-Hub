@@ -403,6 +403,39 @@ button,input{font-family:inherit}
   font-weight:400;
 }
 }
+
+.top-banner{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:8px 0 4px;
+  min-height:70px;
+}
+.top-banner img,
+.top-banner .banner-logo,
+.top-banner .site-logo{
+  width:56px !important;
+  max-height:56px !important;
+  height:auto !important;
+  display:block;
+  margin:0 auto !important;
+}
+
+
+@media (max-width: 768px){
+  .footer-actions .video-button,
+  .footer-actions .btn-video,
+  .footer-actions .video-toggle,
+  .footer-actions button[data-action="video"],
+  .footer-actions a[data-action="video"]{
+    font-size: 15px !important;
+    padding: 12px 16px !important;
+    min-height: 44px !important;
+    line-height: 1.2 !important;
+    border-radius: 14px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -429,6 +462,7 @@ button,input{font-family:inherit}
   <main class="page-shell">
     <section class="hero">
       <div class="hero-media">
+        <div class="hero-tag">واجهة عرض منسقة</div>
         <video autoplay muted loop playsinline preload="metadata" poster="hero-crop.png" aria-label="الفيديو المرجعي للواجهة">
           <source src="1080-60fps-ai.mp4" type="video/mp4">
           <img src="hero-crop.png" alt="الصورة المرجعية للواجهة">
