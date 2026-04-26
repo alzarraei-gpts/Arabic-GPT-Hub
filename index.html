@@ -449,8 +449,6 @@ button,input,a{touch-action:manipulation}
   font-weight:900;
 }
 .modal-link-card.featured .modal-link-badge{background:linear-gradient(135deg,rgba(122,224,69,.96),rgba(89,183,255,.96));color:#081c09}
-.link-icon img{width:18px;height:18px;object-fit:contain;display:block}
-.social-link .social-icon img{width:18px;height:18px;object-fit:contain;display:block}
 
 @media (max-width:760px){
   .logo-strip{padding:6px 10px 4px !important}
@@ -459,6 +457,42 @@ button,input,a{touch-action:manipulation}
   .brand-mini img{width:min(92px,24vw) !important;max-width:92px !important;max-height:54px !important}
   .btn-icon{width:24px;height:24px;flex-basis:24px;font-size:13px}
   .feature-actions .cta{min-width:0}
+}
+
+
+/* ===== Lightweight CSS social badges: replaces remote thumbnail images ===== */
+.footer-links .social-link--iconized{
+  padding:10px 14px;
+}
+.footer-links .social-icon{
+  width:30px;
+  height:30px;
+  flex:0 0 30px;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:.70rem;
+  font-weight:900;
+  line-height:1;
+  letter-spacing:.3px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),0 8px 18px rgba(0,0,0,.18);
+}
+.footer-links .social-icon--wa{background:#1fae57}
+.footer-links .social-icon--tg{background:#229ed9}
+.footer-links .social-icon--ig{background:linear-gradient(135deg,#feda75,#d62976,#4f5bd5)}
+.footer-links .social-icon--fb{background:#1877f2}
+.footer-links .social-icon--yt{background:#ff0033}
+.footer-links .social-icon--tk{background:#101418}
+.footer-links .social-icon--in{background:#0a66c2}
+.footer-links .social-icon--mail{background:#c5221f}
+.footer-links .social-icon--paypal{background:#003087}
+.footer-links .social-icon--sk{background:#6b4eff}
+.footer-links .social-link--iconized:hover .social-icon{
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.10),0 0 14px rgba(141,228,17,.16);
 }
 
 </style>
@@ -1430,16 +1464,16 @@ button,input,a{touch-action:manipulation}
           <a class="cta secondary" href="https://chatgpt.com/g/g-681f47498138819197d357982c29544c-lnmdhj-l-rby-ldhky-arabic-gpt" target="_blank" rel="noopener">العروض والتخفيضات</a>
       </div>
 <div class="footer-links">
-<a class="social-link social-link--iconized" href="https://wa.me/966552191598" rel="noopener" target="_blank"><span class="social-icon"><img alt="" src="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/whatsapp.png"/></span><span class="social-label">رقم الواتساب</span></a>
-<a class="social-link social-link--iconized" href="https://t.me/ArabicAIModels" rel="noopener" target="_blank"><span class="social-icon"><img alt="" src="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/Telegram.png"/></span><span class="social-label">تليغرام</span></a>
-<a class="social-link social-link--iconized" href="https://www.instagram.com/ArabicAIModels" rel="noopener" target="_blank"><span class="social-icon"><img alt="" src="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/instagram.svg"/></span><span class="social-label">انستغرام</span></a>
-<a class="social-link social-link--iconized" href="https://www.facebook.com/ArabicAIModels" rel="noopener" target="_blank"><span class="social-icon"><img alt="" src="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/facebook.svg"/></span><span class="social-label">فيس بوك</span></a>
-<a class="social-link social-link--iconized" href="https://www.youtube.com/@ArabicAIModels" rel="noopener" target="_blank"><span class="social-icon"><img alt="" src="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/youtube.svg"/></span><span class="social-label">يوتيوب</span></a>
-<a class="social-link social-link--iconized" href="https://www.tiktok.com/@Arabic.AI.Models" rel="noopener" target="_blank"><span class="social-icon"><img alt="" src="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/tiktok.png"/></span><span class="social-label">تيك توك</span></a>
-<a class="social-link social-link--iconized" href="https://www.linkedin.com/in/ArabicAIModels" rel="noopener" target="_blank"><span class="social-icon"><img alt="" src="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/linkedin.svg"/></span><span class="social-label">لينكدين</span></a>
-<a aria-label="البريد الإلكتروني: zraieee@gmail.com" class="social-link social-link--iconized" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=zraieee@gmail.com" rel="noopener" target="_blank" title="zraieee@gmail.com"><span class="social-icon"><img alt="" src="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/gmail.svg"/></span><span class="email-label">بريد إلكتروني</span></a>
-<a class="social-link social-link--iconized" href="https://www.paypal.com/paypalme/zraiee" rel="noopener" target="_blank"><span class="social-icon"><img alt="" src="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/paypal.svg"/></span><span class="social-label">باي بال</span></a>
-<a class="social-link social-link--iconized" href="https://www.skool.com/zraiee-3956/about" rel="noopener" target="_blank"><span class="social-icon"><img alt="" src="https://alzarraei-gpts.github.io/Arabic-GPT-Hub/Skool.png"/></span><span class="social-label">سكول</span></a>
+<a class="social-link social-link--iconized" href="https://wa.me/966552191598" rel="noopener" target="_blank"><span class="social-icon social-icon--wa" aria-hidden="true">WA</span><span class="social-label">رقم الواتساب</span></a>
+<a class="social-link social-link--iconized" href="https://t.me/ArabicAIModels" rel="noopener" target="_blank"><span class="social-icon social-icon--tg" aria-hidden="true">TG</span><span class="social-label">تليغرام</span></a>
+<a class="social-link social-link--iconized" href="https://www.instagram.com/ArabicAIModels" rel="noopener" target="_blank"><span class="social-icon social-icon--ig" aria-hidden="true">IG</span><span class="social-label">انستغرام</span></a>
+<a class="social-link social-link--iconized" href="https://www.facebook.com/ArabicAIModels" rel="noopener" target="_blank"><span class="social-icon social-icon--fb" aria-hidden="true">FB</span><span class="social-label">فيس بوك</span></a>
+<a class="social-link social-link--iconized" href="https://www.youtube.com/@ArabicAIModels" rel="noopener" target="_blank"><span class="social-icon social-icon--yt" aria-hidden="true">YT</span><span class="social-label">يوتيوب</span></a>
+<a class="social-link social-link--iconized" href="https://www.tiktok.com/@Arabic.AI.Models" rel="noopener" target="_blank"><span class="social-icon social-icon--tk" aria-hidden="true">TK</span><span class="social-label">تيك توك</span></a>
+<a class="social-link social-link--iconized" href="https://www.linkedin.com/in/ArabicAIModels" rel="noopener" target="_blank"><span class="social-icon social-icon--in" aria-hidden="true">IN</span><span class="social-label">لينكدين</span></a>
+<a aria-label="البريد الإلكتروني: zraieee@gmail.com" class="social-link social-link--iconized" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=zraieee@gmail.com" rel="noopener" target="_blank" title="zraieee@gmail.com"><span class="social-icon social-icon--mail" aria-hidden="true">✉</span><span class="email-label">بريد إلكتروني</span></a>
+<a class="social-link social-link--iconized" href="https://www.paypal.com/paypalme/zraiee" rel="noopener" target="_blank"><span class="social-icon social-icon--paypal" aria-hidden="true">P</span><span class="social-label">باي بال</span></a>
+<a class="social-link social-link--iconized" href="https://www.skool.com/zraiee-3956/about" rel="noopener" target="_blank"><span class="social-icon social-icon--sk" aria-hidden="true">SK</span><span class="social-label">سكول</span></a>
 </div>
         <div class="footer-copy">إعداد: د. عبد الرحمن الزراعي — مركز علوم الدولي للذكاء الاصطناعي — جميع الحقوق محفوظة 2026</div>
       </footer>
